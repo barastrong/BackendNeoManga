@@ -65,7 +65,7 @@
                                     <a href="{{ route('admin.manga.chapters.edit', [$manga, $chapter]) }}" class="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-indigo-100 hover:text-indigo-600" title="Edit Chapter">
                                         <i class="fa-solid fa-pen-to-square fa-sm"></i>
                                     </a>
-                                    <form action="{{ route('admin.manga.chapters.destroy', [$manga, $chapter]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus Chapter {{ $chapter->number }}?');">
+                                    <form action="{{ route('admin.manga.chapters.destroy', [$manga, $chapter]) }}" method="POST"">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-red-100 hover:text-red-600" title="Hapus Chapter">

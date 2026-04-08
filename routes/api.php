@@ -20,7 +20,7 @@ Route::post('/login', [ApiAuthController::class, 'login']);
 
 Route::get('/mangas', [ApiProductController::class, 'index']) ;
 
-Route::get('/manga/{manga:slug}', [ApiProductController::class, 'show']);
+Route::get('/manga/{manga:slug}', [ApiProductController::class, 'show'])->middleware('auth.optional');
 
 Route::get('/search', [ApiProductController::class, 'search']);
 Route::get('/manga-list', [ApiProductController::class, 'mangaList']);

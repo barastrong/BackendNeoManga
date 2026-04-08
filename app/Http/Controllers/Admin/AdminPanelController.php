@@ -149,7 +149,7 @@ class AdminPanelController extends Controller
             'number' => ['required', 'numeric', Rule::unique('chapters')->where('manga_id', $manga->id)],
             'status' => 'required|in:draft,published',
             'chapter_images' => 'required|array',
-            'chapter_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+            'chapter_images.*' => 'image|mimes:jpeg,png,jpg,webp',
         ]);
 
         $imagePaths = [];
@@ -180,7 +180,7 @@ class AdminPanelController extends Controller
             'number' => ['required', 'numeric', Rule::unique('chapters')->where('manga_id', $manga->id)->ignore($chapter->id)],
             'status' => 'required|in:draft,published',
             'chapter_images' => 'nullable|array',
-            'chapter_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+            'chapter_images.*' => 'image|mimes:jpeg,png,jpg,webp',
         ]);
 
         $dataToUpdate = [

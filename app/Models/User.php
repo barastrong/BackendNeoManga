@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\History;
 
 class User extends Authenticatable
 {
@@ -70,6 +71,10 @@ class User extends Authenticatable
     public function bookmarks(): HasMany
     {
         return $this->hasMany(Bookmark::class);
+    }
+    public function histories(): HasMany
+    {
+        return $this->hasMany(History::class);
     }
     public function likedComments(): BelongsToMany
     {

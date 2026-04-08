@@ -18,7 +18,7 @@ class ChapterImportController extends Controller
             'manga_slug' => 'required|string|max:255',
             'chapter_number' => 'required|string|max:50',
             'images' => 'required|array',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp'
         ]);
 
         if ($validator->fails()) {

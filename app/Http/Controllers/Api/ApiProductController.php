@@ -29,7 +29,7 @@ class ApiProductController extends Controller
                 $popularMangas = Manga::with('latestPublishedChapter')
                     ->withAvg('ratings', 'rating')
                     ->whereIn('id', $popularMangaIds)
-                    ->orderByRaw(DB::raw("FIELD(id, " . $popularMangaIds->implode(',') . ")"))
+                    ->orderByRaw("FIELD(id, " . $popularMangaIds->implode(',') . ")")
                     ->get();
             }
             

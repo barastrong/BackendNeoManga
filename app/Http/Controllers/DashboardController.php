@@ -27,7 +27,7 @@ class DashboardController extends Controller
                 ->withAvg('ratings', 'rating')
                 ->withCount('histories')
                 ->whereIn('id', $popularMangaIds)
-                ->orderByRaw(DB::raw("FIELD(id, " . $popularMangaIds->implode(',') . ")"))
+                ->orderByRaw("FIELD(id, " . $popularMangaIds->implode(',') . ")")
                 ->get();
         }
         
