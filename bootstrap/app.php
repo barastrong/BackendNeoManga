@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\HandleCors;
 use \App\Http\Middleware\ApikeyAuth;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\OptionalAuth;
@@ -16,7 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->prepend(HandleCors::class);
         $middleware->alias([
             'auth.apikey' => ApikeyAuth::class,
             'admin' => AdminMiddleware::class,
