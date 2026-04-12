@@ -82,38 +82,25 @@ class Chapter extends Model
         return is_array($images) ? $images : [];
     }
 
+    private function resolveImageUrl(string $path): string
+    {
+        if (str_starts_with($path, 'http')) {
+            return $path;
+        }
+
+        $supabaseUrl = rtrim(env('SUPABASE_URL'), '/');
+        return "{$supabaseUrl}/storage/v1/object/public/{$path}";
+    }
+
     public function getCoverImageUrlAttribute()
     {
         $images = $this->getChapterImagesArray();
-
-        if (!empty($images)) {
-            $imagePath = $images[0];
-            
-            if (str_starts_with($imagePath, 'storage/')) {
-                return asset($imagePath);
-            } else {
-                return asset('storage/' . $imagePath);
-            }
-        }
-
-        return asset('images/no-image.png');
+        return !empty($images) ? $this->resolveImageUrl($images[0]) : asset('images/no-image.png');
     }
 
     public function getImageUrlsAttribute()
     {
-        $images = $this->getChapterImagesArray();
-
-        if (!empty($images)) {
-            return array_map(function ($image) {
-                if (str_starts_with($image, 'storage/')) {
-                    return asset($image);
-                } else {
-                    return asset('storage/' . $image);
-                }
-            }, $images);
-        }
-
-        return [];
+        return array_map(fn($img) => $this->resolveImageUrl($img), $this->getChapterImagesArray());
     }
 
     public function getImageCountAttribute()
@@ -155,18 +142,7 @@ class Chapter extends Model
     public function getFirstImageUrlAttribute()
     {
         $images = $this->getChapterImagesArray();
-        
-        if (!empty($images)) {
-            $imagePath = $images[0];
-            
-            if (str_starts_with($imagePath, 'storage/')) {
-                return asset($imagePath);
-            } else {
-                return asset('storage/' . $imagePath);
-            }
-        }
-        
-        return asset('images/no-image.png');
+        return !empty($images) ? $this->resolveImageUrl($images[0]) : asset('images/no-image.png');
     }
 
     public function comments()

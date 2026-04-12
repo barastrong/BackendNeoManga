@@ -7,7 +7,7 @@ use \App\Http\Middleware\ApikeyAuth;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\OptionalAuth;
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
@@ -24,3 +24,20 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+
+if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
+    $app->useStoragePath('/tmp/storage');
+    $app->useBootstrapPath('/tmp/bootstrap');
+
+    foreach ([
+        '/tmp/storage/framework/views',
+        '/tmp/storage/framework/cache/data',
+        '/tmp/storage/framework/sessions',
+        '/tmp/storage/logs',
+        '/tmp/bootstrap/cache',
+    ] as $dir) {
+        if (!is_dir($dir)) @mkdir($dir, 0755, true);
+    }
+}
+
+return $app;

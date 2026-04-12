@@ -16,7 +16,7 @@
                     <span class="font-semibold text-gray-800 dark:text-gray-200">Chapter {{ $chapter->number }}</span>
                 </nav>
                 <div class="border-t border-gray-200 dark:border-gray-700 pt-4 text-center">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $chapter->manga->title }} - Chapter {{ $chapter->number }}</h1>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $chapter->manga->title }} - Chapter {{ git add $chapter->number }}</h1>
                     @if($chapter->manga->alternative_title)
                         <h2 class="text-lg text-gray-600 dark:text-gray-400 mt-1">{{ $chapter->manga->alternative_title }}</h2>
                     @endif
