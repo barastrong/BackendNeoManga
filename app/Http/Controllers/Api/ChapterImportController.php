@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\Manga;
 use App\Models\Chapter;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\SupabaseStorageService;
 
 class ChapterImportController extends Controller
 {
+    public function __construct(private SupabaseStorageService $storage) {}
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -36,14 +37,11 @@ class ChapterImportController extends Controller
                 return response()->json(['message' => 'Chapter ' . $request->chapter_number . ' already exists.'], 200);
             }
 
-            $imagePaths = [];
-            foreach ($request->file('images') as $image) {
-                $path = $image->store(
-                    'chapters/' . $manga->slug . '/' . $request->chapter_number,
-                    'public'
-                );
-                $imagePaths[] = $path;
-            }
+            $imagePaths = $this->storage->uploadChapterImages(
+                $request->file('images'),
+                $manga->slug,
+                $request->chapter_number
+            );
 
             Chapter::create([
                 'manga_id' => $manga->id,

@@ -38,7 +38,7 @@
                                     {{-- === BLOK KODE BARU BERAKHIR DI SINI === --}}
 
                                     @if($bookmark->manga->cover_image)
-                                        <img src="{{ asset('storage/' . $bookmark->manga->cover_image) }}" 
+                                        <img src="{{ $bookmark->manga->cover_url }}" 
                                              alt="{{ $bookmark->manga->title }}" 
                                              class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
                                     @else

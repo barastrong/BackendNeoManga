@@ -37,7 +37,7 @@
             <div class="bg-white rounded-xl shadow-md border border-transparent hover:border-indigo-500 hover:shadow-xl transition-all duration-300 p-5">
                 <div class="flex flex-col sm:flex-row gap-5">
                     <div class="w-full sm:w-24 flex-shrink-0">
-                        <img class="w-full h-36 sm:h-full object-cover rounded-lg shadow-lg" src="{{ asset('storage/' . $manga->cover_image) }}" alt="{{ $manga->title }}">
+                        <img class="w-full h-36 sm:h-full object-cover rounded-lg shadow-lg" src="{{ $manga->cover_url }}" alt="{{ $manga->title }}">
                     </div>
 
                     <div class="flex-1 flex flex-col justify-between">

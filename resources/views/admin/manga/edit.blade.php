@@ -91,7 +91,7 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Cover Saat Ini</label>
-                <img src="{{ asset('storage/' . $manga->cover_image) }}" class="mt-2 h-32 w-auto rounded-lg shadow-md">
+                <img src="{{ $manga->cover_url }}" class="mt-2 h-32 w-auto rounded-lg shadow-md">
             </div>
         </div>
 

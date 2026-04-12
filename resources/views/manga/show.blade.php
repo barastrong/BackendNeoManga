@@ -44,7 +44,7 @@
 
             <div class="flex flex-col md:flex-row gap-8">
                 <div class="flex-shrink-0 w-full md:w-48">
-                    <img src="{{ $manga->cover_image ? asset('storage/' . $manga->cover_image) : asset('images/no-image.png') }}" alt="{{ $manga->title }}" class="w-48 h-64 object-cover rounded-lg shadow-lg mx-auto">
+                    <img src="{{ $manga->cover_url }}" alt="{{ $manga->title }}" class="w-48 h-64 object-cover rounded-lg shadow-lg mx-auto">
                     @auth
                         <button id="bookmarkBtn" data-manga-id="{{ $manga->id }}" class="w-full max-w-sm mx-auto md:max-w-none mt-4 font-bold py-2 px-4 rounded-lg transition duration-200 text-white {{ $isBookmarked ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700' }}">
                             <i class="fas fa-bookmark mr-2"></i>

@@ -51,7 +51,7 @@
                                     {{-- === BLOK KODE BARU BERAKHIR DI SINI === --}}
                                     
                                     @if($history->manga->cover_image)
-                                        <img src="{{ asset('storage/' . $history->manga->cover_image) }}" 
+                                        <img src="{{ $history->manga->cover_url }}" 
                                              alt="{{ $history->manga->title }}" 
                                              class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
                                     @else

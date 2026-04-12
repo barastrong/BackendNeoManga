@@ -15,8 +15,8 @@ class DashboardController extends Controller
             ->select('manga_id')
             ->selectRaw('COUNT(DISTINCT user_id) as unique_readers_count')
             ->groupBy('manga_id')
-            ->having('unique_readers_count', '>', 1)
-            ->orderByDesc('unique_readers_count')
+            ->havingRaw('COUNT(DISTINCT user_id) > 1')
+            ->orderByRaw('COUNT(DISTINCT user_id) DESC')
             ->take(12)
             ->pluck('manga_id');
 
@@ -27,7 +27,7 @@ class DashboardController extends Controller
                 ->withAvg('ratings', 'rating')
                 ->withCount('histories')
                 ->whereIn('id', $popularMangaIds)
-                ->orderByRaw("FIELD(id, " . $popularMangaIds->implode(',') . ")")
+                ->orderByRaw("CASE id " . $popularMangaIds->values()->map(fn($id, $i) => "WHEN {$id} THEN {$i}")->implode(' ') . " END")
                 ->get();
         }
         

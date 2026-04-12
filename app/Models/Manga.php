@@ -71,6 +71,14 @@ class Manga extends Model
     /**
      * Accessor untuk mendapatkan jumlah followers (bookmarks)
      */
+    public function getCoverUrlAttribute(): string
+    {
+        $cover = $this->cover_image;
+        if (!$cover) return asset('images/no-image.png');
+        if (str_starts_with($cover, 'http://') || str_starts_with($cover, 'https://')) return $cover;
+        return asset('storage/' . $cover);
+    }
+
     public function getFollowersCountAttribute()
     {
         return $this->bookmarks()->count();

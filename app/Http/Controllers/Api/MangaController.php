@@ -5,72 +5,58 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Manga;
 use App\Models\Genre;
+use App\Services\SupabaseStorageService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class MangaController extends Controller
 {
+    public function __construct(private SupabaseStorageService $storage) {}
+
     public function index()
     {
-        $mangas = Manga::with('genres')->latest()->paginate(10);
-        return response()->json($mangas);
+        return response()->json(Manga::with('genres')->latest()->paginate(10));
     }
 
     public function store(Request $request)
     {
         try {
             $validated = $request->validate([
-                'title' => 'required|string|max:255|unique:mangas,title',
+                'title'             => 'required|string|max:255|unique:mangas,title',
                 'alternative_title' => 'nullable|string|max:1000',
-                'artist' => 'nullable|string|max:255',
-                'description' => 'required|string',
-                'author' => 'required|string|max:255',
-                'status' => 'required|in:ongoing,completed,hiatus,cancelled',
-                'type' => 'required|in:manga,manhwa,manhua,webtoon',
-                'cover_image' => 'required|image|mimes:jpeg,png,jpg,webp.gif|max:2048',
-                'genre_ids' => 'required|string',
+                'artist'            => 'nullable|string|max:255',
+                'description'       => 'required|string',
+                'author'            => 'required|string|max:255',
+                'status'            => 'required|in:ongoing,completed,hiatus,cancelled',
+                'type'              => 'required|in:manga,manhwa,manhua,webtoon',
+                'cover_image'       => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+                'genre_ids'         => 'required|string',
             ]);
 
-            $genreIds = explode(',', $validated['genre_ids']);
-
-            $title = $validated['title'];
-            $slug = Str::slug($title);
-            $imageFile = $request->file('cover_image');
-            $imageName = $title . '.' . $imageFile->getClientOriginalExtension();
-            $imagePath = $imageFile->storeAs('manga-covers', $imageName, 'public');
+            $coverUrl = $this->storage->uploadCover($request->file('cover_image'), $validated['title']);
 
             $manga = Manga::create([
-                'title' => $validated['title'],
+                'title'             => $validated['title'],
                 'alternative_title' => $validated['alternative_title'],
-                'artist' => $validated['artist'],
-                'description' => $validated['description'],
-                'author' => $validated['author'],
-                'status' => $validated['status'],
-                'type' => $validated['type'],
-                'slug' => $slug,
-                'cover_image' => $imagePath,
-                'user_id' => 1,
+                'artist'            => $validated['artist'],
+                'description'       => $validated['description'],
+                'author'            => $validated['author'],
+                'status'            => $validated['status'],
+                'type'              => $validated['type'],
+                'slug'              => Str::slug($validated['title']),
+                'cover_image'       => $coverUrl,
+                'user_id'           => 1,
             ]);
 
-            $manga->genres()->sync($genreIds);
+            $manga->genres()->sync(explode(',', $validated['genre_ids']));
 
-            return response()->json([
-                'message' => 'Manga berhasil ditambahkan',
-                'data' => $manga->load('genres')
-            ], 201);
+            return response()->json(['message' => 'Manga berhasil ditambahkan', 'data' => $manga->load('genres')], 201);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
+            return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error creating manga',
-                'error' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => 'Error creating manga', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -83,72 +69,60 @@ class MangaController extends Controller
     {
         try {
             $validated = $request->validate([
-                'title' => ['required', 'string', 'max:255', Rule::unique('mangas')->ignore($manga->id)],
+                'title'             => ['required', 'string', 'max:255', Rule::unique('mangas')->ignore($manga->id)],
                 'alternative_title' => 'nullable|string|max:255',
-                'artist' => 'nullable|string|max:255',
-                'description' => 'required|string',
-                'author' => 'required|string|max:255',
-                'status' => 'required|in:ongoing,completed,hiatus,cancelled',
-                'type' => 'required|in:manga,manhwa,manhua,webtoon',
-                'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-                'genre_ids' => 'required|string',
+                'artist'            => 'nullable|string|max:255',
+                'description'       => 'required|string',
+                'author'            => 'required|string|max:255',
+                'status'            => 'required|in:ongoing,completed,hiatus,cancelled',
+                'type'              => 'required|in:manga,manhwa,manhua,webtoon',
+                'cover_image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+                'genre_ids'         => 'required|string',
             ]);
 
-            $genreIds = explode(',', $validated['genre_ids']);
-
-            $dataToUpdate = $validated;
-            $slug = Str::slug($validated['title']);
-            $dataToUpdate['slug'] = $slug;
+            $data = $validated;
+            $data['slug'] = Str::slug($validated['title']);
 
             if ($request->hasFile('cover_image')) {
-                Storage::disk('public')->delete($manga->cover_image);
-                $imageFile = $request->file('cover_image');
-                $imageName = $slug . '.' . $imageFile->getClientOriginalExtension();
-                $imagePath = $imageFile->storeAs('manga-covers', $imageName, 'public');
-                $dataToUpdate['cover_image'] = $imagePath;
+                $this->storage->deleteCover($manga->cover_image);
+                $data['cover_image'] = $this->storage->uploadCover($request->file('cover_image'), $validated['title']);
             }
 
-            unset($dataToUpdate['genre_ids']);
-            $manga->update($dataToUpdate);
-            $manga->genres()->sync($genreIds);
+            unset($data['genre_ids']);
+            $manga->update($data);
+            $manga->genres()->sync(explode(',', $validated['genre_ids']));
 
-            return response()->json([
-                'message' => 'Manga berhasil diperbarui',
-                'data' => $manga->load('genres')
-            ]);
+            return response()->json(['message' => 'Manga berhasil diperbarui', 'data' => $manga->load('genres')]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
+            return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error updating manga',
-                'error' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => 'Error updating manga', 'error' => $e->getMessage()], 500);
         }
     }
 
     public function destroy(Manga $manga)
     {
         try {
-            Storage::disk('public')->delete($manga->cover_image);
-            Storage::disk('public')->deleteDirectory("chapters/{$manga->slug}");
+            $this->storage->deleteCover($manga->cover_image);
+
+            foreach ($manga->chapters as $chapter) {
+                $images = $chapter->chapter_images ?? [];
+                if (!empty($images)) {
+                    $this->storage->deleteFiles('chapters', $images);
+                }
+            }
+
             $manga->delete();
 
             return response()->json(['message' => 'Manga berhasil dihapus']);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error deleting manga',
-                'error' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => 'Error deleting manga', 'error' => $e->getMessage()], 500);
         }
     }
 
     public function genres()
     {
-        $genres = Genre::all();
-        return response()->json($genres);
+        return response()->json(Genre::all());
     }
 }
