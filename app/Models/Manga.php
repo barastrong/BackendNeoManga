@@ -81,7 +81,7 @@ class Manga extends Model
 
     public function getFollowersCountAttribute()
     {
-        return $this->bookmarks()->count();
+        return $this->bookmarks_count ?? $this->bookmarks()->count();
     }
 
     /**

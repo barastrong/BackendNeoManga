@@ -7,13 +7,15 @@ use App\Models\Chapter;
 use App\Models\Genre;
 use App\Models\Manga;
 use App\Models\User;
+use App\Services\SupabaseStorageService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class AdminPanelController extends Controller
 {
+    public function __construct(private SupabaseStorageService $storage) {}
+
     public function index()
     {
         $mangaCount = Manga::count();
@@ -62,15 +64,12 @@ class AdminPanelController extends Controller
         ]);
 
         $title = $validated['title'];
-        $slug = Str::slug($title);
-        $imageFile = $request->file('cover_image');
-        $imageName = $title . '.' . $imageFile->getClientOriginalExtension();
-        $imagePath = $imageFile->storeAs('manga-covers', $imageName, 'public');
+        $slug  = Str::slug($title);
 
         $dataToStore = $validated;
-        $dataToStore['slug'] = $slug;
-        $dataToStore['cover_image'] = $imagePath;
-        $dataToStore['user_id'] = auth()->id();
+        $dataToStore['slug']        = $slug;
+        $dataToStore['cover_image'] = $this->storage->uploadCover($request->file('cover_image'), $title);
+        $dataToStore['user_id']     = auth()->id();
 
         $manga = Manga::create($dataToStore);
         $manga->genres()->sync($validated['genres']);
@@ -111,12 +110,8 @@ class AdminPanelController extends Controller
         $dataToUpdate['slug'] = $slug;
 
         if ($request->hasFile('cover_image')) {
-            Storage::disk('public')->delete($manga->cover_image);
-
-            $imageFile = $request->file('cover_image');
-            $imageName = $slug . '.' . $imageFile->getClientOriginalExtension();
-            $imagePath = $imageFile->storeAs('manga-covers', $imageName, 'public');
-            $dataToUpdate['cover_image'] = $imagePath;
+            $this->storage->deleteCover($manga->cover_image);
+            $dataToUpdate['cover_image'] = $this->storage->uploadCover($request->file('cover_image'), $validated['title']);
         }
 
         $manga->update($dataToUpdate);
@@ -126,8 +121,7 @@ class AdminPanelController extends Controller
 
     public function mangaDestroy(Manga $manga)
     {
-        Storage::disk('public')->delete($manga->cover_image);
-        Storage::disk('public')->deleteDirectory("chapters/{$manga->slug}");
+        $this->storage->deleteCover($manga->cover_image);
         $manga->delete();
         return redirect()->route('admin.manga.index')->with('success', 'Manga berhasil dihapus.');
     }
@@ -152,17 +146,15 @@ class AdminPanelController extends Controller
             'chapter_images.*' => 'image|mimes:jpeg,png,jpg,webp',
         ]);
 
-        $imagePaths = [];
-        if ($request->hasFile('chapter_images')) {
-            foreach ($request->file('chapter_images') as $image) {
-                $path = $image->store("chapters/{$manga->slug}", 'public');
-                $imagePaths[] = $path;
-            }
-        }
+        $imagePaths = $this->storage->uploadChapterImages(
+            $request->file('chapter_images'),
+            $manga->slug,
+            $validated['number']
+        );
 
         $manga->chapters()->create([
-            'number' => $validated['number'],
-            'status' => $validated['status'],
+            'number'         => $validated['number'],
+            'status'         => $validated['status'],
             'chapter_images' => $imagePaths,
         ]);
 
@@ -189,16 +181,14 @@ class AdminPanelController extends Controller
         ];
 
         if ($request->hasFile('chapter_images')) {
-            foreach ($chapter->chapter_images as $oldImage) {
-                Storage::disk('public')->delete($oldImage);
-            }
+            $oldPaths = array_map(fn($url) => $this->pathFromUrl($url, 'chapters'), $chapter->chapter_images ?? []);
+            $this->storage->deleteFiles('chapters', array_filter($oldPaths));
 
-            $imagePaths = [];
-            foreach ($request->file('chapter_images') as $image) {
-                $path = $image->store("chapters/{$manga->slug}", 'public');
-                $imagePaths[] = $path;
-            }
-            $dataToUpdate['chapter_images'] = $imagePaths;
+            $dataToUpdate['chapter_images'] = $this->storage->uploadChapterImages(
+                $request->file('chapter_images'),
+                $manga->slug,
+                $validated['number']
+            );
         }
 
         $chapter->update($dataToUpdate);
@@ -208,13 +198,18 @@ class AdminPanelController extends Controller
 
     public function chapterDestroy(Manga $manga, Chapter $chapter)
     {
-        foreach ($chapter->chapter_images as $image) {
-            Storage::disk('public')->delete($image);
-        }
+        $paths = array_map(fn($url) => $this->pathFromUrl($url, 'chapters'), $chapter->chapter_images ?? []);
+        $this->storage->deleteFiles('chapters', array_filter($paths));
 
         $chapter->delete();
 
         return redirect()->route('admin.manga.chapters.index', $manga)->with('success', "Chapter {$chapter->number} berhasil dihapus.");
+    }
+
+    private function pathFromUrl(string $url, string $bucket): ?string
+    {
+        $base = rtrim(env('SUPABASE_URL'), '/') . "/storage/v1/object/public/{$bucket}/";
+        return str_starts_with($url, $base) ? substr($url, strlen($base)) : null;
     }
 
     public function userIndex()
