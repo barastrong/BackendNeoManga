@@ -73,16 +73,23 @@ class SupabaseStorageService
 
     public function uploadFromUrl(string $bucket, string $path, string $url): string
     {
-        $response = Http::timeout(30)->get($url);
+        $response = Http::timeout(60)->withHeaders([
+            'User-Agent' => 'Mozilla/5.0',
+        ])->get($url);
 
         if (!$response->successful()) {
             throw new \Exception("Gagal download ({$response->status()}): {$url}");
         }
 
-        $content = $this->convertToWebp($response->body());
-        $path    = $this->webpPath($path);
+        $body = $response->body();
+        if (empty($body)) {
+            throw new \Exception("Response kosong: {$url}");
+        }
 
-        return $this->pushToSupabase($bucket, $path, $content);
+        $content = $this->convertToWebp($body);
+        $webpPath = $this->webpPath($path);
+
+        return $this->pushToSupabase($bucket, $webpPath, $content);
     }
 
     public function deleteCover(string $url): void

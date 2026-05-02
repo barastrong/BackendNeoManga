@@ -11,15 +11,23 @@ class ConvertImagesToWebp extends Command
 {
     protected $signature = 'images:convert-webp {--type=all : manga, chapter, atau all}';
     protected $description = 'Konversi semua gambar JPG/PNG di Supabase ke WebP';
+    private array $errors = [];
 
     public function __construct(private SupabaseStorageService $storage)
     {
         parent::__construct();
     }
 
+    private string $errorPath = '';
+
     public function handle(): void
     {
         $type = $this->option('type');
+        $this->errors = [];
+        $this->errorPath = storage_path('logs/convert_errors.json');
+
+        // Reset file error
+        file_put_contents($this->errorPath, json_encode([], JSON_PRETTY_PRINT));
 
         if (in_array($type, ['all', 'manga'])) {
             $this->convertMangas();
@@ -29,7 +37,19 @@ class ConvertImagesToWebp extends Command
             $this->convertChapters();
         }
 
-        $this->info('Selesai!');
+        $this->info('Selesai! Total error: ' . count($this->errors));
+        if (!empty($this->errors)) {
+            $this->warn('Cek error di: ' . $this->errorPath);
+        }
+    }
+
+    private function logError(array $data): void
+    {
+        $this->errors[] = $data;
+        file_put_contents(
+            $this->errorPath,
+            json_encode($this->errors, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
     }
 
     private function convertMangas(): void
@@ -53,6 +73,12 @@ class ConvertImagesToWebp extends Command
             } catch (\Exception $e) {
                 $this->newLine();
                 $this->warn("Gagal [{$manga->title}]: " . $e->getMessage());
+                $this->logError([
+                    'type'  => 'manga_cover',
+                    'manga' => $manga->title,
+                    'url'   => $manga->cover_image,
+                    'error' => $e->getMessage(),
+                ]);
             }
             $bar->advance();
         }
@@ -99,6 +125,14 @@ class ConvertImagesToWebp extends Command
                     $this->newLine();
                     $this->warn("Gagal [{$manga->title}] chapter {$chapter->number} img {$index}: " . $e->getMessage());
                     $this->warn("  URL: {$oldUrl}");
+                    $this->logError([
+                        'type'    => 'chapter_image',
+                        'manga'   => $manga->title ?? $manga->slug ?? 'unknown',
+                        'chapter' => $chapter->number,
+                        'index'   => $index,
+                        'url'     => $oldUrl,
+                        'error'   => $e->getMessage(),
+                    ]);
                     $newImages[] = $oldUrl;
                 }
             }

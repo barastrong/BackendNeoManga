@@ -49,7 +49,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified' => 'boolean',
+            'email_verified' => 'integer',
             'password' => 'hashed',
             'otp_expires_at' => 'datetime',
         ];

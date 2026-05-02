@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'NeoManga - Admin',
             'email' => 'Test@gmail.com',
             'password' => Hash::make('HelloWorld'),
-        ]); 
+            'email_verified' => 1,
+            'role' => 'admin',
+        ]);
     }
 }
