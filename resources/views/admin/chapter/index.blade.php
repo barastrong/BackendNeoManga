@@ -1,87 +1,91 @@
-@extends('layouts.adminSidebar')
+@extends('layouts.admin')
+
+@section('title', 'Chapter — Admin NeoManga')
+@section('page-title', 'Chapter')
 
 @section('content')
-    <div class="mb-8">
-        <a href="{{ route('admin.manga.index') }}" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors duration-200">
-            <i class="fa-solid fa-arrow-left mr-2"></i>
-            Kembali ke Daftar Manga
-        </a>
-        <div class="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <p class="text-sm text-slate-500">Daftar Chapter untuk:</p>
-                <h1 class="text-3xl font-bold text-slate-800">{{ $manga->title }}</h1>
-            </div>
-            <a href="{{ route('admin.manga.chapters.create', $manga) }}" class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                <i class="fa-solid fa-plus mr-2"></i>
-                Tambah Chapter
+<link rel="stylesheet" href="{{ asset('css/admin/chapter/index.css') }}">
+
+<div>
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="min-w-0">
+            <a href="{{ route('admin.manga.index') }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-brand transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>Kembali ke Koleksi Manga
             </a>
+            <div class="mt-3 flex items-center gap-2">
+                <span class="ch-eyebrow"><i class="fa-solid fa-layer-group mr-1.5"></i>Katalog</span>
+                <span class="text-slate-600 text-xs">•</span>
+                <span class="text-[11px] font-semibold tracking-wide text-brand/90 uppercase">Chapter</span>
+            </div>
+            <h1 class="font-display text-[26px] lg:text-3xl font-bold text-white tracking-tight mt-1.5">{{ $manga->title }}</h1>
+            <p class="text-sm text-slate-400 mt-1">Daftar chapter untuk manga ini.</p>
         </div>
+        <a href="{{ route('admin.manga.chapters.create', $manga) }}" class="ch-btn ch-btn-primary">
+            <i class="fa-solid fa-plus text-xs"></i>Tambah Chapter
+        </a>
     </div>
 
     @if (session('success'))
-        <div class="flex items-start bg-green-50 border-l-4 border-green-400 text-green-800 p-4 rounded-lg mb-6 shadow-sm" role="alert">
-            <i class="fa-solid fa-check-circle mr-3 mt-1"></i>
-            <div>
-                <p class="font-bold">Sukses!</p>
-                <p>{{ session('success') }}</p>
-            </div>
+        <div class="mt-5 flex items-center gap-3 px-5 py-4 rounded-2xl border text-sm" style="background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25);color:#6ee7b7">
+            <i class="fa-solid fa-circle-check"></i><span>{{ session('success') }}</span>
         </div>
     @endif
 
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="ch-card mt-6">
         <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
-                <thead class="bg-slate-50">
+            <table class="w-full" style="border-collapse:collapse;font-size:13.5px;min-width:640px">
+                <thead>
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Chapter</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Detail</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Aksi</th>
+                        <th class="ch-th">Chapter</th>
+                        <th class="ch-th">Gambar</th>
+                        <th class="ch-th text-center">Status</th>
+                        <th class="ch-th">Dibuat</th>
+                        <th class="ch-th text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-200">
+                <tbody>
                     @forelse ($chapters as $chapter)
-                        <tr class="hover:bg-slate-50 transition-colors duration-200">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="font-semibold text-slate-900">Chapter {{ $chapter->number }}</div>
-                                <div class="text-xs text-slate-500">Dibuat: {{ $chapter->created_at->format('d M Y') }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center text-slate-600">
-                                    <i class="fa-solid fa-images w-4 text-slate-400 mr-2"></i>
-                                    <span>{{ $chapter->image_count }} Gambar</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @php
-                                    $statusClass = $chapter->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
-                                @endphp
-                                <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusClass }}">
-                                    {{ ucfirst($chapter->status) }}
+                        @php
+                            $imgCount = is_array($chapter->chapter_images) ? count($chapter->chapter_images) : (is_string($chapter->chapter_images) ? count(json_decode($chapter->chapter_images, true) ?? []) : 0);
+                        @endphp
+                        <tr class="ch-tr">
+                            <td class="ch-td">
+                                <span class="inline-flex items-center gap-1.5 font-bold text-white">
+                                    <i class="fa-solid fa-hashtag text-[10px]" style="color:#ff8a9c"></i>{{ $chapter->number }}
                                 </span>
+                                <p class="text-[11px] text-slate-500 mt-0.5">{{ $chapter->created_at->format('d M Y') }}</p>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <div class="flex items-center justify-end space-x-1">
-                                    <a href="{{ route('admin.manga.chapters.edit', [$manga, $chapter]) }}" class="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-indigo-100 hover:text-indigo-600" title="Edit Chapter">
-                                        <i class="fa-solid fa-pen-to-square fa-sm"></i>
-                                    </a>
-                                    <form action="{{ route('admin.manga.chapters.destroy', [$manga, $chapter]) }}" method="POST"">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-red-100 hover:text-red-600" title="Hapus Chapter">
-                                            <i class="fa-solid fa-trash-can fa-sm"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                            <td class="ch-td">
+                                <span class="ch-pill" style="background:rgba(255,255,255,.05);color:#94a3b8"><i class="fa-regular fa-image text-[9px]"></i>{{ $imgCount }}</span>
+                            </td>
+                            <td class="ch-td text-center">
+                                @if($chapter->status === 'published')
+                                    <span class="ch-pill" style="background:rgba(52,211,153,.12);color:#34d399"><i class="fa-solid fa-circle text-[6px]"></i>Published</span>
+                                @else
+                                    <span class="ch-pill" style="background:rgba(251,191,36,.12);color:#fbbf24"><i class="fa-solid fa-circle text-[6px]"></i>Draft</span>
+                                @endif
+                            </td>
+                            <td class="ch-td text-slate-500 text-xs whitespace-nowrap">{{ $chapter->created_at->diffForHumans() }}</td>
+                            <td class="ch-td text-right whitespace-nowrap">
+                                <a href="{{ route('admin.manga.chapters.edit', [$manga, $chapter]) }}" class="ch-ico-btn edit" title="Edit Chapter"><i class="fa-solid fa-pen"></i></a>
+                                <form action="{{ route('admin.manga.chapters.destroy', [$manga, $chapter]) }}" method="POST" class="inline"
+                                      onsubmit="return confirm('Hapus chapter {{ $chapter->number }}? Semua gambar ikut terhapus.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="ch-ico-btn danger" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                                </form>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-24 text-center">
-                                <div class="flex flex-col items-center">
-                                    <i class="fa-solid fa-folder-open fa-4x text-slate-300 mb-4"></i>
-                                    <h3 class="text-lg font-semibold text-slate-700">Belum Ada Chapter</h3>
-                                    <p class="mt-1 text-sm text-slate-500">Manga ini belum memiliki chapter. Silakan tambahkan satu.</p>
+                            <td colspan="5">
+                                <div class="ch-empty">
+                                    <i class="fa-solid fa-layer-group ic"></i>
+                                    <p class="mt-3 font-semibold text-white text-sm">Belum Ada Chapter</p>
+                                    <p class="text-sm mt-1">Manga ini belum memiliki chapter. Silakan tambahkan satu.</p>
+                                    <a href="{{ route('admin.manga.chapters.create', $manga) }}" class="ch-btn ch-btn-primary mt-4">
+                                        <i class="fa-solid fa-plus text-xs"></i>Tambah Chapter Pertama
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -90,40 +94,34 @@
             </table>
         </div>
     </div>
-    
+
     @if ($chapters->hasPages())
-        <div class="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <div>
-                <p class="text-sm text-slate-700">
-                    Menampilkan
-                    <span class="font-semibold text-slate-900">{{ $chapters->firstItem() }}</span>
-                    sampai
-                    <span class="font-semibold text-slate-900">{{ $chapters->lastItem() }}</span>
-                    dari
-                    <span class="font-semibold text-slate-900">{{ $chapters->total() }}</span>
-                    hasil
-                </p>
-            </div>
-            <div class="inline-flex items-center space-x-2">
-                @if ($chapters->onFirstPage())
-                    <span class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-400 cursor-not-allowed">
-                        <i class="fa-solid fa-arrow-left mr-2"></i> Previous
-                    </span>
+        <div class="mt-5 flex items-center justify-between flex-wrap gap-3">
+            <p class="text-xs" style="color:#64748b">
+                Menampilkan <span class="text-slate-300 font-semibold">{{ $chapters->firstItem() }}</span>–
+                <span class="text-slate-300 font-semibold">{{ $chapters->lastItem() }}</span> dari
+                <span class="text-slate-300 font-semibold">{{ $chapters->total() }}</span>
+            </p>
+            <div class="flex gap-1.5">
+                @if($chapters->onFirstPage())
+                    <span class="ch-pag dis"><i class="fa-solid fa-chevron-left text-[10px]"></i></span>
                 @else
-                    <a href="{{ $chapters->previousPageUrl() }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50">
-                        <i class="fa-solid fa-arrow-left mr-2"></i> Previous
-                    </a>
+                    <a href="{{ $chapters->previousPageUrl() }}" class="ch-pag"><i class="fa-solid fa-chevron-left text-[10px]"></i></a>
                 @endif
-                @if ($chapters->hasMorePages())
-                    <a href="{{ $chapters->nextPageUrl() }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50">
-                        Next <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </a>
+                @for($i = max(1, $chapters->currentPage() - 2); $i <= min($chapters->lastPage(), $chapters->currentPage() + 2); $i++)
+                    @if($i == $chapters->currentPage())
+                        <span class="ch-pag cur">{{ $i }}</span>
+                    @else
+                        <a href="{{ $chapters->url($i) }}" class="ch-pag">{{ $i }}</a>
+                    @endif
+                @endfor
+                @if($chapters->hasMorePages())
+                    <a href="{{ $chapters->nextPageUrl() }}" class="ch-pag"><i class="fa-solid fa-chevron-right text-[10px]"></i></a>
                 @else
-                    <span class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-400 cursor-not-allowed">
-                        Next <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </span>
+                    <span class="ch-pag dis"><i class="fa-solid fa-chevron-right text-[10px]"></i></span>
                 @endif
             </div>
         </div>
     @endif
+</div>
 @endsection

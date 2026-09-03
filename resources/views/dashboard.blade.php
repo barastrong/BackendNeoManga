@@ -1,187 +1,91 @@
 @extends('layouts.app')
 
-@section('title', 'NeoManga - Wesbite Baca Komik Terbaru dan Terlengkap Secara Online.')
+@section('title', 'NeoManga — Baca Manga, Manhwa & Manhua Bahasa Indonesia')
 
 @section('content')
-<div class="container mx-auto px-4 py-8 md:px-6 md:py-10">
-    @if($popularMangas->isNotEmpty())
-        <div class="mb-12">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Manga Populer</h2>
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-x-4 gap-y-8">
+<div class="container-nm py-6 md:py-8">
+
+    {{-- Banner kecil --}}
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#131a2c] via-[#0d1220] to-[#1a1030] ring-1 ring-white/10 mb-10">
+        <div class="absolute -top-20 right-10 w-64 h-64 bg-[#ff2e4d]/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative px-6 py-8 sm:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="font-display text-2xl sm:text-3xl font-bold text-white leading-tight">
+                    Baca Manga <span class="text-[#ff2e4d]">Gratis</span> di NeoManga
+                </h1>
+                <p class="text-slate-400 text-sm mt-1.5 max-w-lg">
+                    Koleksi manga, manhwa &amp; manhua bahasa Indonesia terlengkap. Update terbaru setiap hari.
+                </p>
+            </div>
+            <a href="{{ route('manga.list') }}" class="btn-primary flex-shrink-0 self-start sm:self-auto">
+                <i class="fa-solid fa-compass mr-2"></i>Jelajahi Manga
+            </a>
+        </div>
+    </div>
+
+    {{-- ═══════════ SECTION 1: MANGA POPULER (berdasar user views) ═══════════ --}}
+    <section class="mb-12">
+        <div class="flex items-end justify-between flex-wrap gap-3 mb-6">
+            <h2 class="section-title !mb-0">
+                <i class="fa-solid fa-fire text-[#ff2e4d] text-xl"></i>Manga Populer
+            </h2>
+            <div class="inline-flex items-center gap-1 p-1 bg-slate-100 dark:bg-white/5 rounded-xl">
+                @foreach(['today' => 'Hari Ini', 'week' => 'Minggu Ini', 'month' => 'Bulan Ini'] as $key => $label)
+                    <a href="{{ request()->fullUrlWithQuery(['period' => $key]) }}"
+                       class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all
+                              {{ $period === $key ? 'bg-brand text-white shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white' }}">
+                        {{ $label }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
+        @if($popularMangas->isNotEmpty())
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
                 @foreach($popularMangas as $manga)
-                    <div>
-                        <div class="relative group">
-                            <a href="{{ route('manga.show', $manga->slug) }}">
-                                <div class="relative aspect-[3/4] rounded-md overflow-hidden shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                                    @if($manga->status === 'completed')
-                                        <div class="absolute top-6 left-[-34px] transform -rotate-45 bg-red-600 text-white font-bold text-xs uppercase px-8 py-1 shadow-md z-10">
-                                            Completed
-                                        </div>
-                                    @endif
-                                    @if($manga->cover_image)
-                                        <img src="{{ $manga->cover_url }}" 
-                                             alt="{{ $manga->title }}" 
-                                             class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
-                                            <svg class="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                        </div>
-                                    @endif
-
-                                    <div class="absolute top-2 right-2">
-                                        @if($manga->type === 'manga')
-                                            <img src="https://flagcdn.com/w40/jp.png" alt="Manga" class="w-10 h-6 rounded-sm object-cover shadow-md" title="Manga (Japan)">
-                                        @elseif($manga->type === 'manhwa')
-                                            <img src="https://flagcdn.com/w40/kr.png" alt="Manhwa" class="w-10 h-6 rounded-sm object-cover shadow-md" title="Manhwa (Korea)">
-                                        @elseif($manga->type === 'manhua')
-                                            <img src="https://flagcdn.com/w40/cn.png" alt="Manhua" class="w-10 h-6 rounded-sm object-cover shadow-md" title="Manhua (China)">
-                                        @endif
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="mt-3">
-                            <a href="{{ route('manga.show', $manga->slug) }}">
-                                <h3 class="font-bold text-base text-gray-900 dark:text-white leading-tight truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title="{{ $manga->title }}">
-                                    {{ $manga->title }}
-                                </h3>
-                            </a>
-                            
-                            @if($manga->latestPublishedChapter)
-                            <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug ) }}" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                                <div class="flex justify-between items-center text-sm mt-2 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1">
-                                    <span>Chapter {{ $manga->latestPublishedChapter->number }}</span>
-                                    <span>
-                                        {{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}
-                                    </span>
-                                </div>
-                            </a>
-                            @else
-                                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 italic">Belum ada chapter</p>
-                            @endif
-
-                            <div class="flex items-center mt-2">
-                                @php $rounded_rating = round($manga->ratings_avg_rating * 2) / 2; @endphp
-                                @for ($i = 1; $i <= 5; $i++)
-                                    <svg class="w-4 h-4 {{ $i <= $rounded_rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                @endfor
-                            </div>
-                        </div>
-                    </div>
+                    @include('partials.manga-card', ['manga' => $manga])
                 @endforeach
             </div>
-        </div>
-    @endif
+        @else
+            <div class="text-center py-14 rounded-2xl bg-white dark:bg-[#0d1220] border border-dashed border-slate-300 dark:border-white/10">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-400 mb-4">
+                    <i class="fa-solid fa-chart-line text-xl"></i>
+                </div>
+                <p class="font-display font-semibold text-slate-700 dark:text-slate-200">Belum ada data view periode ini</p>
+                <p class="text-sm text-slate-400 mt-1">Buka halaman manga atau baca chapter — nanti muncul di sini.</p>
+            </div>
+        @endif
+    </section>
 
-    @if($mangas->count() > 0)
-        <div>
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Update Comic</h2>
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-x-4 gap-y-8">
+    {{-- ═══════════ SECTION 2: UPDATE TERBARU (chapter baru masuk) ═══════════ --}}
+    <section class="mb-12">
+        <h2 class="section-title">
+            <i class="fa-solid fa-bolt text-[#ff2e4d] text-xl"></i>Update Terbaru
+        </h2>
+
+        @if($mangas->count() > 0)
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
                 @foreach($mangas as $manga)
-                    <div>
-                        <div class="relative group">
-                            <a href="{{ route('manga.show', $manga->slug) }}">
-                                <div class="relative aspect-[3/4] rounded-md overflow-hidden shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                                    @if($manga->status === 'completed')
-                                        <div class="absolute top-6 left-[-34px] transform -rotate-45 bg-red-600 text-white font-bold text-xs uppercase px-8 py-1 shadow-md z-10">
-                                            Completed
-                                        </div>
-                                    @endif
-                                    @if($manga->cover_image)
-                                        <img src="{{ $manga->cover_url }}" 
-                                             alt="{{ $manga->title }}" 
-                                             class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
-                                            <svg class="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                        </div>
-                                    @endif
-
-                                    <div class="absolute top-2 right-2">
-                                        @if($manga->type === 'manga')
-                                            <img src="https://flagcdn.com/w40/jp.png" alt="Manga" class="w-10 h-6 rounded-sm object-cover shadow-md" title="Manga (Japan)">
-                                        @elseif($manga->type === 'manhwa')
-                                            <img src="https://flagcdn.com/w40/kr.png" alt="Manhwa" class="w-10 h-6 rounded-sm object-cover shadow-md" title="Manhwa (Korea)">
-                                        @elseif($manga->type === 'manhua')
-                                            <img src="https://flagcdn.com/w40/cn.png" alt="Manhua" class="w-10 h-6 rounded-sm object-cover shadow-md" title="Manhua (China)">
-                                        @endif
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="mt-3">
-                            <a href="{{ route('manga.show', $manga->slug) }}">
-                                <h3 class="font-bold text-base text-gray-900 dark:text-white leading-tight truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title="{{ $manga->title }}">
-                                    {{ $manga->title }}
-                                </h3>
-                            </a>
-                            
-                            @if($manga->latestPublishedChapter)
-                            <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug ) }}" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                                <div class="flex justify-between items-center text-sm mt-2 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1">
-                                    <span>Chapter {{ $manga->latestPublishedChapter->number }}</span>
-                                    <span>
-                                        {{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}
-                                    </span>
-                                </div>
-                            </a>
-                            @else
-                                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 italic">Belum ada chapter</p>
-                            @endif
-
-                            <div class="flex items-center mt-2">
-                                @php $rounded_rating = round($manga->ratings_avg_rating * 2) / 2; @endphp
-                                @for ($i = 1; $i <= 5; $i++)
-                                    <svg class="w-4 h-4 {{ $i <= $rounded_rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                @endfor
-                            </div>
-                        </div>
-                    </div>
+                    @include('partials.manga-card', ['manga' => $manga])
                 @endforeach
             </div>
 
-            <div class="mt-10">
-                @if ($mangas->hasPages())
-                    <nav role="navigation" aria-label="Pagination Navigation" class="flex items-center justify-between">
-                        @if ($mangas->onFirstPage())
-                            <span class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-400 bg-gray-200 dark:bg-gray-700 rounded-md cursor-not-allowed">
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                                Previous
-                            </span>
-                        @else
-                            <a href="{{ $mangas->previousPageUrl() }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition ease-in-out duration-150">
-                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                                Previous
-                            </a>
-                        @endif
-
-                        <div class="hidden sm:block text-sm text-gray-700 dark:text-gray-400">
-                            Halaman <span class="font-medium text-gray-900 dark:text-white">{{ $mangas->currentPage() }}</span> dari <span class="font-medium text-gray-900 dark:text-white">{{ $mangas->lastPage() }}</span>
-                        </div>
-                        
-                        @if ($mangas->hasMorePages())
-                            <a href="{{ $mangas->nextPageUrl() }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition ease-in-out duration-150">
-                                Next
-                                <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                            </a>
-                        @else
-                            <span class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-400 bg-gray-200 dark:bg-gray-700 rounded-md cursor-not-allowed">
-                                Next
-                                <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                            </span>
-                        @endif
-                    </nav>
-                @endif
+            @if($mangas->hasMorePages() || $mangas->count() >= 12)
+                <div class="mt-10 flex justify-center">
+                    <a href="{{ route('manga.list') }}" class="btn-primary">
+                        <i class="fa-solid fa-angles-down mr-2"></i>Lihat Semua
+                    </a>
+                </div>
+            @endif
+        @else
+            <div class="text-center py-14 rounded-2xl bg-white dark:bg-[#0d1220] border border-dashed border-slate-300 dark:border-white/10">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-400 mb-4">
+                    <i class="fa-solid fa-book-open text-xl"></i>
+                </div>
+                <p class="font-display font-semibold text-slate-700 dark:text-slate-200">Belum ada update chapter</p>
+                <p class="text-sm text-slate-400 mt-1">Begitu chapter manga di-upload, langsung muncul di sini.</p>
             </div>
-        </div>
-    @else
-        <div class="text-center py-20 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
-            <svg class="w-20 h-20 mx-auto mb-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-            <h3 class="text-xl font-medium mb-2 text-gray-900 dark:text-gray-100">Belum ada manga</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Manga akan muncul di sini setelah ditambahkan.</p>
-        </div>
-    @endif
+        @endif
+    </section>
 </div>
 @endsection

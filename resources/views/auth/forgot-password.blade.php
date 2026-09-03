@@ -5,95 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="version" content="1.0">
     <title>Reset Password - Neon</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        
-        body {
-            font-family: 'Orbitron', monospace;
-        }
-        
-        /* DIUBAH: Membuat class khusus untuk judul agar lebih terbaca */
-        .neon-title-text {
-            color: #fff; /* Memberi warna putih solid pada teks inti */
-            /* Memberi glow putih tipis dan glow cyan yang lebih menyebar */
-            text-shadow: 
-                0 0 5px #fff,
-                0 0 10px #fff,
-                0 0 20px #00ffff,
-                0 0 35px #00ffff;
-        }
-
-        /* Efek neon standar untuk teks lain yang lebih kecil */
-        .neon-text {
-            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff;
-        }
-        
-        .neon-border {
-            box-shadow: 0 0 20px #00ffff, inset 0 0 20px rgba(0, 255, 255, 0.1);
-        }
-        
-        .neon-glow {
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            from { box-shadow: 0 0 20px #00ffff, inset 0 0 20px rgba(0, 255, 255, 0.1); }
-            to { box-shadow: 0 0 30px #00ffff, 0 0 40px #00ffff, inset 0 0 30px rgba(0, 255, 255, 0.2); }
-        }
-        
-        .neon-button {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .neon-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .neon-button:hover::before {
-            left: 100%;
-        }
-        
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: #00ffff;
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-            box-shadow: 0 0 10px #00ffff;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.5; }
-        }
-        
-        .glass-morphism {
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-    </style>
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="{{ asset('css/auth/forgot-password.css') }}">
 </head>
 <body class="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black flex items-center justify-center p-4">
     
@@ -165,49 +78,6 @@
         </div>
     </div>
     
-    <script>
-        // Script tetap sama
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            if (!particlesContainer) return;
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', createParticles);
-        
-        const form = document.querySelector('form');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                const email = document.getElementById('email').value;
-                const emailError = document.getElementById('emailError');
-                let hasError = false;
-                
-                emailError.classList.add('hidden');
-                
-                if (!email) {
-                    emailError.textContent = 'Alamat email wajib diisi.';
-                    emailError.classList.remove('hidden');
-                    hasError = true;
-                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    emailError.textContent = 'Harap masukkan alamat email yang valid.';
-                    emailError.classList.remove('hidden');
-                    hasError = true;
-                }
-                
-                if (hasError) {
-                    e.preventDefault();
-                }
-            });
-        }
-    </script>
+    <script src="{{ asset('js/auth/forgot-password.js') }}"></script>
 </body>
 </html>

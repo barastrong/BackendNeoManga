@@ -1,53 +1,99 @@
-@extends('layouts.adminSidebar')
+@extends('layouts.admin')
+
+@section('title', 'Tambah Chapter — Admin NeoManga')
+@section('page-title', 'Chapter')
 
 @section('content')
-<div class="mb-6">
-    <a href="{{ route('admin.manga.chapters.index', $manga) }}" class="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-indigo-600 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" /></svg>
-        Kembali ke Daftar Chapter
-    </a>
-    <h1 class="text-3xl font-bold text-slate-800 mt-2">Tambah Chapter Baru untuk <span class="text-indigo-600">{{ $manga->title }}</span></h1>
-</div>
+<link rel="stylesheet" href="{{ asset('css/admin/chapter/create.css') }}">
 
-<div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
-    <form action="{{ route('admin.manga.chapters.store', $manga) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+<div>
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="min-w-0">
+            <a href="{{ route('admin.manga.chapters.index', $manga) }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-brand transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>Kembali ke Daftar Chapter
+            </a>
+            <div class="mt-3 flex items-center gap-2">
+                <span class="fm-eyebrow"><i class="fa-solid fa-plus mr-1.5"></i>Katalog</span>
+                <span class="text-slate-600 text-xs">•</span>
+                <span class="text-[11px] font-semibold tracking-wide text-brand/90 uppercase">Tambah Data</span>
+            </div>
+            <h1 class="font-display text-[26px] lg:text-3xl font-bold text-white tracking-tight mt-1.5">Tambah Chapter Baru</h1>
+            <p class="text-sm text-slate-400 mt-1 truncate">{{ $manga->title }}</p>
+        </div>
+    </div>
+
+    @if (session('success'))
+        <div class="mt-6 flex items-center gap-3 px-5 py-4 rounded-2xl border text-sm" style="background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25);color:#6ee7b7">
+            <i class="fa-solid fa-circle-check"></i><span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    <form action="{{ route('admin.manga.chapters.store', $manga) }}" method="POST" enctype="multipart/form-data" class="mt-6 space-y-6">
         @csrf
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="number" class="block text-sm font-semibold text-gray-700 mb-2">Nomor Chapter</label>
-                <input type="number" step="0.1" name="number" id="number" value="{{ old('number') }}" placeholder="Contoh: 1 atau 12.5" class="block w-full px-4 py-2 border border-slate-300 rounded-lg shadow-sm" required>
-                @error('number') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-            <div>
-                <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                <select name="status" id="status" class="block w-full px-4 py-2 border border-slate-300 bg-white rounded-lg shadow-sm">
-                    <option value="draft" @selected(old('status') == 'draft')>Draft</option>
-                    <option value="published" @selected(old('status') == 'published')>Published</option>
-                </select>
-                @error('status') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-        </div>
-        
-        <div x-data="{ files: [] }">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar Chapter (Bisa pilih banyak)</label>
-            <label for="chapter_images" class="relative flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
-                <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg class="w-8 h-8 mb-4 text-slate-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/></svg>
-                    <p class="mb-2 text-sm text-slate-500"><span class="font-semibold">Click to upload</span> atau drag and drop</p>
+
+        {{-- Section 1: Info chapter --}}
+        <div class="fm-card">
+            <div class="fm-sec">
+                <div class="fm-sec-title"><span class="n">1</span><i class="fa-solid fa-hashtag text-slate-500 text-sm"></i>Info Chapter</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label for="number" class="fm-label">Nomor Chapter <span class="req">*</span></label>
+                        <input type="number" step="0.1" name="number" id="number" value="{{ old('number') }}" placeholder="cth: 1 atau 12.5" class="fm-input" required>
+                        @error('number') <p class="fm-error"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="status" class="fm-label">Status <span class="req">*</span></label>
+                        <select name="status" id="status" class="fm-select">
+                            <option value="draft" @selected(old('status') == 'draft')>📝 Draft</option>
+                            <option value="published" @selected(old('status') == 'published')>✅ Published</option>
+                        </select>
+                        @error('status') <p class="fm-error"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</p> @enderror
+                    </div>
                 </div>
-                <input type="file" name="chapter_images[]" id="chapter_images" class="sr-only" multiple @change="files = Array.from($event.target.files).map(file => file.name)" required>
-            </label>
-            <div x-show="files.length > 0" class="text-sm text-gray-500 mt-2">
-                <p><span x-text="files.length" class="font-semibold"></span> file dipilih:</p>
-                <ul class="list-disc list-inside"><template x-for="file in files" :key="file"><li x-text="file"></li></template></ul>
             </div>
-            @error('chapter_images') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            @error('chapter_images.*') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
         </div>
 
-        <div class="pt-4 flex justify-end items-center gap-x-4 border-t border-slate-200 mt-8">
-            <a href="{{ route('admin.manga.chapters.index', $manga) }}" class="px-6 py-2 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">Batal</a>
-            <button type="submit" class="px-6 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Simpan Chapter</button>
+        {{-- Section 2: Gambar --}}
+        <div class="fm-card">
+            <div class="fm-sec">
+                <div class="fm-sec-title"><span class="n">2</span><i class="fa-solid fa-images text-slate-500 text-sm"></i>Gambar Chapter</div>
+                <div x-data="{ files: [] }">
+                    <label for="chapter_images" class="fm-upload">
+                        <template x-if="!files.length">
+                            <div class="flex flex-col items-center text-center px-4">
+                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-3" style="background:rgba(255,46,77,.12)">
+                                    <i class="fa-solid fa-cloud-arrow-up text-lg" style="color:#ff2e4d"></i>
+                                </div>
+                                <p class="text-sm text-slate-300"><span class="font-semibold text-white">Klik untuk pilih</span> atau seret ke sini</p>
+                                <p class="text-xs text-slate-500 mt-1">Bisa pilih banyak — PNG, JPG, WEBP</p>
+                            </div>
+                        </template>
+                        <template x-if="files.length">
+                            <div class="flex flex-col items-center px-4 py-3">
+                                <p class="text-sm font-semibold text-white" x-text="files.length + ' file dipilih ✓'"></p>
+                                <p class="text-xs text-emerald-400 mt-1">Siap diupload</p>
+                            </div>
+                        </template>
+                        <input type="file" name="chapter_images[]" id="chapter_images" class="sr-only" multiple required
+                               @change="files = Array.from($event.target.files).map(f => f.name)">
+                    </label>
+                    <div class="fm-files" x-show="files.length">
+                        <template x-for="f in files" :key="f">
+                            <span class="fm-file"><i class="fa-regular fa-image text-[10px]"></i><span x-text="f"></span></span>
+                        </template>
+                    </div>
+                    @error('chapter_images') <p class="fm-error"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</p> @enderror
+                    @error('chapter_images.*') <p class="fm-error"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</p> @enderror
+                </div>
+            </div>
+        </div>
+
+        {{-- Actions --}}
+        <div class="flex flex-col sm:flex-row justify-end items-stretch sm:items-center gap-3 pt-2">
+            <a href="{{ route('admin.manga.chapters.index', $manga) }}" class="fm-btn fm-btn-ghost">Batal</a>
+            <button type="submit" class="fm-btn fm-btn-primary">
+                <i class="fa-solid fa-floppy-disk text-xs"></i>Simpan Chapter
+            </button>
         </div>
     </form>
 </div>

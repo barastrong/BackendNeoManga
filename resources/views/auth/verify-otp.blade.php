@@ -5,25 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Verifikasi OTP - NeoManga</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    /* Particle background styles */
-    .particle-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
-    }
-    #particleCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-  </style>
+  <link rel="stylesheet" href="{{ asset('css/auth/verify-otp.css') }}">
 </head>
 <body class="bg-gray-100">
 <div class="particle-background">
@@ -156,73 +140,6 @@
 
     <!-- Particles Script -->
      <script src="/js/particles.js"></script>
-    <script>
-        // OTP specific functionality
-        let cooldown = 30;
-        let timer = null;
-        const resendButton = document.getElementById('resendButton');
-        const resendText = document.getElementById('resendText');
-
-        function startCooldown() {
-            cooldown = 30;
-            resendButton.disabled = true;
-            resendButton.classList.add('opacity-50', 'cursor-not-allowed');
-            resendButton.classList.remove('hover:bg-gray-50');
-
-            timer = setInterval(() => {
-                cooldown--;
-                resendText.innerHTML = `<i class="fas fa-clock mr-2"></i>Tunggu ${cooldown} detik`;
-
-                if (cooldown <= 0) {
-                    clearInterval(timer);
-                    resendButton.disabled = false;
-                    resendButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                    resendButton.classList.add('hover:bg-gray-50');
-                    resendText.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Kirim ulang kode OTP';
-                }
-            }, 1000);
-        }
-
-        // Start cooldown when page loads
-        startCooldown();
-
-        // Handle form submit for resend
-        resendButton.closest('form').addEventListener('submit', function(e) {
-            if (cooldown > 0) {
-                e.preventDefault();
-                return;
-            }
-            startCooldown();
-        });
-
-        // Only allow numeric input and auto-format
-        const otpInput = document.querySelector('input[name="otp"]');
-        otpInput.addEventListener('input', function(e) {
-            // Remove non-numeric characters
-            this.value = this.value.replace(/[^0-9]/g, '');
-            
-            // Auto-submit when 6 digits are entered
-            if (this.value.length === 6) {
-                // Add a small delay for better UX
-                setTimeout(() => {
-                    this.closest('form').submit();
-                }, 300);
-            }
-        });
-
-        // Add paste support for OTP
-        otpInput.addEventListener('paste', function(e) {
-            e.preventDefault();
-            const paste = (e.clipboardData || window.clipboardData).getData('text');
-            const cleanPaste = paste.replace(/[^0-9]/g, '').substring(0, 6);
-            this.value = cleanPaste;
-            
-            if (cleanPaste.length === 6) {
-                setTimeout(() => {
-                    this.closest('form').submit();
-                }, 300);
-            }
-        });
-    </script>
+    <script src="{{ asset('js/auth/verify-otp-2.js') }}"></script>
 </body>
 </html>

@@ -1,156 +1,206 @@
-@extends('layouts.adminSidebar')
+@extends('layouts.admin')
+
+@section('title', 'Koleksi Manga — Admin NeoManga')
+@section('page-title', 'Manga')
 
 @section('content')
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <div>
-            <h1 class="text-3xl font-bold text-slate-800">Koleksi Manga</h1>
-            <p class="mt-1 text-slate-500">Jelajahi, kelola, dan perbarui koleksi manga Anda.</p>
+<link rel="stylesheet" href="{{ asset('css/admin/manga/index.css') }}">
+
+{{-- HEADER --}}
+<div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+        <div class="flex items-center gap-2">
+            <span class="mg-eyebrow"><i class="fa-solid fa-book-open mr-1.5"></i>Katalog</span>
+            <span class="text-slate-600 text-xs">•</span>
+            <span class="text-[11px] font-semibold tracking-wide text-brand/90 uppercase">Manga &amp; Komik</span>
         </div>
-        <div class="flex gap-3">
-            <form action="{{ route('admin.manga.index') }}" method="GET" class="relative">
-                <input type="text" name="search" placeholder="Cari manga..." 
-                       class="w-64 pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                       value="{{ request('search') }}">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fa-solid fa-search text-slate-400"></i>
-                </div>
-            </form>
-            <a href="{{ route('admin.manga.create') }}" class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                <i class="fa-solid fa-plus mr-2"></i>
-                Tambah Manga
-            </a>
-        </div>
+        <h1 class="font-display text-[26px] lg:text-3xl font-bold text-white tracking-tight mt-1.5">Koleksi Manga</h1>
+        <p class="text-sm text-slate-400 mt-1">Jelajahi, kelola, dan perbarui seluruh koleksi manga.</p>
     </div>
+    <div class="flex flex-wrap items-center gap-3">
+        <form action="{{ route('admin.manga.index') }}" method="GET" class="mg-search">
+            <i class="fa-solid fa-magnifying-glass text-slate-500 text-xs"></i>
+            <input type="text" name="search" placeholder="Cari judul, author, artist..." value="{{ request('search') }}">
+            @if(request('search'))
+                <a href="{{ route('admin.manga.index') }}" class="text-slate-500 hover:text-white transition-colors" title="Reset"><i class="fa-solid fa-xmark text-xs"></i></a>
+            @endif
+        </form>
+        <a href="{{ route('admin.manga.create') }}" class="mg-btn mg-btn-primary">
+            <i class="fa-solid fa-plus text-xs"></i>Tambah Manga
+        </a>
+    </div>
+</div>
 
-    @if (session('success'))
-        <div class="flex items-start bg-green-50 border-l-4 border-green-400 text-green-800 p-4 rounded-lg mb-6 shadow-sm" role="alert">
-            <i class="fa-solid fa-check-circle mr-3 mt-1"></i>
-            <div>
-                <p class="font-bold">Sukses!</p>
-                <p>{{ session('success') }}</p>
-            </div>
-        </div>
-    @endif
+{{-- STATS --}}
+@php
+    $stManga = $stats['manga'] ?? $mangas->total();
+    $stChapter = $stats['chapters'] ?? 0;
+    $stOngoing = $stats['ongoing'] ?? 0;
+    $stDone = $stats['completed'] ?? 0;
+@endphp
+<div class="mt-6 grid grid-cols-2 xl:grid-cols-4 gap-3.5">
+    <div class="mg-stat">
+        <span class="ic" style="background:rgba(255,46,77,.13);color:#ff2e4d"><i class="fa-solid fa-book-open"></i></span>
+        <div><p class="lbl">Total Judul</p><p class="val">{{ number_format($stManga) }}</p></div>
+    </div>
+    <div class="mg-stat">
+        <span class="ic" style="background:rgba(56,189,248,.13);color:#38bdf8"><i class="fa-solid fa-layer-group"></i></span>
+        <div><p class="lbl">Total Chapter</p><p class="val">{{ number_format($stChapter) }}</p></div>
+    </div>
+    <div class="mg-stat">
+        <span class="ic" style="background:rgba(52,211,153,.13);color:#34d399"><i class="fa-solid fa-play"></i></span>
+        <div><p class="lbl">Ongoing</p><p class="val">{{ number_format($stOngoing) }}</p></div>
+    </div>
+    <div class="mg-stat">
+        <span class="ic" style="background:rgba(167,139,250,.13);color:#a78bfa"><i class="fa-solid fa-check-double"></i></span>
+        <div><p class="lbl">Completed</p><p class="val">{{ number_format($stDone) }}</p></div>
+    </div>
+</div>
 
-    <div class="grid grid-cols-1 gap-6">
-        @forelse ($mangas as $manga)
-            <div class="bg-white rounded-xl shadow-md border border-transparent hover:border-indigo-500 hover:shadow-xl transition-all duration-300 p-5">
-                <div class="flex flex-col sm:flex-row gap-5">
-                    <div class="w-full sm:w-24 flex-shrink-0">
-                        <img class="w-full h-36 sm:h-full object-cover rounded-lg shadow-lg" src="{{ $manga->cover_url }}" alt="{{ $manga->title }}">
-                    </div>
+{{-- ALERTS --}}
+@if (session('success'))
+    <div class="mg-alert mt-5" style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);color:#6ee7b7">
+        <i class="fa-solid fa-circle-check"></i><span>{{ session('success') }}</span>
+    </div>
+@endif
+@if (request('search'))
+    <div class="mg-alert mt-5" style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.2);color:#7dd3fc">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Menampilkan hasil untuk "<strong>{{ request('search') }}</strong>" — {{ $mangas->total() }} ditemukan.</span>
+        <a href="{{ route('admin.manga.index') }}" class="ml-auto text-xs font-semibold hover:underline" style="color:#7dd3fc">Reset filter</a>
+    </div>
+@endif
 
-                    <div class="flex-1 flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    @php
-                                        $typeClasses = [
-                                            'manga'   => 'text-[#2C2C2C]',   
-                                            'manhwa'  => 'text-[#4DB6AC]',   
-                                            'manhua'  => 'text-[#D32F2F]',   
-                                            'webtoon' => 'text-[#00D564]',   
-                                        ];
-                                    @endphp
-                                    <span class="text-xs font-bold uppercase tracking-wider {{ $typeClasses[$manga->type] ?? 'text-slate-500' }}">{{ $manga->type }}</span>
-                                    <h2 class="text-lg font-bold text-slate-800 hover:text-indigo-600 transition-colors">
-                                        <p>{{ $manga->title }}</p>
-                                    </h2>
-                                    <p class="text-sm text-slate-500">{{ $manga->alternative_title }}</p>
-                                </div>
-                                
-                                <div x-data="{ open: false }" class="relative">
-                                    <button @click="open = !open" class="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition">
-                                        <i class="fa-solid fa-ellipsis-vertical"></i>
-                                    </button>
-                                    <div x-show="open" @click.away="open = false" x-cloak class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-10 ring-1 ring-black ring-opacity-5" x-transition>
-                                        <a href="{{ route('admin.manga.chapters.index', $manga) }}" class="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">
-                                            <i class="fa-solid fa-layer-group w-5 mr-3"></i> Chapter
-                                        </a>
-                                        <a href="{{ route('admin.manga.edit', $manga) }}" class="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">
-                                            <i class="fa-solid fa-pen-to-square w-5 mr-3"></i> Edit
-                                        </a>
-                                        <div class="border-t border-slate-100"></div>
-                                        <form action="{{ route('admin.manga.destroy', $manga) }}" method="POST" onsubmit="return confirm('Yakin mau hapus manga \'{{ $manga->title }}\'?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                <i class="fa-solid fa-trash-can w-5 mr-3"></i> Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-3 flex flex-wrap gap-1.5">
-                                @foreach($manga->genres as $genre)
-                                    <span class="px-2 py-1 text-xs bg-slate-100 text-slate-700 rounded-full font-medium">{{ $genre->name }}</span>
-                                @endforeach
-                            </div>
-                        </div>
+{{-- GRID --}}
+<div class="mt-6 mg-grid">
+    @forelse ($mangas as $manga)
+        @php
+            $typeMeta = [
+                'manga'   => ['MANGA',   '#e2e8f0'],
+                'manhwa'  => ['MANHWA',  '#4DB6AC'],
+                'manhua'  => ['MANHUA',  '#D32F2F'],
+                'webtoon' => ['WEBTOON', '#00D564'],
+            ];
+            $tp = $typeMeta[$manga->type] ?? ['KOMIK', '#94a3b8'];
+            $stMeta = [
+                'ongoing'   => ['Ongoing',   '#34d399'],
+                'completed' => ['Completed', '#38bdf8'],
+                'hiatus'    => ['Hiatus',    '#fbbf24'],
+                'cancelled' => ['Cancelled', '#fb7185'],
+            ];
+            $stt = $stMeta[$manga->status] ?? ['—', '#94a3b8'];
+            $chCount = $manga->chapters_count ?? $manga->chapters()->count();
+        @endphp
 
-                        <div class="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between text-sm">
-                            <div class="text-slate-500">
-                                <span class="font-semibold text-slate-600">{{ $manga->author }}</span> / <span class="font-semibold text-slate-600">{{ $manga->artist }}</span>
-                            </div>
-                            @php
-                                $statusClasses = [ 'ongoing' => 'bg-green-100 text-green-800', 'completed' => 'bg-blue-100 text-blue-800', 'hiatus' => 'bg-yellow-100 text-yellow-800', 'cancelled' => 'bg-red-100 text-red-800' ];
-                            @endphp
-                            <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusClasses[$manga->status] ?? 'bg-slate-100 text-slate-800' }}">{{ ucfirst($manga->status) }}</span>
-                        </div>
-                    </div>
+        <div class="mg-item">
+            <div class="mg-coverwrap" x-data="{ open: false }">
+                {{-- Badge tipe --}}
+                <span class="mg-type" style="color:{{ $tp[1] }}">{{ $tp[0] }}</span>
+
+                {{-- Aksi ⋯ --}}
+                <div class="mg-cover-acts">
+                    <button class="mg-ico" @click="open = !open" title="Aksi lain" style="color:{{ $tp[1] }}">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                </div>
+
+                {{-- Cover --}}
+                @if($manga->cover_url)
+                    <a href="{{ route('admin.manga.edit', $manga) }}" title="{{ $manga->title }}">
+                        <img class="mg-cover" src="{{ $manga->cover_url }}" alt="{{ $manga->title }}" loading="lazy">
+                    </a>
+                @else
+                    <a href="{{ route('admin.manga.edit', $manga) }}" class="mg-coverph" title="{{ $manga->title }}">
+                        <i class="fa-solid fa-book-open" style="font-size:26px"></i>
+                        <span style="font-size:10px;max-width:90%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $manga->title }}</span>
+                    </a>
+                @endif
+
+                {{-- Overlay hover: edit + chapter --}}
+                <div class="mg-overlay">
+                    <a href="{{ route('admin.manga.edit', $manga) }}" class="mg-mini"><i class="fa-solid fa-pen text-[10px]"></i>Edit</a>
+                    <a href="{{ route('admin.manga.chapters.index', $manga) }}" class="mg-mini ghost"><i class="fa-solid fa-layer-group text-[10px]"></i>{{ $chCount }}</a>
+                </div>
+
+                {{-- Dropdown ⋯ --}}
+                <div x-show="open" @click.away="open = false" x-cloak class="mg-dropdown">
+                    <a href="{{ route('admin.manga.edit', $manga) }}"><i class="fa-solid fa-pen-to-square mg-dd-ic"></i>Edit Manga</a>
+                    <a href="{{ route('admin.manga.chapters.index', $manga) }}"><i class="fa-solid fa-layer-group mg-dd-ic"></i>Kelola Chapter</a>
+                    <div class="sep"></div>
+                    <form action="{{ route('admin.manga.destroy', $manga) }}" method="POST"
+                          onsubmit="return confirm('Yakin hapus manga &quot;{{ $manga->title }}&quot;? Semua chapter ikut terhapus.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="danger"><i class="fa-solid fa-trash-can mg-dd-ic"></i>Hapus Manga</button>
+                    </form>
                 </div>
             </div>
-        @empty
-            <div class="text-center py-24 px-6 bg-white rounded-xl shadow-md border">
-                <i class="fa-solid fa-book-bookmark fa-4x text-slate-300 mb-4"></i>
-                <h3 class="text-xl font-semibold text-slate-700">Koleksi Manga Anda Kosong</h3>
-                <p class="mt-2 text-slate-500">Mari mulai dengan menambahkan manga pertama Anda ke dalam sistem.</p>
-                <a href="{{ route('admin.manga.create') }}" class="mt-6 inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-500">
-                    <i class="fa-solid fa-plus mr-2"></i>
-                    Tambah Manga Sekarang
-                </a>
+
+            {{-- Info --}}
+            <div class="mg-info">
+                <a href="{{ route('admin.manga.edit', $manga) }}" class="mg-title">{{ $manga->title }}</a>
+                @if($manga->author)
+                    <p class="mg-author"><i class="fa-solid fa-user-pen mr-1 text-[9px]"></i>{{ $manga->author }}</p>
+                @else
+                    <p class="mg-author"><i class="fa-solid fa-user-pen mr-1 text-[9px]"></i>Tanpa Author</p>
+                @endif
+                <div class="mg-foot">
+                    <span class="mg-st" style="color:{{ $stt[1] }}"><i style="background:{{ $stt[1] }}"></i>{{ $stt[0] }}</span>
+                    <span class="mg-ch"><i class="fa-solid fa-list mr-1 text-[9px]"></i>{{ $chCount }} ch</span>
+                </div>
             </div>
-        @endforelse
-    </div>
-    
-@if ($mangas->hasPages())
-    <div class="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
-        <div>
-            <p class="text-sm text-slate-700">
-                Menampilkan
-                <span class="font-semibold text-slate-900">{{ $mangas->firstItem() }}</span>
-                sampai
-                <span class="font-semibold text-slate-900">{{ $mangas->lastItem() }}</span>
-                dari
-                <span class="font-semibold text-slate-900">{{ $mangas->total() }}</span>
-                hasil
+        </div>
+    @empty
+        <div class="mg-empty">
+            <i class="fa-solid fa-book-open ic"></i>
+            <h3 class="text-lg font-semibold text-white mt-3">
+                {{ request('search') ? 'Tidak ada hasil untuk "' . request('search') . '"' : 'Koleksi Manga Kosong' }}
+            </h3>
+            <p class="text-sm text-slate-500 mt-1">
+                {{ request('search') ? 'Coba kata kunci lain.' : 'Mulai dengan menambahkan manga pertama ke sistem.' }}
             </p>
-        </div>
-
-        <div class="inline-flex items-center space-x-2">
-            @if ($mangas->onFirstPage())
-                <span class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-400 cursor-not-allowed">
-                    <i class="fa-solid fa-arrow-left mr-2"></i>
-                    Previous
-                </span>
-            @else
-                <a href="{{ $mangas->appends(request()->query())->previousPageUrl() }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    <i class="fa-solid fa-arrow-left mr-2"></i>
-                    Previous
+            @unless(request('search'))
+                <a href="{{ route('admin.manga.create') }}" class="mg-btn mg-btn-primary mt-5">
+                    <i class="fa-solid fa-plus text-xs"></i>Tambah Manga Sekarang
                 </a>
+            @endunless
+        </div>
+    @endforelse
+</div>
+
+{{-- PAGINATION --}}
+@if ($mangas->hasPages())
+    <div class="mt-6 flex flex-col items-center justify-between gap-3 sm:flex-row" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+        <p class="text-xs" style="color:#64748b">
+            Menampilkan <span style="color:#cbd5e1;font-weight:600">{{ $mangas->firstItem() }}</span>–
+            <span style="color:#cbd5e1;font-weight:600">{{ $mangas->lastItem() }}</span> dari
+            <span style="color:#cbd5e1;font-weight:600">{{ $mangas->total() }}</span> manga
+        </p>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            @if ($mangas->onFirstPage())
+                <span class="mg-pg dis"><i class="fa-solid fa-chevron-left text-[10px]"></i></span>
+            @else
+                <a href="{{ $mangas->appends(request()->query())->previousPageUrl() }}" class="mg-pg"><i class="fa-solid fa-chevron-left text-[10px]"></i></a>
             @endif
 
+            @php
+                $cur = $mangas->currentPage();
+                $last = $mangas->lastPage();
+                $start = max(1, $cur - 2);
+                $end = min($last, $cur + 2);
+            @endphp
+            @for($i = $start; $i <= $end; $i++)
+                @if($i == $cur)
+                    <span class="mg-pg cur">{{ $i }}</span>
+                @else
+                    <a href="{{ $mangas->appends(request()->query())->url($i) }}" class="mg-pg">{{ $i }}</a>
+                @endif
+            @endfor
+
             @if ($mangas->hasMorePages())
-                <a href="{{ $mangas->appends(request()->query())->nextPageUrl() }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Next
-                    <i class="fa-solid fa-arrow-right ml-2"></i>
-                </a>
+                <a href="{{ $mangas->appends(request()->query())->nextPageUrl() }}" class="mg-pg"><i class="fa-solid fa-chevron-right text-[10px]"></i></a>
             @else
-                <span class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-400 cursor-not-allowed">
-                    Next
-                    <i class="fa-solid fa-arrow-right ml-2"></i>
-                </span>
+                <span class="mg-pg dis"><i class="fa-solid fa-chevron-right text-[10px]"></i></span>
             @endif
         </div>
     </div>

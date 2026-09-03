@@ -1,0 +1,14 @@
+.adm-surface { background-color: #0d1220; border-color: rgba(255,255,255,.06); }
+        .adm-card { background-color: #131a2c; border: 1px solid rgba(255,255,255,.06); }
+        .adm-card-hover:hover { border-color: rgba(255,46,77,.35); box-shadow: 0 10px 30px -12px rgba(255,46,77,.2); }
+        .adm-text-dim { color: #94a3b8; }
+        .adm-text-faint { color: #64748b; }
+        .adm-primary { color: #ff2e4d; }
+        .adm-primary-bg { background-color: #ff2e4d; }
+        .adm-chip { background-color: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+        .adm-input { background-color: #0d1220; border: 1px solid rgba(255,255,255,.08); }
+        .adm-input:focus { border-color: rgba(255,46,77,.5); outline: none; }
+        .adm-svg-line { stroke: url(#lineGrad); }
+        .adm-area-path { fill: url(#areaGrad); }
+        .adm-tr-hover:hover { background-color: rgba(255,255,255,.03); }
+        .adm-th { color: #64748b; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }

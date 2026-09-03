@@ -1,42 +1,17 @@
 @extends('layouts.app')
 
 @section('title', $manga->title)
+@section('meta_description', Str::limit(strip_tags($manga->description ?? ''), 155))
 
-@push('styles')
-<style>
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 8px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #c5c5c5;
-        border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8;
-    }
-    .dark .custom-scrollbar::-webkit-scrollbar-track {
-        background: #2d3748;
-    }
-    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #4a5568;
-    }
-    .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #718096;
-    }
-</style>
-@endpush
+<link rel="stylesheet" href="{{ asset('css/manga/show.css') }}">
 
 @section('content')
 <div class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
         {{-- Manga Info Section --}}
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-[#0d1220] rounded-xl p-6 mb-8 shadow-lg border border-slate-200 dark:border-white/5">
             <div class="text-center md:text-left mb-6">
-                <h1 class="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-white">{{ $manga->title }}</h1>
+                <h1 class="font-display text-3xl lg:text-4xl font-bold text-gray-800 dark:text-white">{{ $manga->title }}</h1>
                 @if($manga->alternative_title)
                     <h2 class="text-lg text-gray-600 dark:text-gray-400 mt-1 italic">{{ $manga->alternative_title }}</h2>
                 @endif
@@ -46,19 +21,19 @@
                 <div class="flex-shrink-0 w-full md:w-48">
                     <img src="{{ $manga->cover_url }}" alt="{{ $manga->title }}" class="w-48 h-64 object-cover rounded-lg shadow-lg mx-auto">
                     @auth
-                        <button id="bookmarkBtn" data-manga-id="{{ $manga->id }}" class="w-full max-w-sm mx-auto md:max-w-none mt-4 font-bold py-2 px-4 rounded-lg transition duration-200 text-white {{ $isBookmarked ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700' }}">
+                        <button id="bookmarkBtn" data-manga-id="{{ $manga->id }}" class="w-full max-w-sm mx-auto md:max-w-none mt-4 font-bold py-2 px-4 rounded-lg transition duration-200 text-white {{ $isBookmarked ? 'bg-green-600 hover:bg-green-700' : 'bg-[#ff2e4d] hover:bg-[#e62242]' }}">
                             <i class="fas fa-bookmark mr-2"></i>
                             <span id="bookmarkText">{{ $isBookmarked ? 'Remove Bookmark' : 'Add Bookmark' }}</span>
                         </button>
                     @else
-                        <button class="js-login-prompt w-full max-w-sm mx-auto md:max-w-none mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                        <button class="js-login-prompt w-full max-w-sm mx-auto md:max-w-none mt-4 bg-[#ff2e4d] hover:bg-[#e62242] text-white font-bold py-2 px-4 rounded-lg transition duration-200">
                             <i class="fas fa-bookmark mr-2"></i>
                             Add to Bookmark
                         </button>
                     @endauth
                     <div class="mt-4 text-center">
                         <div class="text-sm mb-2 text-gray-700 dark:text-gray-300">
-                            Followed by <span id="followersCount" class="font-semibold text-blue-600">{{ $manga->followers_count }}</span> people
+                            Followed by <span id="followersCount" class="font-semibold text-[#ff2e4d]">{{ $manga->followers_count }}</span> people
                         </div>
                         <div class="flex items-center justify-center space-x-1.5">
                             @php $rounded_rating = round(($manga->ratings_avg_rating ?? 0) * 2) / 2; @endphp
@@ -113,7 +88,7 @@
                             <div class="sm:col-span-2 lg:col-span-3">
                                 <dd class="mt-2 flex flex-wrap gap-2">
                                     @foreach($manga->genres as $genre)
-                                        <a href="#" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-full text-xs text-white transition-colors duration-200">{{ $genre->name }}</a>
+                                        <a href="#" class="bg-[#ff2e4d] hover:bg-[#e62242] px-3 py-1 rounded-full text-xs text-white transition-colors duration-200">{{ $genre->name }}</a>
                                     @endforeach
                                 </dd>
                             </div>
@@ -125,12 +100,12 @@
 
         @auth
             @if($userHistories->isNotEmpty())
-            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 shadow-lg border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-[#0d1220] rounded-xl p-6 mb-8 shadow-lg border border-slate-200 dark:border-white/5">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold text-gray-800 dark:text-white">Latest reading</h2>
                     <form action="{{ route('history.resetForManga', $manga->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to reset the reading history for this manga?');">
                         @csrf
-                        <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold py-1 px-3 rounded-md transition-colors duration-200">
+                        <button type="submit" class="bg-[#e62242] hover:bg-[#c81e3a] text-white text-xs font-semibold py-1 px-3 rounded-md transition-colors duration-200">
                             Reset history
                         </button>
                     </form>
@@ -138,8 +113,8 @@
                 <div class="max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                     <div class="space-y-3">
                         @foreach($userHistories as $history)
-                        <div class="flex justify-between items-center border border-gray-300 dark:border-gray-600 p-3 rounded-lg">
-                            <a href="{{ route('chapter.show', $history->chapter->slug) }}" class="font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-500 transition-colors">
+                        <div class="flex justify-between items-center border border-slate-200 dark:border-white/10 p-3 rounded-lg">
+                            <a href="{{ route('chapter.show', $history->chapter->slug) }}" class="font-medium text-gray-700 dark:text-gray-300 hover:text-[#ff2e4d] dark:hover:text-[#ff4d66] transition-colors">
                                 Chapter {{ $history->chapter->number }}
                             </a>
                             <span class="text-sm text-gray-500 dark:text-gray-400">{{ $history->updated_at->format('d M Y, H:i') }}</span>
@@ -151,20 +126,20 @@
             @endif
         @endauth
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-[#0d1220] rounded-xl p-6 mb-8 shadow-lg border border-slate-200 dark:border-white/5">
             <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700 mb-4">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Chapter List</h2>
+                <h2 class="font-display text-2xl font-bold text-gray-800 dark:text-white">Chapter List</h2>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <div class="relative flex-grow" id="chapterSearchWrapper">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" id="chapterSearchInput" placeholder="Search Chapter" class="w-full pl-10 pr-10 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition">
+                        <input type="text" id="chapterSearchInput" placeholder="Search Chapter" class="w-full pl-10 pr-10 py-2 bg-gray-100 dark:bg-gray-700 border border-slate-200 dark:border-white/10 rounded-lg focus:ring-[#ff2e4d]/60 focus:border-[#ff2e4d] transition">
                         <button id="clearSearchBtn" class="absolute inset-y-0 right-0 flex items-center pr-3 hidden" aria-label="Clear search">
                             <i class="fas fa-times text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"></i>
                         </button>
                     </div>
-                    <button id="sortChaptersBtn" data-sort-order="desc" class="flex-shrink-0 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2" aria-label="Sort chapters">
+                    <button id="sortChaptersBtn" data-sort-order="desc" class="flex-shrink-0 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10 font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2" aria-label="Sort chapters">
                         <i id="sortIcon" class="fas fa-sort-down"></i>
                         <span id="sortText" class="hidden sm:inline">Newest</span>
                     </button>
@@ -181,10 +156,10 @@
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
                         @foreach($chapters->sortByDesc('number') as $chapter)
                             @if($chapter->status == 'published' || $chapter->status == 'fixed')
-                                <div class="chapter-item bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg p-2.5 transition duration-200 border border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500" data-chapter-number="{{ $chapter->number }}">
-                                    <a href="{{ route('chapter.show', $chapter->slug) }}" class="block hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                <div class="chapter-item bg-slate-50 hover:bg-slate-100 dark:bg-white/5 dark:hover:bg-white/10 rounded-xl p-2.5 transition duration-200 border border-slate-200 dark:border-white/10 hover:border-[#ff2e4d]/60 dark:hover:border-[#ff2e4d]/70" data-chapter-number="{{ $chapter->number }}">
+                                    <a href="{{ route('chapter.show', $chapter->slug) }}" class="block hover:text-[#ff2e4d] dark:hover:text-[#ff4d66] transition-colors">
                                         <div class="flex items-center justify-between mb-1">
-                                            <div class="chapter-number text-sm font-medium {{ in_array($chapter->id, $readChapters) ? 'text-blue-600 dark:text-blue-600' : 'text-gray-800 dark:text-gray-200' }}">
+                                            <div class="chapter-number text-sm font-medium {{ in_array($chapter->id, $readChapters) ? 'text-[#ff2e4d] dark:text-[#ff2e4d]' : 'text-gray-800 dark:text-gray-200' }}">
                                                 Ch. {{ $chapter->number }}
                                                 @if($chapter->created_at->gt(now()->subDay()))
                                                     <span class="text-red-500 font-bold ml-1.5">New</span>
@@ -210,8 +185,8 @@
             @endif
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Comments ({{ $manga->comments->count() }})</h2>
+        <div class="bg-white dark:bg-[#0d1220] rounded-xl p-6 shadow-lg border border-slate-200 dark:border-white/5">
+            <h2 class="font-display text-2xl font-bold mb-6 text-gray-800 dark:text-white">Comments ({{ $manga->comments->count() }})</h2>
             @auth
                 <form action="{{ route('comments.store') }}" method="POST" class="mb-8">
                     @csrf
@@ -219,7 +194,7 @@
                     <div class="flex items-start space-x-4">
                         <img class="w-10 h-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random&color=fff" alt="Avatar">
                         <div class="flex-1">
-                            <textarea name="content" rows="3" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-red-500 focus:border-red-500 transition" placeholder="Add a public comment..." required></textarea>
+                            <textarea name="content" rows="3" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-slate-200 dark:border-white/10 rounded-lg focus:ring-red-500 focus:border-red-500 transition" placeholder="Add a public comment..." required></textarea>
                             <div class="text-right mt-2">
                                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
                                     Post Comment
@@ -230,7 +205,7 @@
                 </form>
             @else
                 <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Join the Discussion!</h3>
+                    <h3 class="font-display text-lg font-semibold text-gray-800 dark:text-white">Join the Discussion!</h3>
                     <p class="mt-2 text-gray-600 dark:text-gray-400">You must be logged in to post a comment.</p>
                     <a href="{{ route('login') }}">
                         <button class=" mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
@@ -288,13 +263,13 @@
                             <div id="reply-form-{{ $comment->id }}" class="mt-4 ml-4" style="display: none;">
                                 <form action="{{ route('comments.reply', $comment->id) }}" method="POST">
                                     @csrf
-                                    <textarea name="content" rows="2" class="w-full p-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-red-500 focus:border-red-500 transition" placeholder="Write a reply..." required></textarea>
+                                    <textarea name="content" rows="2" class="w-full p-2 bg-gray-100 dark:bg-gray-900 border border-slate-200 dark:border-white/10 rounded-lg focus:ring-red-500 focus:border-red-500 transition" placeholder="Write a reply..." required></textarea>
                                     
                                     <div class="flex justify-end items-center gap-3 mt-2">
                                         <button type="button" data-comment-id="{{ $comment->id }}" class="close-reply-btn text-sm font-medium text-gray-600 dark:text-gray-400 hover:underline">
                                             Batal
                                         </button>
-                                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-lg">Post Reply</button>
+                                        <button type="submit" class="bg-[#ff2e4d] hover:bg-[#e62242] text-white text-xs font-bold py-1 px-3 rounded-lg">Post Reply</button>
                                     </div>
                                 </form>
                             </div>
@@ -349,12 +324,12 @@
 </div>
 
 <div id="deleteConfirmModal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-sm w-full mx-4 transform transition-all scale-95 opacity-0" id="deleteModalContent">
+    <div class="bg-white dark:bg-[#0d1220] rounded-xl shadow-xl max-w-sm w-full mx-4 transform transition-all scale-95 opacity-0" id="deleteModalContent">
         <div class="p-6 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 mb-4">
                 <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Comment?</h3>
+            <h3 class="font-display text-lg font-semibold text-gray-900 dark:text-white">Delete Comment?</h3>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Are you sure you want to delete this comment? This action cannot be undone.</p>
         </div>
         <div class="flex items-center justify-center gap-4 p-4 border-t border-gray-200 dark:border-gray-700">
@@ -370,7 +345,7 @@
 
 @guest
 <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all">
+    <div class="bg-white dark:bg-[#0d1220] rounded-xl shadow-xl max-w-md w-full mx-4 transform transition-all">
         <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                 <i class="fas fa-bookmark text-red-600 mr-2"></i> Login Required
@@ -406,234 +381,4 @@
 @endguest
 @endsection
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.reply-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const commentId = this.dataset.commentId;
-            const username = this.dataset.username;
-            const replyForm = document.getElementById(`reply-form-${commentId}`);
-            const textarea = replyForm.querySelector('textarea');
-            const isHidden = replyForm.style.display === 'none';
-            
-            document.querySelectorAll('[id^="reply-form-"]').forEach(form => form.style.display = 'none');
-            
-            replyForm.style.display = isHidden ? 'block' : 'none';
-
-            if (isHidden) {
-                const mentionPrefix = `@${username} `;
-                textarea.value = mentionPrefix;
-                
-                textarea.focus();
-                const end = textarea.value.length;
-                textarea.setSelectionRange(end, end);
-
-                textarea.addEventListener('input', function() {
-                    if (!this.value.startsWith(mentionPrefix)) {
-                        this.value = mentionPrefix;
-                    }
-                });
-
-                textarea.addEventListener('keydown', function(e) {
-                    const isProtected = this.selectionStart <= mentionPrefix.length;
-                    if (isProtected && (e.key === 'Backspace' || e.key === 'Delete')) {
-                        if (this.selectionStart < mentionPrefix.length || (this.selectionStart === mentionPrefix.length && e.key === 'Backspace')) {
-                            e.preventDefault();
-                        }
-                    }
-                });
-            }
-        });
-    });
-    
-    document.querySelectorAll('.close-reply-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const commentId = this.dataset.commentId;
-            const replyForm = document.getElementById(`reply-form-${commentId}`);
-            replyForm.style.display = 'none';
-        });
-    });
-
-    const chapterSearchInput = document.getElementById('chapterSearchInput');
-    const chapterListContainer = document.getElementById('chapterListContainer');
-    const chapterGrid = chapterListContainer ? chapterListContainer.querySelector('.grid') : null;
-    const noChaptersFoundMessage = document.getElementById('noChaptersFound');
-    const clearSearchBtn = document.getElementById('clearSearchBtn');
-    const sortChaptersBtn = document.getElementById('sortChaptersBtn');
-    const sortIcon = document.getElementById('sortIcon');
-    const sortText = document.getElementById('sortText');
-    
-    const chapterElements = chapterGrid ? Array.from(chapterGrid.querySelectorAll('.chapter-item')).map(el => ({
-        element: el,
-        number: parseFloat(el.dataset.chapterNumber)
-    })) : [];
-
-    const updateChapterList = () => {
-        if (!chapterGrid) return;
-        
-        const searchTerm = chapterSearchInput.value.toLowerCase().trim();
-        const sortOrder = sortChaptersBtn.dataset.sortOrder;
-
-        const filteredChapters = chapterElements.filter(chapter => {
-            const chapterNumText = chapter.element.querySelector('.chapter-number').textContent.toLowerCase();
-            return chapterNumText.includes(searchTerm);
-        });
-
-        filteredChapters.sort((a, b) => {
-            if (sortOrder === 'desc') {
-                return b.number - a.number; 
-            } else {
-                return a.number - b.number; 
-            }
-        });
-
-        chapterGrid.innerHTML = ''; 
-        filteredChapters.forEach(chapter => {
-            chapterGrid.appendChild(chapter.element);
-        });
-        
-        const hasResults = filteredChapters.length > 0;
-        if(chapterListContainer) chapterListContainer.classList.toggle('hidden', !hasResults);
-        if(noChaptersFoundMessage) noChaptersFoundMessage.classList.toggle('hidden', hasResults);
-        if(clearSearchBtn) clearSearchBtn.classList.toggle('hidden', searchTerm.length === 0);
-    };
-    
-    if (chapterSearchInput) {
-        chapterSearchInput.addEventListener('input', updateChapterList);
-    }
-    
-    if (clearSearchBtn) {
-        clearSearchBtn.addEventListener('click', () => {
-            chapterSearchInput.value = '';
-            updateChapterList();
-            chapterSearchInput.focus();
-        });
-    }
-
-    if (sortChaptersBtn) {
-        sortChaptersBtn.addEventListener('click', () => {
-            const newOrder = sortChaptersBtn.dataset.sortOrder === 'desc' ? 'asc' : 'desc';
-            sortChaptersBtn.dataset.sortOrder = newOrder;
-
-            sortIcon.className = newOrder === 'desc' ? 'fas fa-sort-down' : 'fas fa-sort-up';
-            sortText.textContent = newOrder === 'desc' ? 'Newest' : 'Oldest';
-
-            updateChapterList();
-        });
-    }
-
-    @auth
-    const bookmarkBtn = document.getElementById('bookmarkBtn');
-    if (bookmarkBtn) {
-        bookmarkBtn.addEventListener('click', function() {
-            const mangaId = this.dataset.mangaId;
-            this.disabled = true;
-            fetch(`/bookmark/toggle/${mangaId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const bookmarkText = document.getElementById('bookmarkText');
-                    const followersCount = document.getElementById('followersCount');
-                    if (data.is_bookmarked) {
-                        this.className = 'w-full max-w-sm mx-auto md:max-w-none mt-4 font-bold py-2 px-4 rounded-lg transition duration-200 text-white bg-green-600 hover:bg-green-700';
-                        bookmarkText.textContent = 'Remove Bookmark';
-                    } else {
-                        this.className = 'w-full max-w-sm mx-auto md:max-w-none mt-4 font-bold py-2 px-4 rounded-lg transition duration-200 text-white bg-blue-600 hover:bg-blue-700';
-                        bookmarkText.textContent = 'Add Bookmark';
-                    }
-                    followersCount.textContent = data.followers_count;
-                }
-            }).catch(error => console.error('Error:', error)).finally(() => { this.disabled = false; });
-        });
-    }
-
-    document.body.addEventListener('click', function(e) {
-        if (e.target.closest('.like-btn')) {
-            e.preventDefault();
-            const button = e.target.closest('.like-btn');
-            const commentId = button.dataset.commentId;
-            fetch(`/comments/${commentId}/like`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const likeCountSpan = document.getElementById(`like-count-${commentId}`);
-                    const likeIcon = button.querySelector('i');
-                    likeCountSpan.textContent = data.likes_count;
-                    likeIcon.classList.toggle('far', !data.liked);
-                    likeIcon.classList.toggle('fas', data.liked);
-                    likeIcon.classList.toggle('text-red-500', data.liked);
-                }
-            })
-            .catch(error => console.error('Error liking comment:', error));
-        }
-    });
-    @endauth
-
-    const deleteModal = document.getElementById('deleteConfirmModal');
-    const deleteModalContent = document.getElementById('deleteModalContent');
-    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-    let formToSubmit = null;
-
-    const showModal = () => {
-        deleteModal.classList.remove('hidden');
-        setTimeout(() => {
-            deleteModalContent.classList.remove('scale-95', 'opacity-0');
-            deleteModalContent.classList.add('scale-100', 'opacity-100');
-        }, 10);
-    };
-
-    const hideModal = () => {
-        deleteModalContent.classList.add('scale-95', 'opacity-0');
-        deleteModalContent.classList.remove('scale-100', 'opacity-100');
-        setTimeout(() => {
-            deleteModal.classList.add('hidden');
-        }, 200);
-    };
-
-    document.querySelectorAll('.delete-comment-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            formToSubmit = document.getElementById(this.dataset.formId);
-            if (formToSubmit) showModal();
-        });
-    });
-
-    confirmDeleteBtn.addEventListener('click', () => {
-        if (formToSubmit) formToSubmit.submit();
-        hideModal();
-    });
-
-    cancelDeleteBtn.addEventListener('click', hideModal);
-    deleteModal.addEventListener('click', (e) => { if (e.target === deleteModal) hideModal(); });
-
-    @guest
-    const loginModal = document.getElementById('loginModal');
-    const closeModal = document.getElementById('closeModal');
-    const loginPromptTriggers = document.querySelectorAll('.js-login-prompt');
-
-    const showLoginModal = () => {
-        loginModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    };
-
-    const hideLoginModal = () => {
-        loginModal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    };
-
-    loginPromptTriggers.forEach(trigger => trigger.addEventListener('click', showLoginModal));
-    if (closeModal) closeModal.addEventListener('click', hideLoginModal);
-    loginModal.addEventListener('click', (e) => { if (e.target === loginModal) hideLoginModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !loginModal.classList.contains('hidden')) hideLoginModal(); });
-    @endguest
-});
-</script>
-@endpush
+<script src="{{ asset('js/manga/show.js') }}"></script>

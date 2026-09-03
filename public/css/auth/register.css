@@ -1,0 +1,9 @@
+body { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Lexend', sans-serif; }
+        .bg-grid {
+            background-image:
+                linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+            background-size: 44px 44px;
+        }
+        .glow-brand { box-shadow: 0 0 0 1px rgba(255,46,77,.3), 0 8px 40px -8px rgba(255,46,77,.35); }

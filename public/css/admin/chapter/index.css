@@ -1,0 +1,24 @@
+.ch-eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #ff2e4d; font-weight: 600; }
+    .ch-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 8px 15px; border-radius: 11px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all .16s ease; text-decoration: none; }
+    .ch-btn:active { transform: scale(.96); }
+    .ch-btn-primary { background: #ff2e4d; color: #fff; box-shadow: 0 4px 14px -6px rgba(255,46,77,.5); }
+    .ch-btn-primary:hover { background: #ff4d66; color: #fff; }
+    .ch-btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,.12); color: #cbd5e1; }
+    .ch-btn-ghost:hover { background: rgba(255,255,255,.05); color: #fff; }
+    .ch-card { background: #131a2c; border: 1px solid rgba(255,255,255,.06); border-radius: 16px; overflow: hidden; }
+    .ch-th { text-align: left; padding: 11px 16px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #64748b; border-bottom: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02); white-space: nowrap; }
+    .ch-td { padding: 11px 16px; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .ch-tr { transition: background .14s; }
+    .ch-tr:hover { background: rgba(255,255,255,.03); }
+    .ch-tr:last-child .ch-td { border-bottom: none; }
+    .ch-ico-btn { width: 30px; height: 30px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; color: #64748b; cursor: pointer; transition: all .14s; text-decoration: none; }
+    .ch-ico-btn:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .ch-ico-btn.edit:hover { color: #ff2e4d; }
+    .ch-ico-btn.danger:hover { background: rgba(244,63,94,.14); color: #fb7185; }
+    .ch-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 99px; font-size: 10.5px; font-weight: 700; }
+    .ch-empty { text-align: center; padding: 56px 20px; color: #64748b; }
+    .ch-empty .ic { font-size: 36px; opacity: .4; }
+    .ch-pag { display: inline-flex; align-items: center; justify-content: center; min-width: 33px; height: 33px; padding: 0 10px; border-radius: 9px; font-size: 12.5px; font-weight: 600; text-decoration: none; background: #131a2c; border: 1px solid rgba(255,255,255,.08); color: #94a3b8; transition: all .14s; }
+    .ch-pag:hover { color: #fff; border-color: rgba(255,46,77,.4); }
+    .ch-pag.cur { background: #ff2e4d; color: #fff; border-color: #ff2e4d; cursor: default; }
+    .ch-pag.dis { opacity: .35; pointer-events: none; }
