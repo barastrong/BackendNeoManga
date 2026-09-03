@@ -1,403 +1,256 @@
 @extends('layouts.app')
 
 @section('title', $chapter->manga->title . ' - Chapter ' . $chapter->number)
+@section('meta_description', 'Baca ' . $chapter->manga->title . ' Chapter ' . $chapter->number . ' bahasa Indonesia di NeoManga — gratis & update terbaru.')
+
+<link rel="stylesheet" href="{{ asset('css/chapter/show.css') }}">
 
 @section('content')
 <div class="min-h-screen">
-    <div class="container mx-auto px-2 sm:px-4 py-8">
-        <div class="max-w-4xl mx-auto">
-            
-            <div class="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-lg">
-                <nav class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    <a href="{{ route('dashboard') }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Home</a>
-                    <span>/</span>
-                    <a href="{{ route('manga.show', $chapter->manga->slug) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">{{ $chapter->manga->title }}</a>
-                    <span>/</span>
-                    <span class="font-semibold text-gray-800 dark:text-gray-200">Chapter {{ $chapter->number }}</span>
-                </nav>
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 text-center">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $chapter->manga->title }} - Chapter {{ $chapter->number }}</h1>
-                    @if($chapter->manga->alternative_title)
-                        <h2 class="text-lg text-gray-600 dark:text-gray-400 mt-1">{{ $chapter->manga->alternative_title }}</h2>
-                    @endif
-                </div>
-            </div>
+    {{-- Progress bar baca --}}
+    <div id="readingProgress" class="reading-progress"></div>
 
-            <div class="bg-gray-50 dark:bg-gray-800 border-y border-gray-200 dark:border-gray-700 p-2 rounded-lg mb-4">
-                <div class="flex items-center justify-between gap-4">
-                    
-                    <div id="chapter-dropdown-container-top" class="relative w-full md:w-64">
-                        <button class="w-full flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                            <span class="font-semibold truncate">{{ $chapter->number }}</span>
-                            <i class="fas fa-chevron-down text-xs transition-transform transform ml-2"></i>
-                        </button>
-                        <div class="absolute top-full mt-2 left-0 w-full bg-white dark:bg-gray-800 rounded-md shadow-lg max-h-80 overflow-y-auto z-50
-                            hidden opacity-0 scale-95 transition-all duration-200 ease-out origin-top border border-gray-200 dark:border-gray-700">
-                            <ul class="text-sm p-1">
-                                @foreach($allChapters as $ch)
-                                    <li>
-                                        <a href="{{ route('chapter.show', $ch->slug) }}" 
-                                           class="block w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 @if($ch->id === $chapter->id) bg-indigo-500 text-white font-bold @endif">
-                                            Chapter {{ $ch->number }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
+    <div class="max-w-5xl mx-auto px-2 sm:px-4 py-6">
+
+        {{-- Header chapter --}}
+        <div class="mb-5 bg-white dark:bg-[#0d1220] border border-slate-200 dark:border-white/5 rounded-2xl p-4 sm:p-5 shadow-sm">
+            <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-3 flex-wrap">
+                <a href="{{ route('dashboard') }}" class="hover:text-[#ff2e4d] transition-colors"><i class="fa-solid fa-house mr-1"></i>Beranda</a>
+                <i class="fa-solid fa-angle-right text-[10px]"></i>
+                <a href="{{ route('manga.show', $chapter->manga->slug) }}" class="hover:text-[#ff2e4d] transition-colors truncate max-w-[45vw]">{{ $chapter->manga->title }}</a>
+                <i class="fa-solid fa-angle-right text-[10px]"></i>
+                <span class="font-semibold text-slate-800 dark:text-slate-200">Chapter {{ $chapter->number }}</span>
+            </nav>
+            <div class="border-t border-slate-200 dark:border-white/5 pt-3 text-center">
+                <h1 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">{{ $chapter->manga->title }}</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Chapter {{ $chapter->number }} — {{ $chapter->title ?? '' }}</p>
+            </div>
+        </div>
+
+        {{-- Tombol nav atas --}}
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <div id="chapter-dropdown-container-top" class="relative">
+                <button id="chapterListBtnTop" class="reader-btn" type="button">
+                    <i class="fa-solid fa-list-ul"></i><span>Daftar Chapter</span>
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+                <div id="chapterListTop" class="absolute top-full mt-2 left-0 w-64 bg-white dark:bg-[#131a2c] rounded-xl shadow-2xl max-h-80 overflow-y-auto z-50 hidden border border-slate-200 dark:border-white/10">
+                    <div class="p-2">
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 px-3 py-1.5 uppercase tracking-wide">Pilih Chapter</div>
+                        <div class="grid grid-cols-4 gap-1 max-h-64 overflow-y-auto">
+                            @foreach($allChapters as $ch)
+                                <a href="{{ route('chapter.show', $ch->slug) }}"
+                                   class="block text-center px-1.5 py-1.5 rounded-lg text-xs font-medium transition-colors
+                                          @if($ch->id === $chapter->id) bg-[#ff2e4d] text-white @else text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 @endif">
+                                    {{ $ch->number }}
+                                </a>
+                            @endforeach
                         </div>
                     </div>
-
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                        <a href="{{ $prevChapter ? route('chapter.show', $prevChapter->slug) : route('manga.show', $chapter->manga->slug) }}" 
-                           class="flex items-center gap-2 px-3 py-2 rounded-md transition-colors {{ !$prevChapter ? 'opacity-50 cursor-not-allowed bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600' }}"
-                           title="{{ $prevChapter ? 'Previous Chapter' : 'Back to Manga Info' }}">
-                            <i class="fas fa-chevron-left"></i>
-                            <span class="hidden md:inline font-semibold">Prev</span>
-                        </a>
-                        <a href="{{ $nextChapter ? route('chapter.show', $nextChapter->slug) : route('manga.show', $chapter->manga->slug) }}" 
-                           class="flex items-center gap-2 px-3 py-2 rounded-md transition-colors {{ !$nextChapter ? 'opacity-50 cursor-not-allowed bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600' }}"
-                           title="{{ $nextChapter ? 'Next Chapter' : 'Back to Manga Info' }}">
-                            <span class="hidden md:inline font-semibold">Next</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </div>
                 </div>
             </div>
 
-            <div class="space-y-1 mb-8 bg-black">
-                @foreach($chapter->image_urls as $index => $imageUrl)
-                    <div class="flex justify-center">
-                        <img src="{{ $imageUrl }}" alt="Chapter {{ $chapter->number }} - Halaman {{ $index + 1 }}" class="max-w-full h-auto" loading="lazy">
-                    </div>
-                @endforeach
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="{{ $prevChapter ? route('chapter.show', $prevChapter->slug) : route('manga.show', $chapter->manga->slug) }}"
+                   data-prev-chapter
+                   class="reader-btn {{ !$prevChapter ? 'opacity-40 pointer-events-none' : '' }}"
+                   title="{{ $prevChapter ? 'Chapter Sebelumnya' : 'Kembali ke Info Manga' }}">
+                    <i class="fa-solid fa-chevron-left"></i><span>Prev</span>
+                </a>
+                <a href="{{ $nextChapter ? route('chapter.show', $nextChapter->slug) : route('manga.show', $chapter->manga->slug) }}"
+                   data-next-chapter
+                   class="reader-btn {{ !$nextChapter ? 'opacity-40 pointer-events-none' : '' }}"
+                   title="{{ $nextChapter ? 'Chapter Berikutnya' : 'Kembali ke Info Manga' }}">
+                    <span>Next</span><i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+
+        {{-- Gambar chapter --}}
+        <div class="space-y-1.5">
+            @foreach($chapter->image_urls as $index => $imageUrl)
+                <div class="flex justify-center">
+                    <img src="{{ $imageUrl }}"
+                         alt="{{ $chapter->manga->title }} Chapter {{ $chapter->number }} - Halaman {{ $index + 1 }}"
+                         class="reader-img"
+                         loading="lazy"
+                         decoding="async"
+                         width="800"
+                         height="1200">
+                </div>
+            @endforeach
+        </div>
+
+        {{-- Navigasi bawah sticky --}}
+        <div class="reader-nav-bar -mx-2 sm:-mx-4 mt-6 px-4 py-3 flex items-center justify-between gap-3 rounded-t-2xl">
+            <div class="flex items-center gap-2 min-w-0">
+                <a href="{{ route('manga.show', $chapter->manga->slug) }}"
+                   class="reader-btn flex-shrink-0" title="Kembali ke info manga">
+                    <i class="fa-solid fa-circle-chevron-left"></i><span>Info</span>
+                </a>
+                <a href="{{ $prevChapter ? route('chapter.show', $prevChapter->slug) : '#' }}"
+                   class="reader-btn flex-shrink-0 {{ !$prevChapter ? 'opacity-40 pointer-events-none' : '' }}"
+                   title="Chapter Sebelumnya">
+                    <i class="fa-solid fa-chevron-left"></i><span>Prev</span>
+                </a>
             </div>
 
-            <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mb-12">
-                <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2 rounded-lg">
-                    <div class="flex items-center justify-between gap-4">
-                        
-                        <div id="chapter-dropdown-container-bottom" class="relative w-full md:w-64">
-                            <button class="w-full flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                                <span class="font-semibold truncate">{{ $chapter->number }}</span>
-                                <i class="fas fa-chevron-down text-xs transition-transform transform ml-2"></i>
-                            </button>
-                            <div class="absolute bottom-full mb-2 left-0 w-full bg-white dark:bg-gray-800 rounded-md shadow-lg max-h-80 overflow-y-auto z-50
-                                hidden opacity-0 scale-95 transition-all duration-200 ease-out origin-bottom border border-gray-200 dark:border-gray-700">
-                                <ul class="text-sm p-1">
-                                    @foreach($allChapters as $ch)
-                                        <li>
-                                            <a href="{{ route('chapter.show', $ch->slug) }}" 
-                                               class="block w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 @if($ch->id === $chapter->id) bg-indigo-500 text-white font-bold @endif">
-                                                Chapter {{ $ch->number }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="#top" class="reader-btn" title="Ke atas"><i class="fa-solid fa-arrow-up"></i><span>Atas</span></a>
+                <a href="{{ $nextChapter ? route('chapter.show', $nextChapter->slug) : '#' }}"
+                   class="reader-btn-primary flex-shrink-0 {{ !$nextChapter ? 'opacity-40 pointer-events-none' : '' }}"
+                   title="Chapter Berikutnya">
+                    <span>Chapter {{ $nextChapter ? 'Berikutnya' : 'Terakhir' }}</span><i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+
+        {{-- Komentar --}}
+        <div id="comments-section" class="mt-8 bg-white dark:bg-[#0d1220] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-white/5">
+            <h2 class="font-display text-xl font-bold mb-6 text-slate-900 dark:text-white">
+                <i class="fa-regular fa-comments text-[#ff2e4d] mr-2"></i>Komentar ({{ $totalCommentsCount }})
+            </h2>
+            @auth
+                <form action="{{ route('comments.store') }}" method="POST" class="mb-8">
+                    @csrf
+                    <input type="hidden" name="manga_id" value="{{ $chapter->manga->id }}">
+                    <input type="hidden" name="chapter_id" value="{{ $chapter->id }}">
+                    <div class="flex items-start gap-3">
+                        <img class="w-10 h-10 rounded-full object-cover flex-shrink-0" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff" alt="{{ auth()->user()->name }}">
+                        <div class="flex-1">
+                            <textarea name="content" rows="3" class="w-full p-3 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-200 focus:ring-[#ff2e4d]/60 focus:border-[#ff2e4d] transition" placeholder="Tulis komentar..." required></textarea>
+                            <div class="text-right mt-2">
+                                <button type="submit" class="btn-primary !py-2"><i class="fa-solid fa-paper-plane mr-1.5 text-xs"></i>Kirim</button>
                             </div>
                         </div>
-
-                        <div class="flex items-center gap-2 flex-shrink-0">
-                            <a href="{{ $prevChapter ? route('chapter.show', $prevChapter->slug) : route('manga.show', $chapter->manga->slug) }}" 
-                               class="flex items-center gap-2 px-3 py-2 rounded-md transition-colors {{ !$prevChapter ? 'opacity-50 cursor-not-allowed bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600' }}"
-                               title="{{ $prevChapter ? 'Previous Chapter' : 'Back to Manga Info' }}">
-                                <i class="fas fa-chevron-left"></i>
-                                <span class="hidden md:inline font-semibold">Prev</span>
-                            </a>
-                            <a href="{{ $nextChapter ? route('chapter.show', $nextChapter->slug) : route('manga.show', $chapter->manga->slug) }}" 
-                               class="flex items-center gap-2 px-3 py-2 rounded-md transition-colors {{ !$nextChapter ? 'opacity-50 cursor-not-allowed bg-gray-200 dark:bg-gray-700' : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600' }}"
-                               title="{{ $nextChapter ? 'Next Chapter' : 'Back to Manga Info' }}">
-                                <span class="hidden md:inline font-semibold">Next</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </div>
                     </div>
+                </form>
+            @else
+                <div class="border-2 border-dashed border-slate-300 dark:border-white/10 rounded-xl p-6 text-center mb-8">
+                    <h3 class="font-display font-semibold text-slate-800 dark:text-white mb-1">Gabung diskusi!</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Kamu harus login untuk berkomentar.</p>
+                    <a href="{{ route('login') }}" class="btn-primary !py-2 !px-5"><i class="fa-solid fa-right-to-bracket mr-1.5 text-xs"></i>Masuk</a>
                 </div>
-            </div>
+            @endauth
 
-            <div id="comments-section" class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Comments ({{ $totalCommentsCount }})</h2>
-
-                @auth
-                    <form action="{{ route('comments.store') }}" method="POST" class="mb-8">
-                        @csrf
-                        <input type="hidden" name="manga_id" value="{{ $chapter->manga->id }}">
-                        <input type="hidden" name="chapter_id" value="{{ $chapter->id }}">
-                        <div class="flex items-start space-x-4">
-                            <img class="w-10 h-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random&color=fff" alt="Avatar">
-                            <div class="flex-1">
-                                <textarea name="content" rows="3" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-red-500 focus:border-red-500 transition" placeholder="Add a public comment for this chapter..." required></textarea>
-                                <div class="text-right mt-2">
-                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                                        Post Comment
-                                    </button>
+            <div class="space-y-5">
+                @forelse ($comments as $comment)
+                    <div id="comment-{{ $comment->id }}" class="flex items-start gap-3">
+                        <img class="w-9 h-9 rounded-full object-cover flex-shrink-0" src="https://ui-avatars.com/api/?name={{ urlencode($comment->user->name) }}&background=random&color=fff" alt="{{ $comment->user->name }}">
+                        <div class="flex-1">
+                            <div class="bg-slate-100 dark:bg-white/5 rounded-xl p-4">
+                                <div class="flex items-center justify-between flex-wrap gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-semibold text-slate-800 dark:text-white text-sm">{{ $comment->user->name }}</span>
+                                        @if ($comment->user->isAdmin())
+                                            <span class="bg-[#ff2e4d] text-white text-[10px] font-bold px-2 py-0.5 rounded-full"><i class="fa-solid fa-shield-halved mr-1"></i>NeoAdmin</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-xs text-slate-400 flex-shrink-0">{{ $comment->created_at->diffForHumans() }}</span>
+                                </div>
+                                <div class="mt-2 flex justify-between items-end gap-3">
+                                    <p class="text-slate-700 dark:text-slate-300 text-sm whitespace-pre-wrap">{{ $comment->content }}</p>
+                                    @if (auth()->check() && auth()->user()->isAdmin())
+                                        <form id="delete-form-{{ $comment->id }}" action="{{ route('comments.destroy', $comment->id) }}" method="POST" class="flex-shrink-0">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" data-form-id="delete-form-{{ $comment->id }}" class="delete-comment-btn text-slate-400 hover:text-red-500 transition-all hover:scale-125" title="Hapus Komentar">
+                                                <i class="fa-solid fa-trash-alt text-sm"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                @else
-                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center mb-8">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Join the Discussion!</h3>
-                        <p class="mt-2 text-gray-600 dark:text-gray-400">You must be logged in to post a comment.</p>
-                        <a href="{{ route('login') }}">
-                            <button class="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                                Login to Comment
-                            </button>
-                        </a>
-                    </div>
-                @endauth
-
-                <div class="space-y-6">
-                    @forelse ($comments as $comment)
-                        <div id="comment-{{ $comment->id }}" class="flex items-start space-x-4">
-                            <img class="w-10 h-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($comment->user->name) }}&background=random&color=fff" alt="Avatar">
-                            <div class="flex-1">
-                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center space-x-2">
-                                            @if ($comment->user->isAdmin())
-                                                <span class="font-semibold text-red-500 dark:text-red-400">{{ $comment->user->name }}</span>
-                                                <span class="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
-                                                    <i class="fas fa-shield-alt fa-fw mr-1"></i>NeoAdmin
-                                                </span>
-                                            @else
-                                                <span class="font-semibold text-gray-800 dark:text-white">{{ $comment->user->name }}</span>
-                                            @endif
-                                        </div>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-4">{{ $comment->created_at->diffForHumans() }}</span>
+                            @auth
+                            <div class="flex items-center gap-4 mt-2 pl-2 text-sm">
+                                <button data-comment-id="{{ $comment->id }}" class="like-btn font-medium text-slate-500 hover:text-red-500 transition">
+                                    <i class="fa-heart {{ $comment->isLikedBy() ? 'fas text-red-500' : 'far' }}"></i>
+                                    <span id="like-count-{{ $comment->id }}">{{ $comment->likes_count }}</span>
+                                </button>
+                                <button data-comment-id="{{ $comment->id }}" data-username="{{ $comment->user->name }}" class="reply-btn font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition">
+                                    <i class="fa-regular fa-comment mr-1"></i>Balas
+                                </button>
+                            </div>
+                            @endauth
+                            <div id="reply-form-{{ $comment->id }}" class="mt-3 ml-4" style="display: none;">
+                                <form action="{{ route('comments.reply', $comment->id) }}" method="POST">
+                                    @csrf
+                                    <textarea name="content" rows="2" class="w-full p-2.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm text-slate-800 dark:text-slate-200 focus:ring-[#ff2e4d]/60 transition" placeholder="Tulis balasan..." required></textarea>
+                                    <div class="flex justify-end items-center gap-3 mt-2">
+                                        <button type="button" data-comment-id="{{ $comment->id }}" class="close-reply-btn text-sm font-medium text-slate-500 hover:underline">Batal</button>
+                                        <button type="submit" class="btn-primary !py-1.5 !px-4 text-xs"><i class="fa-solid fa-paper-plane mr-1 text-xs"></i>Balas</button>
                                     </div>
-                                    <div class="mt-2 flex justify-between items-end">
-                                        <div class="flex-grow">
-                                            <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ $comment->content }}</p>
+                                </form>
+                            </div>
+                            <div class="mt-3 ml-6 space-y-3">
+                                @foreach ($comment->replies as $reply)
+                                <div id="comment-{{ $reply->id }}" class="flex items-start gap-2.5">
+                                    <img class="w-7 h-7 rounded-full object-cover flex-shrink-0" src="https://ui-avatars.com/api/?name={{ urlencode($reply->user->name) }}&background=random&color=fff" alt="{{ $reply->user->name }}">
+                                    <div class="flex-1">
+                                        <div class="bg-slate-100 dark:bg-white/5 rounded-xl p-3">
+                                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                                <span class="font-semibold text-slate-800 dark:text-white text-xs">{{ $reply->user->name }}</span>
+                                                <span class="text-[11px] text-slate-400">{{ $reply->created_at->diffForHumans() }}</span>
+                                            </div>
+                                            <p class="text-slate-700 dark:text-slate-300 text-sm mt-1.5 whitespace-pre-wrap">{{ $reply->content }}</p>
                                         </div>
                                         @if (auth()->check() && auth()->user()->isAdmin())
-                                            <form id="delete-form-{{ $comment->id }}" action="{{ route('comments.destroy', $comment->id) }}" method="POST" class="ml-4 flex-shrink-0">
+                                            <form id="delete-form-{{ $reply->id }}" action="{{ route('comments.destroy', $reply->id) }}" method="POST" class="mt-1.5">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" data-form-id="delete-form-{{ $comment->id }}" class="delete-comment-btn text-gray-400 dark:text-gray-500 text-sm transition-all duration-200 hover:text-red-500 dark:hover:text-red-400 hover:scale-125" title="Delete Comment">
-                                                    <i class="fas fa-trash-alt"></i>
+                                                <button type="button" data-form-id="delete-form-{{ $reply->id }}" class="delete-comment-btn text-slate-400 hover:text-red-500 text-xs transition-all hover:scale-110" title="Hapus Balasan">
+                                                    <i class="fa-solid fa-trash-alt mr-1"></i>Hapus
                                                 </button>
                                             </form>
                                         @endif
                                     </div>
                                 </div>
-                                @auth
-                                <div class="flex items-center space-x-4 mt-2 pl-2 text-sm">
-                                    <button data-comment-id="{{ $comment->id }}" class="like-btn font-medium text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition">
-                                        <i class="fa-heart {{ $comment->isLikedBy() ? 'fas text-red-500' : 'far' }}"></i>
-                                        <span id="like-count-{{ $comment->id }}">{{ $comment->likes_count }}</span>
-                                    </button>
-                                    <button data-comment-id="{{ $comment->id }}" data-username="{{ $comment->user->name }}" class="reply-btn font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition">
-                                        Reply
-                                    </button>
-                                </div>
-                                @endauth
-                                <div id="reply-form-{{ $comment->id }}" class="mt-4 ml-4" style="display: none;">
-                                    <form action="{{ route('comments.reply', $comment->id) }}" method="POST">
-                                        @csrf
-                                        <textarea name="content" rows="2" class="w-full p-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-red-500 focus:border-red-500 transition" placeholder="Write a reply..." required></textarea>
-                                        <div class="text-right mt-2"><button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded-lg">Post Reply</button></div>
-                                    </form>
-                                </div>
-                                <div class="mt-4 ml-8 space-y-4">
-                                    @foreach ($comment->replies as $reply)
-                                    <div id="comment-{{ $reply->id }}" class="flex items-start space-x-3">
-                                        <img class="w-8 h-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($reply->user->name) }}&background=random&color=fff" alt="Avatar">
-                                        <div class="flex-1">
-                                            <div class="bg-gray-100 dark:bg-gray-700/50 rounded-lg p-3">
-                                                <div class="flex items-center justify-between">
-                                                    <div class="flex items-center space-x-2">
-                                                        @if ($reply->user->isAdmin())
-                                                            <span class="font-semibold text-red-500 dark:text-red-400 text-sm">{{ $reply->user->name }}</span>
-                                                            <span class="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
-                                                                <i class="fas fa-shield-alt fa-fw mr-1"></i>NeoAdmin
-                                                            </span>
-                                                        @else
-                                                            <span class="font-semibold text-gray-800 dark:text-white text-sm">{{ $reply->user->name }}</span>
-                                                        @endif
-                                                    </div>
-                                                    <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">{{ $reply->created_at->diffForHumans() }}</span>
-                                                </div>
-                                                <div class="mt-2 flex justify-between items-end text-sm">
-                                                    <div class="flex-grow">
-                                                        <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ $reply->content }}</p>
-                                                    </div>
-                                                    @if (auth()->check() && auth()->user()->isAdmin())
-                                                        <form id="delete-form-{{ $reply->id }}" action="{{ route('comments.destroy', $reply->id) }}" method="POST" class="ml-4 flex-shrink-0">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                             <button type="button" data-form-id="delete-form-{{ $reply->id }}" class="delete-comment-btn text-gray-400 dark:text-gray-500 text-sm transition-all duration-200 hover:text-red-500 dark:hover:text-red-400 hover:scale-125" title="Delete Reply">
-                                                                <i class="fas fa-trash-alt"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
+                                @endforeach
                             </div>
                         </div>
-                    @empty
-                        <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                            No comments yet. Be the first one to comment!
-                        </div>
-                    @endforelse
-                </div>
+                    </div>
+                @empty
+                    <div class="text-center py-8 text-slate-400 text-sm">Belum ada komentar. Jadilah yang pertama!</div>
+                @endforelse
             </div>
         </div>
     </div>
 </div>
 
+{{-- Modal konfirmasi hapus --}}
 <div id="deleteConfirmModal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-sm w-full mx-4 transform transition-all scale-95 opacity-0" id="deleteModalContent">
-        <div class="p-6 text-center">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 mb-4">
-                <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Comment?</h3>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Are you sure you want to delete this comment? This action cannot be undone.</p>
+    <div id="deleteModalContent" class="bg-white dark:bg-[#131a2c] rounded-xl shadow-xl max-w-sm w-full mx-4 p-6 text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/50 mb-4">
+            <i class="fa-solid fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
         </div>
-        <div class="flex items-center justify-center gap-4 p-4 border-t border-gray-200 dark:border-gray-700">
-            <button id="cancelDeleteBtn" class="flex-1 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-lg transition duration-200">
-                Cancel
-            </button>
-            <button id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
-                Yes, Delete
-            </button>
+        <h3 class="font-display font-semibold text-slate-900 dark:text-white">Hapus Komentar?</h3>
+        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Tindakan ini tidak bisa dibatalkan.</p>
+        <div class="flex items-center justify-center gap-3 mt-6">
+            <button id="cancelDeleteBtn" class="btn-ghost !py-2">Batal</button>
+            <button id="confirmDeleteBtn" class="btn-primary !py-2 bg-red-600 hover:bg-red-700 shadow-red-600/25"><i class="fa-solid fa-trash mr-1.5"></i>Ya, Hapus</button>
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    function initializeChapterDropdown(containerId) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        const button = container.querySelector('button');
-        const dropdown = container.querySelector('div.absolute');
-        if (!button || !dropdown) return;
-        const icon = button.querySelector('i');
-        const closeDropdown = () => {
-            if (!dropdown.classList.contains('hidden')) {
-                dropdown.classList.add('opacity-0', 'scale-95');
-                if (icon) icon.classList.remove('rotate-180');
-                setTimeout(() => dropdown.classList.add('hidden'), 200);
-            }
-        };
-        button.addEventListener('click', function(event) {
-            event.stopPropagation();
-            const isHidden = dropdown.classList.contains('hidden');
-            if (isHidden) {
-                dropdown.classList.remove('hidden');
-                setTimeout(() => {
-                    dropdown.classList.remove('opacity-0', 'scale-95');
-                    if (icon) icon.classList.add('rotate-180');
-                }, 10);
-            } else {
-                closeDropdown();
-            }
-        });
-        window.addEventListener('click', function(event) {
-            if (!container.contains(event.target)) {
-                closeDropdown();
-            }
-        });
-    }
-    initializeChapterDropdown('chapter-dropdown-container-top');
-    initializeChapterDropdown('chapter-dropdown-container-bottom');
+@auth
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#131a2c] rounded-2xl shadow-xl max-w-md w-full mx-4 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display text-lg font-semibold text-slate-900 dark:text-white"><i class="fa-solid fa-bookmark text-[#ff2e4d] mr-2"></i>Masuk Diperlukan</h3>
+            <button id="closeModal" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-5">Login untuk menyimpan progres baca & bookmark-mu.</p>
+        <div class="flex gap-3">
+            <button id="closeModal2" class="btn-ghost flex-1">Batal</button>
+            <a href="{{ route('login') }}" class="btn-primary flex-1"><i class="fa-solid fa-right-to-bracket mr-1.5 text-xs"></i>Masuk</a>
+        </div>
+    </div>
+</div>
+@endauth
 
-    document.querySelectorAll('.reply-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const commentId = this.dataset.commentId;
-            const username = this.dataset.username;
-            const replyForm = document.getElementById(`reply-form-${commentId}`);
-            const textarea = replyForm.querySelector('textarea');
-            const isHidden = replyForm.style.display === 'none';
-            replyForm.style.display = isHidden ? 'block' : 'none';
-            if (isHidden) {
-                textarea.value = `@${username} `;
-                textarea.focus();
-            }
-        });
-    });
+<script src="{{ asset('js/chapter/show.js') }}"></script>
 
-    @auth
-    document.body.addEventListener('click', function(e) {
-        if (e.target.closest('.like-btn')) {
-            e.preventDefault();
-            const button = e.target.closest('.like-btn');
-            const commentId = button.dataset.commentId;
-            const likeCountSpan = document.getElementById(`like-count-${commentId}`);
-            const likeIcon = button.querySelector('i');
-            fetch(`/comments/${commentId}/like`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    likeCountSpan.textContent = data.likes_count;
-                    if (data.liked) {
-                        likeIcon.classList.remove('far');
-                        likeIcon.classList.add('fas', 'text-red-500');
-                    } else {
-                        likeIcon.classList.remove('fas', 'text-red-500');
-                        likeIcon.classList.add('far');
-                    }
-                }
-            })
-            .catch(error => console.error('Error liking comment:', error));
-        }
-    });
-    @endauth
-
-    const deleteModal = document.getElementById('deleteConfirmModal');
-    if (deleteModal) {
-        const deleteModalContent = document.getElementById('deleteModalContent');
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-        let formToSubmit = null;
-        const showModal = () => {
-            deleteModal.classList.remove('hidden');
-            setTimeout(() => {
-                deleteModalContent.classList.remove('scale-95', 'opacity-0');
-                deleteModalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        };
-        const hideModal = () => {
-            deleteModalContent.classList.add('scale-95', 'opacity-0');
-            deleteModalContent.classList.remove('scale-100', 'opacity-100');
-            setTimeout(() => {
-                deleteModal.classList.add('hidden');
-            }, 200);
-        };
-        document.querySelectorAll('.delete-comment-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                formToSubmit = document.getElementById(this.dataset.formId);
-                if (formToSubmit) {
-                    showModal();
-                }
-            });
-        });
-        confirmDeleteBtn.addEventListener('click', function() {
-            if (formToSubmit) {
-                formToSubmit.submit();
-            }
-            hideModal();
-        });
-        cancelDeleteBtn.addEventListener('click', hideModal);
-        deleteModal.addEventListener('click', function(e) {
-            if (e.target === deleteModal) {
-                hideModal();
-            }
-        });
-    }
-});
-</script>
+{{-- Script komentar dari JS global (like/reply/delete) — cek @stack --}}
+@stack('comment-scripts')
 @endpush
+@endsection

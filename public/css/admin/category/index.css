@@ -1,0 +1,37 @@
+.cat-eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #ff2e4d; font-weight: 600; }
+    .cat-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .cat-search { display: flex; align-items: center; gap: 8px; background: #0d1220; border: 1px solid rgba(255,255,255,.08); border-radius: 11px; padding: 8px 13px; min-width: 200px; }
+    .cat-search:focus-within { border-color: rgba(255,46,77,.55); }
+    .cat-search input { background: transparent; border: none; outline: none; color: #e2e8f0; font-size: 13px; width: 100%; }
+    .cat-search input::placeholder { color: #64748b; }
+    .cat-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 8px 15px; border-radius: 11px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all .16s ease; text-decoration: none; }
+    .cat-btn:active { transform: scale(.96); }
+    .cat-btn-primary { background: #ff2e4d; color: #fff; box-shadow: 0 4px 14px -6px rgba(255,46,77,.5); }
+    .cat-btn-primary:hover { background: #ff4d66; }
+    .cat-btn-ghost { background: transparent; color: #94a3b8; }
+    .cat-btn-ghost:hover { color: #fff; }
+    .cat-stat { background: #131a2c; border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; }
+    .cat-stat .ic { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .cat-stat .lbl { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #64748b; }
+    .cat-stat .val { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 19px; font-weight: 700; color: #fff; line-height: 1.15; }
+    .cat-card { background: #131a2c; border: 1px solid rgba(255,255,255,.06); border-radius: 16px; overflow: hidden; }
+    .cat-ico { width: 34px; height: 34px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .cat-mid { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; }
+    .cat-ico-btn { width: 30px; height: 30px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; color: #64748b; cursor: pointer; transition: all .14s; }
+    .cat-ico-btn:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .cat-ico-btn.edit:hover { color: #ff2e4d; }
+    .cat-ico-btn.danger:hover { background: rgba(244,63,94,.14); color: #fb7185; }
+    .cat-input { width: 100%; background: #0d1220; border: 1px solid rgba(255,255,255,.09); border-radius: 10px; padding: 9px 13px; font-size: 13.5px; color: #e2e8f0; outline: none; transition: border .2s; }
+    .cat-input:focus { border-color: rgba(255,46,77,.6); box-shadow: 0 0 0 3px rgba(255,46,77,.1); }
+    .cat-input::placeholder { color: #4b5563; }
+    .cat-modal-bg { position: fixed; inset: 0; background: rgba(5,8,15,.7); backdrop-filter: blur(3px); z-index: 70; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .cat-modal-bg.open { display: flex; }
+    .cat-modal { background: #1a2237; border: 1px solid rgba(255,255,255,.1); border-radius: 18px; width: 100%; max-width: 430px; padding: 24px; box-shadow: 0 24px 60px -16px rgba(0,0,0,.8); }
+    .cat-pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 99px; font-size: 10.5px; font-weight: 700; }
+    .cat-tr { transition: background .14s; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .cat-tr:hover { background: rgba(255,255,255,.03); }
+    .cat-th { text-align: left; padding: 11px 16px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #64748b; border-bottom: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02); }
+    .cat-td { padding: 11px 16px; vertical-align: middle; }
+    .cat-slug { display: inline-block; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+    .cat-empty { text-align: center; padding: 56px 20px; color: #64748b; }
+    .cat-empty .ic { font-size: 36px; opacity: .4; }
