@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\History;
+use App\Models\CommentReport;
 
 class User extends Authenticatable
 {
@@ -28,7 +29,8 @@ class User extends Authenticatable
         'role',
         'otp_code',
         'otp_expires_at',
-        'google_id'
+        'google_id',
+        'banned_at'
     ];
 
     /**
@@ -62,6 +64,26 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function isBanned(): bool
+    {
+        return $this->banned_at !== null;
+    }
+
+    public function scopeActive($q)
+    {
+        return $q->whereNull('banned_at');
+    }
+
+    public function scopeBanned($q)
+    {
+        return $q->whereNotNull('banned_at');
+    }
+
+    public function commentReports(): HasMany
+    {
+        return $this->hasMany(CommentReport::class, 'reporter_id');
     }
 
     public function comments(): HasMany 

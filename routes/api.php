@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\MangaController;
 Route::post('/import-chapter', [ChapterImportController::class, 'store'])
      ->middleware('auth.apikey');
 Route::get('/manga/check/{slug}', [ChapterImportController::class, 'checkMangaExists'])->middleware('auth.apikey');
+Route::post('/manga/import', [ChapterImportController::class, 'importManga'])->middleware('auth.apikey');
 
 Route::post('/register', [ApiAuthController::class, 'register']);
 Route::post('/login', [ApiAuthController::class, 'login']);
