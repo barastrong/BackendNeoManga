@@ -52,4 +52,9 @@ class Comment extends Model
     {
         return $this->belongsToMany(User::class, 'comment_likes');
     }
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(CommentReport::class);
+    }
 }

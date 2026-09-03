@@ -17,6 +17,9 @@ class ChapterController extends Controller
                           ->published()
                           ->firstOrFail();
 
+        // Tracking view manga (chapter dibaca = manga dilihat)
+        \App\Services\ViewTrackingService::record($chapter->manga_id);
+
         if (Auth::check()) {
             History::updateOrCreate(
                 [

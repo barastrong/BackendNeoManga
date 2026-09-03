@@ -76,6 +76,9 @@ class MangaController extends Controller
         $manga = Manga::where('slug', $slug)
                       ->with(['genres', 'user', 'bookmarks', 'comments.user', 'comments.replies.user'])
                       ->firstOrFail();
+
+        // Tracking view manga
+        \App\Services\ViewTrackingService::record($manga->id);
         
         $chapters = Chapter::where('manga_id', $manga->id)
                           ->published()

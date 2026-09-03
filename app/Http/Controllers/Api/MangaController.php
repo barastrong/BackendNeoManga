@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Manga;
 use App\Models\Genre;
-use App\Services\SupabaseStorageService;
+use App\Services\CloudinaryStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class MangaController extends Controller
 {
-    public function __construct(private SupabaseStorageService $storage) {}
+    public function __construct(private CloudinaryStorageService $storage) {}
 
     public function index()
     {

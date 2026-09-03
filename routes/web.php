@@ -19,7 +19,23 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/manga/{manga}/edit', [AdminPanelController::class, 'mangaEdit'])->name('manga.edit');
     Route::put('/manga/{manga}', [AdminPanelController::class, 'mangaUpdate'])->name('manga.update');
     Route::delete('/manga/{manga}', [AdminPanelController::class, 'mangaDestroy'])->name('manga.destroy');
+
+    // Kelola Chapter (global)
+    Route::get('/chapters', [AdminPanelController::class, 'chaptersIndex'])->name('chapter.index');
+    Route::get('/chapters/{chapter}/edit', [AdminPanelController::class, 'chapterGlobalEdit'])->name('chapter.edit');
+    Route::put('/chapters/{chapter}', [AdminPanelController::class, 'chapterGlobalUpdate'])->name('chapter.update');
+    Route::delete('/chapters/{chapter}', [AdminPanelController::class, 'chapterGlobalDestroy'])->name('chapter.destroy');
+
+    // Kelola Kategori (Genre)
+    Route::get('/categories', [AdminPanelController::class, 'categoryIndex'])->name('category.index');
+    Route::post('/categories', [AdminPanelController::class, 'categoryStore'])->name('category.store');
+    Route::put('/categories/{genre}', [AdminPanelController::class, 'categoryUpdate'])->name('category.update');
+    Route::delete('/categories/{genre}', [AdminPanelController::class, 'categoryDestroy'])->name('category.destroy');
+
     Route::get('/users', [AdminPanelController::class, 'userIndex'])->name('user.index');
+    Route::get('/moderasi', [AdminPanelController::class, 'moderationIndex'])->name('moderation.index');
+    Route::post('/moderasi/komentar/{comment}', [AdminPanelController::class, 'moderationAction'])->name('moderation.action');
+    Route::post('/moderasi/user/{user}', [AdminPanelController::class, 'moderationUserAction'])->name('moderation.user');
     Route::get('/manga/{manga}/chapters', [AdminPanelController::class, 'chapterIndex'])->name('manga.chapters.index');
     Route::get('/manga/{manga}/chapters/create', [AdminPanelController::class, 'chapterCreate'])->name('manga.chapters.create');
     Route::post('/manga/{manga}/chapters', [AdminPanelController::class, 'chapterStore'])->name('manga.chapters.store');
@@ -55,3 +71,5 @@ Route::middleware('auth', 'verified')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+

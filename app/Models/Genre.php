@@ -13,5 +13,13 @@ class Genre extends Model
         'name',
     ];
 
+    public function mangas()
+    {
+        return $this->belongsToMany(Manga::class, 'manga_genres');
+    }
 
+    public function getMangaCountAttribute(): int
+    {
+        return $this->mangas()->count();
+    }
 }

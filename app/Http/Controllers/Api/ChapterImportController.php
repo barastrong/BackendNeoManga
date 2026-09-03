@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Manga;
 use App\Models\Chapter;
+use App\Models\Genre;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Services\SupabaseStorageService;
+use App\Services\CloudinaryStorageService;
 
 class ChapterImportController extends Controller
 {
-    public function __construct(private SupabaseStorageService $storage) {}
+    public function __construct(private CloudinaryStorageService $storage) {}
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -57,6 +58,81 @@ class ChapterImportController extends Controller
 
         } catch (\Exception $e) {
             return response()->json(['message' => 'An server error occurred.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Import manga dari scraper Kiryuu (cover via URL).
+     * Syarat genre: array nama genre -> match/auto-create ke tabel genres.
+     */
+    public function importManga(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'title'             => 'required|string|max:255',
+                'alternative_title' => 'nullable|string|max:255',
+                'slug'              => 'required|string|max:255',
+                'synopsis'          => 'nullable|string',
+                'cover_image'       => 'nullable|url|max:1000',
+                'genres'            => 'nullable|array',
+                'genres.*'          => 'string|max:100',
+                'status'            => 'nullable|string|max:50',
+                'type'              => 'nullable|string|max:50',
+            ]);
+
+            if (Manga::where('slug', $validated['slug'])->exists()) {
+                return response()->json(['message' => 'Manga already exists', 'slug' => $validated['slug']], 200);
+            }
+
+            $status = strtolower(trim($validated['status'] ?? ''));
+            $statusMap = ['ongoing' => 'ongoing', 'on-going' => 'ongoing', 'completed' => 'completed', 'hiatus' => 'hiatus', 'canceled' => 'cancelled', 'cancelled' => 'cancelled', 'discontinued' => 'cancelled'];
+            $status = $statusMap[$status] ?? 'ongoing';
+
+            $type = strtolower(trim($validated['type'] ?? ''));
+            $type = in_array($type, ['manga', 'manhwa', 'manhua', 'webtoon']) ? $type : 'manga';
+
+            $coverUrl = null;
+            if (!empty($validated['cover_image'])) {
+                try {
+                    $coverUrl = $this->storage->uploadFromUrl('manga-covers', $validated['slug'], $validated['cover_image']);
+                } catch (\Exception $e) {
+                    $coverUrl = null;
+                }
+            }
+
+            $manga = Manga::create([
+                'user_id'          => 1,
+                'title'            => $validated['title'],
+                'alternative_title'=> $validated['alternative_title'] ?? '',
+                'slug'             => $validated['slug'],
+                'description'      => $validated['synopsis'] ?: ('Baca ' . $validated['title'] . ' bahasa Indonesia di NeoManga.'),
+                'author'           => null,
+                'status'           => $status,
+                'type'             => $type,
+                'cover_image'      => $coverUrl,
+            ]);
+
+            // Attach genres: match by name (case-insensitive), auto-create if missing
+            $genreIds = [];
+            foreach ($validated['genres'] ?? [] as $genreName) {
+                $genreName = trim($genreName);
+                if ($genreName === '') continue;
+                $genre = Genre::firstOrCreate(
+                    ['name' => $genreName],
+                    ['name' => $genreName]
+                );
+                $genreIds[] = $genre->id;
+            }
+            if ($genreIds) $manga->genres()->sync($genreIds);
+
+            return response()->json([
+                'message' => 'Manga imported successfully',
+                'data' => $manga->load('genres'),
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error importing manga', 'error' => $e->getMessage()], 500);
         }
     }
 

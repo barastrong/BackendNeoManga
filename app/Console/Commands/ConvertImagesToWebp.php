@@ -4,16 +4,16 @@ namespace App\Console\Commands;
 
 use App\Models\Chapter;
 use App\Models\Manga;
-use App\Services\SupabaseStorageService;
+use App\Services\CloudinaryStorageService;
 use Illuminate\Console\Command;
 
 class ConvertImagesToWebp extends Command
 {
     protected $signature = 'images:convert-webp {--type=all : manga, chapter, atau all}';
-    protected $description = 'Konversi semua gambar JPG/PNG di Supabase ke WebP';
+    protected $description = 'Konversi semua gambar JPG/PNG di Cloudinary ke WebP';
     private array $errors = [];
 
-    public function __construct(private SupabaseStorageService $storage)
+    public function __construct(private CloudinaryStorageService $storage)
     {
         parent::__construct();
     }
@@ -120,7 +120,7 @@ class ConvertImagesToWebp extends Command
                     $newUrl      = $this->storage->uploadFromUrl('chapters', $filename, $oldUrl);
                     $newImages[] = $newUrl;
 
-                    $this->storage->deleteFiles('chapters', [$this->pathFromUrl($oldUrl)]);
+                    $this->storage->deleteFiles('chapters', [$oldUrl]);
                 } catch (\Exception $e) {
                     $this->newLine();
                     $this->warn("Gagal [{$manga->title}] chapter {$chapter->number} img {$index}: " . $e->getMessage());
@@ -143,12 +143,5 @@ class ConvertImagesToWebp extends Command
 
         $bar->finish();
         $this->newLine();
-    }
-
-    private function pathFromUrl(string $url): string
-    {
-        $supabaseUrl = rtrim(env('SUPABASE_URL'), '/');
-        $pattern     = $supabaseUrl . '/storage/v1/object/public/chapters/';
-        return str_starts_with($url, $pattern) ? substr($url, strlen($pattern)) : $url;
     }
 }

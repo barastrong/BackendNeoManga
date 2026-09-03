@@ -4,32 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Manga;
-use App\Models\History;
 use App\Models\Chapter;
+use App\Services\ViewTrackingService;
 use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
-    public function index() 
+    public function index(Request $request)
     {
-        $popularMangas = Cache::remember('popular_mangas', 300, function () {
-            $popularMangaIds = History::select('manga_id')
-                ->selectRaw('COUNT(DISTINCT user_id) as unique_readers_count')
-                ->groupBy('manga_id')
-                ->havingRaw('COUNT(DISTINCT user_id) > 1')
-                ->orderByRaw('COUNT(DISTINCT user_id) DESC')
-                ->take(12)
-                ->pluck('manga_id');
+        // 1) Section "Populer" — berdasar view tracking, filter periode: today|week|month
+        $period = in_array($request->get('period'), ['today', 'week', 'month']) ? $request->get('period') : 'week';
 
-            if ($popularMangaIds->isEmpty()) return collect();
-
-            return Manga::with('latestPublishedChapter')
-                ->withAvg('ratings', 'rating')
-                ->whereIn('id', $popularMangaIds)
-                ->orderByRaw("CASE id " . $popularMangaIds->values()->map(fn($id, $i) => "WHEN {$id} THEN {$i}")->implode(' ') . " END")
-                ->get();
+        $popularMangas = Cache::remember("popular_mangas_{$period}", 300, function () use ($period) {
+            return ViewTrackingService::popular($period, 12);
         });
 
+        // 2) Section "Update Terbaru" — manga dengan chapter published, diurut chapter terbaru
         $mangas = Manga::with(['latestPublishedChapter'])
             ->withAvg('ratings', 'rating')
             ->whereHas('chapters', fn($q) => $q->where('status', 'published'))
@@ -40,8 +30,8 @@ class DashboardController extends Controller
                     ->latest()
                     ->limit(1)
             )
-            ->paginate(25);
+            ->paginate(12); // 3 baris x 4 kolom
 
-        return view('dashboard', compact('mangas', 'popularMangas'));
+        return view('dashboard', compact('mangas', 'popularMangas', 'period'));
     }
 }
