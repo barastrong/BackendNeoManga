@@ -1,0 +1,70 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # NeoManga = aplikasi Laravel (PHP runtime) — GitHub Pages hanya hosting statis,
+      # jadi halaman statis sederhana di-deploy sebagai placeholder.
+      - name: Build static landing
+        run: |
+          mkdir -p _site
+          cat > _site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="id">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>NeoManga — Baca Manga, Manhwa &amp; Manhua</title>
+            <style>
+              body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b0f19;color:#e2e8f0;display:flex;align-items:center;justify-content:center;min-height:100vh}
+              .card{text-align:center;padding:40px 24px;max-width:520px}
+              .logo{font-size:34px;font-weight:800;letter-spacing:-.5px;margin:0 0 8px}
+              .logo span{color:#ff2e4d}
+              p{color:#94a3b8;line-height:1.6;margin:0 0 24px}
+              a{display:inline-block;background:#ff2e4d;color:#fff;text-decoration:none;padding:12px 28px;border-radius:12px;font-weight:600;transition:background .2s}
+              a:hover{background:#c81e3a}
+              .tag{font-size:12px;color:#64748b;margin-top:24px}
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1 class="logo">Neo<span>Manga</span></h1>
+              <p>Aplikasi ini adalah Laravel (PHP + MySQL) dan butuh server PHP.<br>Aplikasi penuh berjalan di Vercel — halaman ini placeholder statis.</p>
+              <a href="https://backendneomanga.vercel.app">Buka NeoManga di Vercel →</a>
+              <p class="tag">barastrong/BackendNeoManga · GitHub Pages</p>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
