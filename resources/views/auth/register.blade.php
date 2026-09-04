@@ -44,7 +44,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('register') }}" class="space-y-5">
+            <form method="POST" action="{{ url('register-store') }}" class="space-y-5">
                 @csrf
 
                 <div>
