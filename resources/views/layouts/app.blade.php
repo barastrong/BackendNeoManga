@@ -18,11 +18,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/app.css">
+    <!-- Theme restore inline sebelum CSS render (anti flash) -->
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('nm-theme');
+                var dark = t !== 'light'; // dark-first
+                document.documentElement.classList.toggle('dark', dark);
+            } catch (e) {}
+        })();
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <script src="{{ asset('js/layouts/app-2.js') }}"></script>
-
-    
     @stack('styles')
 </head>
 
@@ -209,4 +216,4 @@
         </footer>
     </div>
 
-<script src="{{ asset('js/layouts/app-3.js') }}"></script>
+<script src="{{ asset('js/layouts/theme.js') }}"></script>

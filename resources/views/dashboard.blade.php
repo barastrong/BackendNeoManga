@@ -41,7 +41,7 @@
         </div>
 
         @if($popularMangas->isNotEmpty())
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                 @foreach($popularMangas as $manga)
                     @include('partials.manga-card', ['manga' => $manga])
                 @endforeach
@@ -64,7 +64,7 @@
         </h2>
 
         @if($mangas->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                 @foreach($mangas as $manga)
                     @include('partials.manga-card', ['manga' => $manga])
                 @endforeach
