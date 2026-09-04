@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Panel — NeoManga')</title>
     <link rel="stylesheet" href="/css/app.css">
+    <!-- Theme restore inline sebelum CSS render -->
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('nm-theme');
+                var dark = t !== 'light';
+                document.documentElement.classList.toggle('dark', dark);
+            } catch (e) {}
+        })();
+    </script>
     @stack('styles')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">

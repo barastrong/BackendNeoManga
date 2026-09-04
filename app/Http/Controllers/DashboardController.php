@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $period = in_array($request->get('period'), ['today', 'week', 'month']) ? $request->get('period') : 'week';
 
         $popularMangas = Cache::remember("popular_mangas_{$period}", 300, function () use ($period) {
-            return ViewTrackingService::popular($period, 12);
+            return ViewTrackingService::popular($period, 10);
         });
 
         // 2) Section "Update Terbaru" — manga dengan chapter published, diurut chapter terbaru
@@ -30,7 +30,7 @@ class DashboardController extends Controller
                     ->latest()
                     ->limit(1)
             )
-            ->paginate(12); // 3 baris x 4 kolom
+            ->paginate(15); // 3 baris x 5 kolom
 
         return view('dashboard', compact('mangas', 'popularMangas', 'period'));
     }
