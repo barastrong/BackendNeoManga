@@ -27,7 +27,6 @@
 - **Akun Pengguna**: Registrasi + verifikasi **OTP via email**, login, profil, bookmark, riwayat baca.
 - **Reader yang Dioptimalkan**: Mode baca vertikal untuk webtoon/manhwa, progress bar.
 - **Panel Admin Lengkap**: Dashboard statistik, manajemen Manga / Chapter / Kategori, moderasi komentar, manajemen user & ban.
-- **Scraper Kiryuu**: Import otomatis manga & chapter dari sumber eksternal (di `Documents/kiryu`).
 - **SEO-Friendly**: Struktur URL bersih, meta tags.
 
 ## 🚀 Teknologi
@@ -86,17 +85,6 @@ MAIL_ENCRYPTION=tls
 ```
 
 Untuk pengembangan cepat tanpa SMTP: set `MAIL_MAILER=log` — kode OTP akan ditulis ke `storage/logs/laravel.log`.
-
-### Scraper Kiryuu (import otomatis)
-
-Scraper ada di folder terpisah (bukan bagian repo ini):
-
-```bash
-cd Documents/kiryu
-./kiryuu-venv/Scripts/python.exe kiryuu_scraper.py --start 1 --pages 5
-```
-
-> Butuh server API NeoManga berjalan (`php artisan serve` di port 8000). Scraper menembak `127.0.0.1:8000/api` untuk import manga & chapter. Detail operasional ada di skill `neomanga-ops`.
 
 ## 🚀 Deploy
 
