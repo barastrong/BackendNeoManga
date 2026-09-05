@@ -1,6 +1,6 @@
 @props(['manga'])
-<div class="manga-card">
-    <a href="{{ route('manga.show', $manga->slug) }}" class="block">
+<div class="manga-card" style="display:flex;flex-direction:column;height:100%">
+    <a href="{{ route('manga.show', $manga->slug) }}" class="block" style="display:flex;flex-direction:column;flex:1;min-height:0">
         <div class="manga-cover">
             {{-- Badge status --}}
             @if($manga->status === 'completed')
@@ -44,8 +44,9 @@
             @endif
         </div>
 
-        <div class="mt-2.5">
-            <h3 class="manga-title" title="{{ $manga->title }}">{{ $manga->title }}</h3>
+        <div class="mt-2.5" style="flex:1;display:flex;flex-direction:column;min-height:0">
+            {{-- Judul: selalu reserve 2 baris biar tinggi konsisten --}}
+            <h3 class="manga-title" title="{{ $manga->title }}" style="min-height:38px">{{ $manga->title }}</h3>
 
             {{-- Author (fallback kalau kosong) --}}
             <p class="mt-0.5 text-slate-400 dark:text-slate-500 truncate" style="font-size:11px">
@@ -56,23 +57,23 @@
                 @endif
             </p>
 
-            {{-- Genre chips (max 3) --}}
-            @if($manga->genres->isNotEmpty())
-                <div class="mt-1.5 flex flex-wrap gap-1">
-                    @foreach($manga->genres->take(3) as $genre)
-                        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:#ff4d66;background:rgba(255,46,77,.12);border:1px solid rgba(255,46,77,.22);padding:1px 6px;border-radius:4px">{{ $genre->name }}</span>
-                    @endforeach
-                </div>
-            @endif
+            {{-- Genre: selalu 1 baris (nowrap), area fixed biar kartu tanpa genre tetap sama --}}
+            <div class="mt-1.5 flex flex-nowrap gap-1 overflow-hidden" style="min-height:16px">
+                @foreach($manga->genres->take(3) as $genre)
+                    <span style="white-space:nowrap;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:#ff4d66;background:rgba(255,46,77,.12);border:1px solid rgba(255,46,77,.22);padding:1px 6px;border-radius:4px">{{ $genre->name }}</span>
+                @endforeach
+            </div>
 
+            {{-- Chapter: area bawah rata --}}
             @if($manga->latestPublishedChapter)
                 <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug) }}"
-                   class="mt-2 flex items-center justify-between text-xs bg-slate-100 dark:bg-white/5 hover:bg-[#ff2e4d]/10 dark:hover:bg-[#ff2e4d]/15 text-slate-600 dark:text-slate-300 hover:text-[#e62242] dark:hover:text-[#ff4d66] border border-slate-200 dark:border-white/5 rounded-lg px-2.5 py-1.5 transition-colors">
+                   class="mt-auto flex items-center justify-between text-xs bg-slate-100 dark:bg-white/5 hover:bg-[#ff2e4d]/10 dark:hover:bg-[#ff2e4d]/15 text-slate-600 dark:text-slate-300 hover:text-[#e62242] dark:hover:text-[#ff4d66] border border-slate-200 dark:border-white/5 rounded-lg px-2.5 py-1.5 transition-colors"
+                   style="margin-top:auto;min-height:30px">
                     <span class="font-semibold flex items-center gap-1.5"><i class="fa-solid fa-book-open-reader text-[10px] opacity-60"></i>Chapter {{ $manga->latestPublishedChapter->number }}</span>
                     <span class="opacity-70">{{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}</span>
                 </a>
             @else
-                <p class="mt-2 text-xs text-slate-400 dark:text-slate-500 italic">Belum ada chapter</p>
+                <p class="text-xs text-slate-400 dark:text-slate-500 italic" style="margin-top:auto;min-height:30px;display:flex;align-items:center">Belum ada chapter</p>
             @endif
         </div>
     </a>
