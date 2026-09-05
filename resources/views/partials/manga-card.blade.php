@@ -47,23 +47,6 @@
         <div class="mt-2.5" style="display:flex;flex-direction:column;min-height:0">
             {{-- Judul: clamp 2 baris fixed-height (bukan min) biar gak ada void --}}
             <h3 class="manga-title" title="{{ $manga->title }}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.3;height:36.4px;overflow:hidden">{{ $manga->title }}</h3>
-
-            {{-- Author (fallback kalau kosong) --}}
-            <p class="mt-1 text-slate-400 dark:text-slate-500 truncate" style="font-size:11px;line-height:16px;height:16px">
-                @if($manga->author)
-                    <i class="fa-solid fa-pen-nib opacity-60 mr-1" style="font-size:9px"></i>{{ $manga->author }}
-                @else
-                    <span class="italic">Tanpa Author</span>
-                @endif
-            </p>
-
-            {{-- Genre: selalu 1 baris (nowrap), area fixed biar kartu tanpa genre tetap sama --}}
-            <div class="mt-1.5 flex flex-nowrap gap-1 overflow-hidden" style="height:16px">
-                @foreach($manga->genres->take(3) as $genre)
-                    <span style="white-space:nowrap;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:#ff4d66;background:rgba(255,46,77,.12);border:1px solid rgba(255,46,77,.22);padding:1px 6px;border-radius:4px">{{ $genre->name }}</span>
-                @endforeach
-            </div>
-
             {{-- Chapter: langsung nempel setelah genre, tanpa dorong ke bawah --}}
             @if($manga->latestPublishedChapter)
                 <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug) }}"
