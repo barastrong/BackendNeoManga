@@ -46,6 +46,25 @@
 
         <div class="mt-2.5">
             <h3 class="manga-title" title="{{ $manga->title }}">{{ $manga->title }}</h3>
+
+            {{-- Author (fallback kalau kosong) --}}
+            <p class="mt-0.5 text-slate-400 dark:text-slate-500 truncate" style="font-size:11px">
+                @if($manga->author)
+                    <i class="fa-solid fa-pen-nib opacity-60 mr-1" style="font-size:9px"></i>{{ $manga->author }}
+                @else
+                    <span class="italic">Tanpa Author</span>
+                @endif
+            </p>
+
+            {{-- Genre chips (max 3) --}}
+            @if($manga->genres->isNotEmpty())
+                <div class="mt-1.5 flex flex-wrap gap-1">
+                    @foreach($manga->genres->take(3) as $genre)
+                        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:#ff4d66;background:rgba(255,46,77,.12);border:1px solid rgba(255,46,77,.22);padding:1px 6px;border-radius:4px">{{ $genre->name }}</span>
+                    @endforeach
+                </div>
+            @endif
+
             @if($manga->latestPublishedChapter)
                 <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug) }}"
                    class="mt-2 flex items-center justify-between text-xs bg-slate-100 dark:bg-white/5 hover:bg-[#ff2e4d]/10 dark:hover:bg-[#ff2e4d]/15 text-slate-600 dark:text-slate-300 hover:text-[#e62242] dark:hover:text-[#ff4d66] border border-slate-200 dark:border-white/5 rounded-lg px-2.5 py-1.5 transition-colors">
