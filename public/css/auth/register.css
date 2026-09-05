@@ -7,3 +7,5 @@ body { font-family: 'Inter', sans-serif; }
             background-size: 44px 44px;
         }
         .glow-brand { box-shadow: 0 0 0 1px rgba(255,46,77,.3), 0 8px 40px -8px rgba(255,46,77,.35); }
+        .meter-bar { height: 4px; flex: 1; border-radius: 999px; background: rgba(255,255,255,.08); transition: background .3s; }
+        .meter-bar:first-child { margin-left: 0; }
