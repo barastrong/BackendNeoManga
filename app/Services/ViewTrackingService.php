@@ -56,7 +56,7 @@ class ViewTrackingService
             return collect();
         }
 
-        return Manga::with('latestPublishedChapter')
+        return Manga::with(['latestPublishedChapter', 'genres'])
             ->withAvg('ratings', 'rating')
             ->whereIn('id', $ids)
             ->get()

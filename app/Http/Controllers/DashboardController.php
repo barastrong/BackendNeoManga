@@ -20,7 +20,7 @@ class DashboardController extends Controller
         });
 
         // 2) Section "Update Terbaru" — manga dengan chapter published, diurut chapter terbaru
-        $mangas = Manga::with(['latestPublishedChapter'])
+        $mangas = Manga::with(['latestPublishedChapter', 'genres'])
             ->withAvg('ratings', 'rating')
             ->whereHas('chapters', fn($q) => $q->where('status', 'published'))
             ->orderByDesc(
