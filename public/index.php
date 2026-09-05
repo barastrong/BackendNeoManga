@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 define('LARAVEL_START', microtime(true));
 
 // Handle CORS manually for shared hosting
-$allowedOrigins = ['http://localhost:5173', 'https://neomanga.vercel.app'];
+$allowedOrigins = ['http://localhost:5173'];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowedOrigins)) {
     header('Access-Control-Allow-Origin: ' . $origin);

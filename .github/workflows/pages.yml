@@ -52,8 +52,8 @@ jobs:
           <body>
             <div class="card">
               <h1 class="logo">Neo<span>Manga</span></h1>
-              <p>Aplikasi ini adalah Laravel (PHP + MySQL) dan butuh server PHP.<br>Aplikasi penuh berjalan di Vercel — halaman ini placeholder statis.</p>
-              <a href="https://backendneomanga.vercel.app">Buka NeoManga di Vercel →</a>
+              <p>Aplikasi ini adalah Laravel (PHP + MySQL) dan butuh server PHP sendiri.<br>Halaman ini adalah landing statis placeholder.</p>
+              <a href="https://github.com/barastrong/BackendNeoManga">Lihat Repository →</a>
               <p class="tag">barastrong/BackendNeoManga · GitHub Pages</p>
             </div>
           </body>
