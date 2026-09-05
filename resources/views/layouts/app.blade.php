@@ -80,8 +80,8 @@
                         </button>
 
                         <button id="themeToggle" aria-label="Ganti tema" class="btn-icon">
-                            <i class="fa-solid fa-sun text-lg hidden dark:block"></i>
-                            <i class="fa-solid fa-moon text-lg dark:hidden"></i>
+                            <i id="themeIconSun" class="fa-solid fa-sun text-lg"></i>
+                            <i id="themeIconMoon" class="fa-solid fa-moon text-lg" style="display:none"></i>
                         </button>
 
                         @auth
