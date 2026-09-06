@@ -13,6 +13,7 @@
     <meta property="og:description" content="@yield('meta_description', 'Baca manga, manhwa & manhua bahasa Indonesia gratis di NeoManga.')">
     <meta property="og:type" content="website">
     <meta name="robots" content="index, follow">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

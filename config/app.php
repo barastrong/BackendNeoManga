@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | SEO Base URL
+    |--------------------------------------------------------------------------
+    |
+    | URL publik untuk sitemap/robots saat domain produksi beda dari APP_URL
+    | (misal app di server sendiri, SEO diarahkan ke landing). Kosongkan untuk
+    | memakai APP_URL.
+    |
+    */
+
+    'seo_base_url' => env('SEO_BASE_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

@@ -7,6 +7,7 @@ use App\Http\Controllers\MangaController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AdminPanelController;
 
@@ -68,6 +69,49 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::delete('/history/{history}', [HistoryController::class, 'destroy'])->name('history.destroy');
     Route::delete('/history', [HistoryController::class, 'clear'])->name('history.clear');
     Route::post('/manga/{mangaId}/history/reset', [HistoryController::class, 'resetForManga'])->name('history.resetForManga');
+});
+
+
+// ===== SEO: sitemap / robots / llms =====
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    $lines = [
+        'User-agent: *',
+        'Allow: /',
+        'Disallow: /admin',
+        'Disallow: /login',
+        'Disallow: /register',
+        'Disallow: /verify-otp',
+        'Disallow: /profile',
+        '',
+        'Sitemap: ' . url('/sitemap.xml'),
+    ];
+    return response(implode("\n", $lines))
+        ->header('Content-Type', 'text/plain; charset=utf-8');
+});
+
+Route::get('/llms.txt', function () {
+    $b = rtrim(url('/'), '/');
+    $lines = [
+        '# NeoManga',
+        '',
+        '> Web reader manga & komik modern (Laravel 12, dark-first).',
+        '',
+        '## Konten Utama',
+        '',
+        "- Beranda: {$b}/",
+        "- Semua Manga: {$b}/manga",
+        "- Pencarian: {$b}/search",
+        '',
+        '## Teknis',
+        '',
+        "- Sitemap: {$b}/sitemap.xml",
+        '- Repo: https://github.com/barastrong/BackendNeoManga',
+        '- Aplikasi butuh runtime PHP + MySQL (Laravel), bukan statis.',
+    ];
+    return response(implode("\n", $lines))
+        ->header('Content-Type', 'text/plain; charset=utf-8');
 });
 
 require __DIR__.'/auth.php';
