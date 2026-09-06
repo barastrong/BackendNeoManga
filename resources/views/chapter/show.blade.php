@@ -250,7 +250,6 @@
 
 <script src="{{ asset('js/chapter/show.js') }}"></script>
 
-{{-- Script komentar dari JS global (like/reply/delete) — cek @stack --}}
+{{-- Script komentar dari JS global (like/reply/delete) --}}
 @stack('comment-scripts')
-@endpush
 @endsection
