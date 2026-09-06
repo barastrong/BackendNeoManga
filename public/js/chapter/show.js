@@ -3,11 +3,11 @@ document.querySelectorAll('[id^="chapterListBtn"]').forEach(btn => {
     btn.addEventListener('click', function (e) {
         e.stopPropagation();
         const panel = document.getElementById('chapterListTop');
-        if (panel) panel.classList.toggle('hidden');
+        if (panel) panel.classList.toggle('open');
     });
 });
 document.addEventListener('click', () => {
-    document.getElementById('chapterListTop')?.classList.add('hidden');
+    document.getElementById('chapterListTop')?.classList.remove('open');
 });
 
 // Scroll progress bar baca
@@ -64,34 +64,37 @@ document.querySelectorAll('.close-reply-btn').forEach(button => {
         if (replyForm) replyForm.style.display = 'none';
     });
 });
-@auth
-document.body.addEventListener('click', function (e) {
-    const likeBtn = e.target.closest('.like-btn');
-    if (!likeBtn) return;
-    const commentId = likeBtn.dataset.commentId;
-    const countSpan = document.getElementById('like-count-' + commentId);
-    const icon = likeBtn.querySelector('i');
-    fetch('/comments/' + commentId + '/like', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success) {
-            if (countSpan) countSpan.textContent = data.likes_count;
-            if (icon) {
-                icon.classList.toggle('fas', data.liked);
-                icon.classList.toggle('far', !data.liked);
-                icon.classList.toggle('text-red-500', data.liked);
+// Like komentar — hanya jalan kalau user login (meta csrf ada)
+(function () {
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfMeta) return;
+    document.body.addEventListener('click', function (e) {
+        const likeBtn = e.target.closest('.like-btn');
+        if (!likeBtn) return;
+        const commentId = likeBtn.dataset.commentId;
+        const countSpan = document.getElementById('like-count-' + commentId);
+        const icon = likeBtn.querySelector('i');
+        fetch('/comments/' + commentId + '/like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfMeta.getAttribute('content')
             }
-        }
-    })
-    .catch(err => console.error('Like error:', err));
-});
-@endauth
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                if (countSpan) countSpan.textContent = data.likes_count;
+                if (icon) {
+                    icon.classList.toggle('fas', data.liked);
+                    icon.classList.toggle('far', !data.liked);
+                    icon.classList.toggle('text-red-500', data.liked);
+                }
+            }
+        })
+        .catch(err => console.error('Like error:', err));
+    });
+})();
 
 // Modal hapus komentar
 (function () {

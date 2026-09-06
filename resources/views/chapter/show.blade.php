@@ -3,7 +3,9 @@
 @section('title', $chapter->manga->title . ' - Chapter ' . $chapter->number)
 @section('meta_description', 'Baca ' . $chapter->manga->title . ' Chapter ' . $chapter->number . ' bahasa Indonesia di NeoManga — gratis & update terbaru.')
 
+@push('styles')
 <link rel="stylesheet" href="{{ asset('css/chapter/show.css') }}">
+@endpush
 
 @section('content')
 <div class="min-h-screen">
@@ -13,8 +15,8 @@
     <div class="max-w-5xl mx-auto px-2 sm:px-4 py-6">
 
         {{-- Header chapter --}}
-        <div class="mb-5 bg-white dark:bg-[#0d1220] border border-slate-200 dark:border-white/5 rounded-2xl p-4 sm:p-5 shadow-sm">
-            <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-3 flex-wrap">
+        <div class="chapter-header-card mb-5 rounded-2xl p-4 sm:p-5 shadow-sm">
+            <nav class="flex items-center gap-2 text-xs sm:text-sm chapter-crumb mb-3 flex-wrap">
                 <a href="{{ route('dashboard') }}" class="hover:text-[#ff2e4d] transition-colors"><i class="fa-solid fa-house mr-1"></i>Beranda</a>
                 <i class="fa-solid fa-angle-right text-[10px]"></i>
                 <a href="{{ route('manga.show', $chapter->manga->slug) }}" class="hover:text-[#ff2e4d] transition-colors truncate max-w-[45vw]">{{ $chapter->manga->title }}</a>
@@ -28,20 +30,19 @@
         </div>
 
         {{-- Tombol nav atas --}}
-        <div class="flex items-center justify-between gap-3 mb-4">
+        <div class="reader-top-nav mb-4">
             <div id="chapter-dropdown-container-top" class="relative">
                 <button id="chapterListBtnTop" class="reader-btn" type="button">
                     <i class="fa-solid fa-list-ul"></i><span>Daftar Chapter</span>
                     <i class="fa-solid fa-chevron-down text-xs"></i>
                 </button>
-                <div id="chapterListTop" class="absolute top-full mt-2 left-0 w-64 bg-white dark:bg-[#131a2c] rounded-xl shadow-2xl max-h-80 overflow-y-auto z-50 hidden border border-slate-200 dark:border-white/10">
+                <div id="chapterListTop" class="chapter-dropdown">
                     <div class="p-2">
                         <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 px-3 py-1.5 uppercase tracking-wide">Pilih Chapter</div>
-                        <div class="grid grid-cols-4 gap-1 max-h-64 overflow-y-auto">
+                        <div class="chapter-grid">
                             @foreach($allChapters as $ch)
                                 <a href="{{ route('chapter.show', $ch->slug) }}"
-                                   class="block text-center px-1.5 py-1.5 rounded-lg text-xs font-medium transition-colors
-                                          @if($ch->id === $chapter->id) bg-[#ff2e4d] text-white @else text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 @endif">
+                                   class="{{ $ch->id === $chapter->id ? 'active' : '' }}">
                                     {{ $ch->number }}
                                 </a>
                             @endforeach
@@ -67,9 +68,9 @@
         </div>
 
         {{-- Gambar chapter --}}
-        <div class="space-y-1.5">
+        <div class="space-y-1">
             @foreach($chapter->image_urls as $index => $imageUrl)
-                <div class="flex justify-center">
+                <div class="reader-img-container flex justify-center">
                     <img src="{{ $imageUrl }}"
                          alt="{{ $chapter->manga->title }} Chapter {{ $chapter->number }} - Halaman {{ $index + 1 }}"
                          class="reader-img"
