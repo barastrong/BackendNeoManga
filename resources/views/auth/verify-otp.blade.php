@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" style="overflow-x:hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,6 +120,6 @@
         <p class="text-center text-xs text-slate-600 mt-6">© {{ date('Y') }} NeoManga — Baca Manga, Manhwa &amp; Manhua</p>
     </div>
 
-    <script src="{{ asset('js/auth/verify-otp-2.js') }}"></script>
+    <script src="{{ asset('js/auth/verify-otp.js') }}"></script>
 </body>
 </html>

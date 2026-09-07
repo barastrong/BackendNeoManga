@@ -114,47 +114,69 @@
                     <p class="mt-0.5 text-sm text-slate-500">Perbandingan total views vs pembaca unik per hari.</p>
                 </div>
                 <div class="flex items-center gap-4 text-xs">
-                    <span class="inline-flex items-center gap-1.5 text-slate-300">
-                        <span class="w-2.5 h-2.5 rounded-full bg-brand"></span> Views
-                    </span>
-                    <span class="inline-flex items-center gap-1.5 text-slate-300">
-                        <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> Pembaca Unik
-                    </span>
+                    <span class="inline-flex items-center gap-1.5 text-slate-300"><span style="width:9px;height:9px;border-radius:9999px;background:#ff2e4d;display:inline-block"></span> Views</span>
+                    <span class="inline-flex items-center gap-1.5 text-slate-300"><span style="width:9px;height:9px;border-radius:9999px;background:#38bdf8;display:inline-block"></span> Pembaca Unik</span>
                 </div>
             </div>
             @php
-                $mx = $chartMax;
-                $ptsV = $chartData->map(fn($d, $i) => [round($i * (700 / 29)), round(220 - ($d['total'] / $mx) * 190)]);
-                $ptsR = $chartData->map(fn($d, $i) => [round($i * (700 / 29)), round(220 - ($d['readers'] / $mx) * 190)]);
-                $lineV = $ptsV->map(fn($p) => "{$p[0]},{$p[1]}")->implode(' ');
-                $lineR = $ptsR->map(fn($p) => "{$p[0]},{$p[1]}")->implode(' ');
-                $areaV = "0,220 {$lineV} 700,220";
+                $mx = max(1, $chartMax * 1.15);
+                $W = 720; $H = 268; $L = 42; $R = 10; $T = 12; $B = 30;
+                $pw = $W - $L - $R; $ph = $H - $T - $B;
+                $n  = $chartData->count();
+                $step = $n > 1 ? $pw / ($n - 1) : 0;
+                $px = fn($i) => round($L + $i * $step, 1);
+                $py = fn($v) => round($T + $ph - ($v / $mx) * $ph, 1);
+                $vals = $chartData->values();
+                $ptsV = $vals->map(fn($d, $i) => [$px($i), $py($d['total'])])->all();
+                $ptsR = $vals->map(fn($d, $i) => [$px($i), $py($d['readers'])])->all();
+                $smooth = function ($pts) {
+                    $d = 'M ' . $pts[0][0] . ',' . $pts[0][1];
+                    for ($i = 0; $i < count($pts) - 1; $i++) {
+                        $p0 = $pts[max(0, $i - 1)]; $p1 = $pts[$i]; $p2 = $pts[$i + 1];
+                        $p3 = $pts[min(count($pts) - 1, $i + 2)];
+                        $c1 = [$p1[0] + ($p2[0] - $p0[0]) / 6, $p1[1] + ($p2[1] - $p0[1]) / 6];
+                        $c2 = [$p2[0] - ($p3[0] - $p1[0]) / 6, $p2[1] - ($p3[1] - $p1[1]) / 6];
+                        $d .= ' C' . $c1[0] . ',' . $c1[1] . ' ' . $c2[0] . ',' . $c2[1] . ' ' . $p2[0] . ',' . $p2[1];
+                    }
+                    return $d;
+                };
+                $pathV = $smooth($ptsV);
+                $pathR = $smooth($ptsR);
+                $lastV = end($ptsV); $lastR = end($ptsR);
+                $baseY = $T + $ph;
+                $areaV = $pathV . ' L' . $lastV[0] . ',' . $baseY . ' L' . $ptsV[0][0] . ',' . $baseY . ' Z';
+                $gridLines = [1, 0.75, 0.5, 0.25, 0];
+                $xl = [0, 7, 14, 21, 29];
             @endphp
-            <div class="relative w-full h-72 mt-2">
-                <svg class="w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 700 240">
+            <div class="relative mt-2" style="height:290px">
+                <svg class="w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 {{ $W }} {{ $H }}">
                     <defs>
                         <linearGradient id="anaAreaV" x1="0" x2="0" y1="0" y2="1">
-                            <stop offset="0%" stop-color="#ff2e4d" stop-opacity="0.28"></stop>
+                            <stop offset="0%" stop-color="#ff2e4d" stop-opacity="0.30"></stop>
                             <stop offset="100%" stop-color="#ff2e4d" stop-opacity="0"></stop>
                         </linearGradient>
+                        <linearGradient id="anaAreaR" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.22"></stop>
+                            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"></stop>
+                        </linearGradient>
                     </defs>
-                    @foreach([40, 90, 140, 190] as $gy)
-                        <line stroke="rgba(255,255,255,.06)" stroke-dasharray="4 4" x1="0" x2="700" y1="{{ $gy }}" y2="{{ $gy }}"></line>
+                    @foreach($gridLines as $gi => $f)
+                        @php $gy = $py($mx * $f); $gv = (int) round($mx * $f); @endphp
+                        <line stroke="rgba(255,255,255,.07)" stroke-dasharray="{{ $f == 0 ? 'none' : '3 5' }}" x1="{{ $L }}" x2="{{ $W - $R }}" y1="{{ $gy }}" y2="{{ $gy }}"></line>
+                        <text x="{{ $L - 8 }}" y="{{ $gy + 3 }}" text-anchor="end" font-size="9.5" fill="rgba(148,163,184,.85)" font-family="inherit">{{ $gv }}</text>
                     @endforeach
-                    <polygon points="{{ $areaV }}" fill="url(#anaAreaV)"></polygon>
-                    <polyline points="{{ $lineR }}" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" fill="none" stroke-opacity="0.9"></polyline>
-                    <polyline points="{{ $lineV }}" stroke="#ff2e4d" stroke-width="2.5" stroke-linecap="round" fill="none"></polyline>
-                    @foreach($ptsV as $i => $p)
-                        @if($i % 3 === 0 || $i === 29)
-                            <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="2.5" fill="#0d1220" stroke="#ff2e4d" stroke-width="1.5"></circle>
+                    <polygon points="0,0" fill="none"></polygon>
+                    <path d="{{ $areaV }}" fill="url(#anaAreaV)"></path>
+                    <path d="{{ $pathR }}" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.95"></path>
+                    <path d="{{ $pathV }}" stroke="#ff2e4d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <circle cx="{{ $lastR[0] }}" cy="{{ $lastR[1] }}" r="4" fill="#0d1220" stroke="#38bdf8" stroke-width="2"></circle>
+                    <circle cx="{{ $lastV[0] }}" cy="{{ $lastV[1] }}" r="4.5" fill="#0d1220" stroke="#ff2e4d" stroke-width="2.5"></circle>
+                    @foreach($xl as $xi)
+                        @if($xi < $n)
+                            <text x="{{ $px($xi) }}" y="{{ $H - 8 }}" text-anchor="middle" font-size="9.5" fill="rgba(148,163,184,.85)" font-family="inherit">{{ $vals[$xi]['label'] }}</text>
                         @endif
                     @endforeach
                 </svg>
-                <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2">
-                    <span>{{ $chartData->first()['date'] }}</span>
-                    <span class="text-slate-400">{{ now()->locale('id')->translatedFormat('F Y') }}</span>
-                    <span>{{ $chartData->last()['date'] }}</span>
-                </div>
             </div>
         </div>
 

@@ -17,7 +17,6 @@ use App\Http\Controllers\Site\ProfileController;
 use App\Http\Controllers\Site\SitemapController;
 use Illuminate\Support\Facades\Route;
 
-
 // ===== Panel Admin (auth + role admin) =====
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -25,14 +24,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Manga
     Route::get('/manga', [AdminMangaController::class, 'index'])->name('manga.index');
+    Route::post('/manga/bulk', [AdminMangaController::class, 'bulk'])->name('manga.bulk');
     Route::get('/manga/create', [AdminMangaController::class, 'create'])->name('manga.create');
-    Route::post('/manga', [AdminMangaController::class, 'store'])->name('manga.store');
-    Route::get('/manga/{manga}/edit', [AdminMangaController::class, 'edit'])->name('manga.edit');
-    Route::put('/manga/{manga}', [AdminMangaController::class, 'update'])->name('manga.update');
-    Route::delete('/manga/{manga}', [AdminMangaController::class, 'destroy'])->name('manga.destroy');
-
-    // Chapter per-manga
-    Route::get('/manga/{manga}/chapters', [AdminChapterController::class, 'index'])->name('manga.chapters.index');
     Route::get('/manga/{manga}/chapters/create', [AdminChapterController::class, 'create'])->name('manga.chapters.create');
     Route::post('/manga/{manga}/chapters', [AdminChapterController::class, 'store'])->name('manga.chapters.store');
     Route::get('/manga/{manga}/chapters/{chapter}/edit', [AdminChapterController::class, 'edit'])->name('manga.chapters.edit');
