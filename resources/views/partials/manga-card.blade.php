@@ -1,67 +1,46 @@
 @props(['manga'])
-<div class="manga-card" style="display:flex;flex-direction:column;height:100%">
-    <a href="{{ route('manga.show', $manga->slug) }}" class="block" style="display:flex;flex-direction:column;flex:1;min-height:0">
-        <div class="manga-cover">
-            {{-- Badge status --}}
-            @if($manga->status === 'completed')
-                <span class="mc-status absolute top-2 left-2 z-10 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Tamat</span>
-            @elseif($manga->status === 'ongoing')
-                <span class="mc-status absolute top-2 left-2 z-10 bg-[#ff2e4d] text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Ongoing</span>
-            @elseif($manga->status === 'hiatus')
-                <span class="mc-status absolute top-2 left-2 z-10 bg-amber-500 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Hiatus</span>
-            @endif
+<div class="manga-card">
+    <a href="{{ route('manga.show', $manga->slug) }}" class="manga-cover" title="{{ $manga->title }}">
+        @if($manga->cover_image)
+            <img src="{{ $manga->cover_url }}" alt="{{ $manga->title }}" loading="lazy">
+        @else
+            <span class="mc-ph"><i class="fa-solid fa-book-open"></i></span>
+        @endif
 
-            {{-- Cover --}}
-            @if($manga->cover_image)
-                <img src="{{ $manga->cover_url }}" alt="{{ $manga->title }}" loading="lazy"
-                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:rotate-[0.5deg]">
-            @else
-                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-700">
-                    <svg class="w-12 h-12 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                </div>
-            @endif
+        {{-- Badge status kiri atas --}}
+        @if($manga->status === 'completed')
+            <span class="mc-badge mc-badge-tamat">Tamat</span>
+        @elseif($manga->status === 'ongoing')
+            <span class="mc-badge mc-badge-ongoing">Ongoing</span>
+        @elseif($manga->status === 'hiatus')
+            <span class="mc-badge mc-badge-hiatus">Hiatus</span>
+        @endif
 
-            {{-- Overlay gradient bawah --}}
-            <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {{-- Flag asal kanan atas --}}
+        @if($manga->type === 'manga')
+            <span class="mc-flag"><img src="https://flagcdn.com/w40/jp.png" alt="Manga" title="Manga (Jepang)"></span>
+        @elseif($manga->type === 'manhwa')
+            <span class="mc-flag"><img src="https://flagcdn.com/w40/kr.png" alt="Manhwa" title="Manhwa (Korea)"></span>
+        @elseif($manga->type === 'manhua')
+            <span class="mc-flag"><img src="https://flagcdn.com/w40/cn.png" alt="Manhua" title="Manhua (China)"></span>
+        @endif
 
-            {{-- Badge tipe (bendera) --}}
-            <div class="absolute top-2 right-2 flex flex-col gap-1">
-                @if($manga->type === 'manga')
-                    <img src="https://flagcdn.com/w40/jp.png" alt="Manga" class="w-8 h-5 rounded object-cover shadow ring-1 ring-black/20" title="Manga (Jepang)">
-                @elseif($manga->type === 'manhwa')
-                    <img src="https://flagcdn.com/w40/kr.png" alt="Manhwa" class="w-8 h-5 rounded object-cover shadow ring-1 ring-black/20" title="Manhwa (Korea)">
-                @elseif($manga->type === 'manhua')
-                    <img src="https://flagcdn.com/w40/cn.png" alt="Manhua" class="w-8 h-5 rounded object-cover shadow ring-1 ring-black/20" title="Manhua (China)">
-                @endif
-            </div>
-
-            {{-- Badge COLOR utk komik berwarna (manhwa/manhua/webtoon) --}}
-            @if(in_array($manga->type, ['manhwa', 'manhua', 'webtoon']))
-                <span class="mc-color"><i class="fa-solid fa-palette"></i>COLOR</span>
-            @endif
-
-            {{-- Rating --}}
-            @if($manga->ratings_avg_rating > 0)
-                <div class="absolute bottom-2 left-2 flex items-center gap-1 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <i class="fa-solid fa-star text-amber-400 text-[10px]"></i>
-                    <span>{{ number_format($manga->ratings_avg_rating, 1) }}</span>
-                </div>
-            @endif
-        </div>
-
-        <div class="mt-2.5" style="display:flex;flex-direction:column;min-height:0">
-            {{-- Judul: clamp 2 baris fixed-height (bukan min) biar gak ada void --}}
-            <h3 class="manga-title" title="{{ $manga->title }}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.3;height:36.4px;overflow:hidden">{{ $manga->title }}</h3>
-            {{-- Chapter: langsung nempel setelah genre, tanpa dorong ke bawah --}}
-            @if($manga->latestPublishedChapter)
-                <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug) }}"
-                   class="mc-ch-row" title="Baca chapter terbaru">
-                    <span class="mc-ch-num"><i class="fa-solid fa-book-open-reader"></i>CH {{ $manga->latestPublishedChapter->number }}</span>
-                    <span class="mc-date">{{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}</span>
-                </a>
-            @else
-                <p class="mc-ch-empty">Belum ada chapter</p>
-            @endif
-        </div>
+        {{-- Badge COLOR utk komik berwarna --}}
+        @if(in_array($manga->type, ['manhwa', 'manhua', 'webtoon']))
+            <span class="mc-color"><i class="fa-solid fa-palette"></i>COLOR</span>
+        @endif
     </a>
+
+    <div class="mc-body">
+        <h3 class="manga-title" title="{{ $manga->title }}">{{ $manga->title }}</h3>
+
+        @if($manga->latestPublishedChapter)
+            <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug) }}" class="mc-ch-row" title="Baca chapter terbaru">
+                <span class="mc-ch-num"><i class="fa-solid fa-book-open-reader"></i>CH {{ $manga->latestPublishedChapter->number }}</span>
+                <span class="mc-date">{{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}</span>
+            </a>
+        @else
+            <p class="mc-ch-empty">Belum ada chapter</p>
+        @endif
+    </div>
 </div>
