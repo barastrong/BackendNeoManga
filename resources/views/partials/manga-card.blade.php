@@ -4,11 +4,11 @@
         <div class="manga-cover">
             {{-- Badge status --}}
             @if($manga->status === 'completed')
-                <span class="absolute top-2 left-2 z-10 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Tamat</span>
+                <span class="mc-status absolute top-2 left-2 z-10 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Tamat</span>
             @elseif($manga->status === 'ongoing')
-                <span class="absolute top-2 left-2 z-10 bg-[#ff2e4d] text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Ongoing</span>
+                <span class="mc-status absolute top-2 left-2 z-10 bg-[#ff2e4d] text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Ongoing</span>
             @elseif($manga->status === 'hiatus')
-                <span class="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Hiatus</span>
+                <span class="mc-status absolute top-2 left-2 z-10 bg-amber-500 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md shadow">Hiatus</span>
             @endif
 
             {{-- Cover --}}
@@ -35,6 +35,11 @@
                 @endif
             </div>
 
+            {{-- Badge COLOR utk komik berwarna (manhwa/manhua/webtoon) --}}
+            @if(in_array($manga->type, ['manhwa', 'manhua', 'webtoon']))
+                <span class="mc-color"><i class="fa-solid fa-palette"></i>COLOR</span>
+            @endif
+
             {{-- Rating --}}
             @if($manga->ratings_avg_rating > 0)
                 <div class="absolute bottom-2 left-2 flex items-center gap-1 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -50,13 +55,12 @@
             {{-- Chapter: langsung nempel setelah genre, tanpa dorong ke bawah --}}
             @if($manga->latestPublishedChapter)
                 <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug) }}"
-                   class="mt-2 flex items-center justify-between text-xs bg-slate-100 dark:bg-white/5 hover:bg-[#ff2e4d]/10 dark:hover:bg-[#ff2e4d]/15 text-slate-600 dark:text-slate-300 hover:text-[#e62242] dark:hover:text-[#ff4d66] border border-slate-200 dark:border-white/5 rounded-lg px-2.5 py-1.5 transition-colors mc-ch"
-                   style="height:30px">
-                    <span class="font-semibold flex items-center gap-1.5"><i class="fa-solid fa-book-open-reader text-[10px] opacity-60"></i>CH {{ $manga->latestPublishedChapter->number }}</span>
-                    <span class="mc-date opacity-70">{{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}</span>
+                   class="mc-ch-row" title="Baca chapter terbaru">
+                    <span class="mc-ch-num"><i class="fa-solid fa-book-open-reader"></i>CH {{ $manga->latestPublishedChapter->number }}</span>
+                    <span class="mc-date">{{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}</span>
                 </a>
             @else
-                <p class="mt-2 text-xs text-slate-400 dark:text-slate-500 italic flex items-center" style="height:30px">Belum ada chapter</p>
+                <p class="mc-ch-empty">Belum ada chapter</p>
             @endif
         </div>
     </a>
