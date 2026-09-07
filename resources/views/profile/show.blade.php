@@ -1,4 +1,3 @@
-bash.exe: warning: could not find /tmp, please create!
 @extends('layouts.app')
 
 @section('title', 'Profil ' . e($user->name) . ' — NeoManga')

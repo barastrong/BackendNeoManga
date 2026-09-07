@@ -1,4 +1,3 @@
-bash.exe: warning: could not find /tmp, please create!
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 <head>
