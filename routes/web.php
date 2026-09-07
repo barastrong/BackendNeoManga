@@ -96,4 +96,3 @@ Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::get('/llms.txt', [SitemapController::class, 'llms'])->name('llms');
 
 require __DIR__.'/auth.php';
-require __DIR__.'/preview.php';
