@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/app.css">
-    <link rel="stylesheet" href="/css/layouts/user-dropdown.css">
+    <link rel="stylesheet" href="/css/layouts/user-dropdown.css?v=20260907-3">
     <!-- Theme restore inline sebelum CSS render (anti flash) -->
     <script>
         (function () {
