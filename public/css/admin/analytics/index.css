@@ -2,6 +2,17 @@
 /* xl:* Tailwind terpurge dari app.css → pakai grid custom. */
 .ana-cards{display:grid;grid-template-columns:1fr;gap:1rem}
 .ana-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+/* ===== Baris cepat (tren upload 7/30 hari + rekap cepat) — anti-purge ===== */
+.ana-quick{display:grid;grid-template-columns:1fr;gap:1rem}
+.ana-mini{display:flex;align-items:center;gap:10px;min-width:0;flex-shrink:1}
+.ana-mini .adm-chip{flex-shrink:0}
+.ana-mini-label{font-size:11px;line-height:1.25;color:rgba(148,163,184,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ana-mini-value{font-family:var(--font-display,inherit);font-weight:700;font-size:17px;color:#fff;line-height:1.15;white-space:nowrap}
+@media (min-width:640px){.ana-quick{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1024px){.ana-quick{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:640px){.ana-mini{flex-direction:column;align-items:flex-start;gap:6px;padding:2px 0}}
+.ana-quick .adm-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.ana-quick .adm-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.35);border-color:rgba(255,46,77,.25)}
 .ana-cards .adm-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
 .ana-cards .adm-card:hover,.ana-grid .adm-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.35);border-color:rgba(255,46,77,.25)}
 .ana-span-4,.ana-span-5,.ana-span-6,.ana-span-7,.ana-span-8,.ana-span-12{grid-column:1/-1}

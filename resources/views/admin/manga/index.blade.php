@@ -74,7 +74,7 @@
 {{-- GRID --}}
 <div class="mt-6 mg-grid"
      data-bulk-form="{{ route('admin.manga.bulk') }}"
-     data-bulk-actions='{{ Js::from([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"ongoing","label"=>"▶ Set Ongoing"],["value"=>"completed","label"=>"✅ Set Completed"],["value"=>"hiatus","label"=>"⏸ Set Hiatus"],["value"=>"cancelled","label"=>"⛔ Set Cancelled"]]) }}'>
+     data-bulk-actions='{{ json_encode([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"ongoing","label"=>"▶ Set Ongoing"],["value"=>"completed","label"=>"✅ Set Completed"],["value"=>"hiatus","label"=>"⏸ Set Hiatus"],["value"=>"cancelled","label"=>"⛔ Set Cancelled"]]) }}'>
     @forelse ($mangas as $manga)
         @php
             $typeMeta = [

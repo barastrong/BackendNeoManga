@@ -52,7 +52,7 @@
         <div class="overflow-x-auto">
             <table class="w-full" style="border-collapse:collapse;font-size:13.5px;min-width:680px"
                    data-bulk-form="{{ route('admin.user.bulk') }}"
-                   data-bulk-actions='{{ Js::from([["value"=>"ban","label"=>"🚫 Ban"],["value"=>"unban","label"=>"🔓 Unban"],["value"=>"delete","label"=>"🗑 Hapus"]]) }}'>
+                   data-bulk-actions='{{ json_encode([["value"=>"ban","label"=>"🚫 Ban"],["value"=>"unban","label"=>"🔓 Unban"],["value"=>"delete","label"=>"🗑 Hapus"]]) }}'>
                 <thead>
                     <tr>
                         <th class="us-th">Pengguna</th>

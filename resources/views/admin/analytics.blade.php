@@ -108,27 +108,183 @@
         </div>
     </div>
 
+    {{-- 1b. Baris cepat: rekap 7/30 hari + tren upload + rekap cepat --}}
+    <div class="mt-4 ana-quick">
+        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Upload Chapter — 7 Hari Terakhir</h3>
+                    <p class="mt-1 text-xs text-slate-500">Total {{ number_format($releaseSeries->take(7)->sum('total')) }} chapter · {{ $chapterToday }} hari ini</p>
+                </div>
+                <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-layer-group text-sm"></i></span>
+            </div>
+            <div class="flex items-end gap-1.5 mt-4 h-16">
+                @foreach($releaseSeries->take(7) as $b)
+                    <div class="flex-1 flex flex-col items-center gap-1 min-w-0" title="{{ $b['date'] }} · {{ $b['total'] }} chapter">
+                        <span class="text-[10px] font-semibold {{ $b['total'] > 0 ? 'text-slate-300' : 'text-slate-600' }}">{{ $b['total'] }}</span>
+                        <div class="w-full max-w-[30px] rounded-t-md transition-all duration-500" style="height:{{ max(2, round($b['total'] / $releaseMax * 46)) }}px;background:linear-gradient(to top,rgba(52,211,153,.35),#34d399)"></div>
+                        <span class="text-[9px] text-slate-500">{{ \Carbon\Carbon::parse($b['date'])->locale('id')->isoFormat('dd') }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Judul Baru — 30 Hari Terakhir</h3>
+                    <p class="mt-1 text-xs text-slate-500">{{ number_format($mangaThisMonth) }} bulan ini · {{ number_format($mangaThisWeek) }} minggu ini</p>
+                </div>
+                <span class="p-2 rounded-lg adm-chip text-sky-400"><i class="fa-solid fa-book-medical text-sm"></i></span>
+            </div>
+            <div class="flex items-end gap-1.5 mt-4 h-16">
+                @foreach($newMangaSeries->take(30)->filter(fn ($b) => $b['total'] > 0)->take(7) as $b)
+                    <div class="flex-1 flex flex-col items-center gap-1 min-w-0" title="{{ $b['date'] }} · {{ $b['total'] }} judul">
+                        <span class="text-[10px] font-semibold text-slate-300">{{ $b['total'] }}</span>
+                        <div class="w-full max-w-[30px] rounded-t-md transition-all duration-500" style="height:{{ max(2, round($b['total'] / $newMangaMax * 46)) }}px;background:linear-gradient(to top,rgba(56,189,248,.35),#38bdf8)"></div>
+                        <span class="text-[9px] text-slate-500">{{ \Carbon\Carbon::parse($b['date'])->locale('id')->isoFormat('dd') }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
+            <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Rekap Cepat</h3>
+            <div class="grid grid-cols-3 gap-3 mt-4">
+                <div class="ana-mini">
+                    <span class="p-2 rounded-lg adm-chip text-brand"><i class="fa-solid fa-eye text-[11px]"></i></span>
+                    <div class="min-w-0">
+                        <div class="ana-mini-label">7 hari</div>
+                        <div class="ana-mini-value">{{ number_format($viewsWeek ?? 0) }}</div>
+                    </div>
+                </div>
+                <div class="ana-mini">
+                    <span class="p-2 rounded-lg adm-chip text-indigo-400"><i class="fa-solid fa-fire text-[11px]"></i></span>
+                    <div class="min-w-0">
+                        <div class="ana-mini-label">30 hari</div>
+                        <div class="ana-mini-value">{{ number_format($views30d ?? 0) }}</div>
+                    </div>
+                </div>
+                <div class="ana-mini">
+                    <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-user-plus text-[11px]"></i></span>
+                    <div class="min-w-0">
+                        <div class="ana-mini-label">user baru / pekan</div>
+                        <div class="ana-mini-value">{{ number_format($newUsersWeek) }}</div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-[11px] text-slate-500 leading-snug"><i class="fa-solid fa-circle-info text-sky-400 mr-1"></i>Peak upload &amp; judul baru = momen terbaik untuk push promosi.</p>
+        </div>
+    </div>
+
+    {{-- 1b. Baris cepat: tren upload 7/30 hari + rekap cepat --}}
+    <div class="mt-4 ana-quick">
+        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Upload Chapter — 7 Hari Terakhir</h3>
+                    <p class="mt-1 text-xs text-slate-500">Total {{ number_format($releaseSeries->take(7)->sum('total')) }} chapter · {{ $chapterToday }} hari ini</p>
+                </div>
+                <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-layer-group text-sm"></i></span>
+            </div>
+            <div class="flex items-end gap-1.5 mt-4 h-16">
+                @foreach($releaseSeries->take(7) as $b)
+                    <div class="flex-1 flex flex-col items-center gap-1 min-w-0" title="{{ $b['date'] }} · {{ $b['total'] }} chapter">
+                        <span class="text-[10px] font-semibold {{ $b['total'] > 0 ? 'text-slate-300' : 'text-slate-600' }}">{{ $b['total'] }}</span>
+                        <div class="w-full max-w-[30px] rounded-t-md transition-all duration-500" style="height:{{ max(2, round($b['total'] / $releaseMax * 46)) }}px;background:linear-gradient(to top,rgba(52,211,153,.35),#34d399)"></div>
+                        <span class="text-[9px] text-slate-500">{{ \Carbon\Carbon::parse($b['date'])->locale('id')->isoFormat('dd') }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Judul Baru — 30 Hari Terakhir</h3>
+                    <p class="mt-1 text-xs text-slate-500">{{ number_format($mangaThisMonth) }} bulan ini · {{ number_format($mangaThisWeek) }} minggu ini</p>
+                </div>
+                <span class="p-2 rounded-lg adm-chip text-sky-400"><i class="fa-solid fa-book-medical text-sm"></i></span>
+            </div>
+            <div class="flex items-end gap-1.5 mt-4 h-16">
+                @foreach($newMangaSeries->filter(fn ($b) => $b['total'] > 0)->take(7) as $b)
+                    <div class="flex-1 flex flex-col items-center gap-1 min-w-0" title="{{ $b['date'] }} · {{ $b['total'] }} judul baru">
+                        <span class="text-[10px] font-semibold text-slate-300">{{ $b['total'] }}</span>
+                        <div class="w-full max-w-[30px] rounded-t-md transition-all duration-500" style="height:{{ max(2, round($b['total'] / $newMangaMax * 46)) }}px;background:linear-gradient(to top,rgba(56,189,248,.35),#38bdf8)"></div>
+                        <span class="text-[9px] text-slate-500">{{ \Carbon\Carbon::parse($b['date'])->locale('id')->isoFormat('dd') }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
+            <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Rekap Cepat</h3>
+            @php
+                $views30dQ = (int) $chartData->sum('total');
+                $views7dQ  = (int) $chartData->slice(-7)->sum('total');
+            @endphp
+            <div class="grid grid-cols-3 gap-3 mt-4">
+                <div class="ana-mini">
+                    <span class="p-2 rounded-lg adm-chip text-brand"><i class="fa-solid fa-eye text-[11px]"></i></span>
+                    <div class="min-w-0">
+                        <div class="ana-mini-label">Views 7 hari</div>
+                        <div class="ana-mini-value">{{ number_format($views7dQ) }}</div>
+                    </div>
+                </div>
+                <div class="ana-mini">
+                    <span class="p-2 rounded-lg adm-chip text-indigo-400"><i class="fa-solid fa-fire text-[11px]"></i></span>
+                    <div class="min-w-0">
+                        <div class="ana-mini-label">Views 30 hari</div>
+                        <div class="ana-mini-value">{{ number_format($views30dQ) }}</div>
+                    </div>
+                </div>
+                <div class="ana-mini">
+                    <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-user-plus text-[11px]"></i></span>
+                    <div class="min-w-0">
+                        <div class="ana-mini-label">user baru / pekan</div>
+                        <div class="ana-mini-value">{{ number_format($newUsersWeek) }}</div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-[11px] text-slate-500 leading-snug"><i class="fa-solid fa-circle-info text-sky-400 mr-1"></i>Peak upload &amp; judul baru = momen terbaik untuk push promosi.</p>
+        </div>
+    </div>
+
     {{-- 2. Baris utama: dual line chart (7) + kolom kanan (5: aktivitas + komentar) --}}
     <div class="mt-6 ana-grid">
         <div class="ana-span-7 adm-card p-6 rounded-2xl shadow-sm">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5">
+            <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h2 class="font-display text-lg font-semibold text-white">Trafik Pembaca — 30 Hari</h2>
-                    <p class="mt-0.5 text-sm text-slate-500">Perbandingan total views vs pembaca unik per hari.</p>
+                    <h2 class="font-display text-lg font-semibold text-white">Trafik Pembaca — {{ $chartSpanDays }} Hari</h2>
+                    <p class="mt-0.5 text-sm text-slate-500">Total views vs pembaca unik per hari.</p>
                 </div>
-                <div class="flex items-center gap-4 text-xs">
-                    <span class="inline-flex items-center gap-1.5 text-slate-300"><span style="width:9px;height:9px;border-radius:9999px;background:#ff2e4d;display:inline-block"></span> Views</span>
-                    <span class="inline-flex items-center gap-1.5 text-slate-300"><span style="width:9px;height:9px;border-radius:9999px;background:#38bdf8;display:inline-block"></span> Pembaca Unik</span>
+                <div class="flex items-center gap-3 text-xs">
+                    <span class="inline-flex items-center gap-1.5 font-medium text-slate-200"><span style="width:9px;height:9px;border-radius:9999px;background:#ff2e4d;display:inline-block"></span> Views</span>
+                    <span class="inline-flex items-center gap-1.5 font-medium text-slate-200"><span style="width:9px;height:9px;border-radius:9999px;background:#38bdf8;display:inline-block"></span> Pembaca Unik</span>
                 </div>
             </div>
+            @if(!$chartHasData)
+                <div class="flex flex-col items-center justify-center py-14 text-center">
+                    <i class="fa-solid fa-chart-line text-3xl" style="color:rgba(148,163,184,.3)"></i>
+                    <p class="mt-3 text-sm text-slate-400">Belum ada data trafik pembaca.</p>
+                    <p class="mt-1 text-xs text-slate-600">Data akan muncul otomatis setelah ada kunjungan ke halaman manga.</p>
+                </div>
+            @else
             @php
-                $mx = max(1, $chartMax * 1.15);
-                $W = 720; $H = 268; $L = 42; $R = 10; $T = 12; $B = 30;
+                $W = 760; $H = 280; $L = 44; $R = 20; $T = 18; $B = 32;
                 $pw = $W - $L - $R; $ph = $H - $T - $B;
                 $n  = $chartData->count();
                 $step = $n > 1 ? $pw / ($n - 1) : 0;
                 $px = fn($i) => round($L + $i * $step, 1);
-                $py = fn($v) => round($T + $ph - ($v / $mx) * $ph, 1);
+                // Sumbu Y "nice": kelipatan 1/2/5 × 10^k, dengan ruang napas ~15% di atas nilai maks.
+                $rawMax = max(1, $chartMax);
+                $target = $rawMax * 1.15;
+                $mag = pow(10, floor(log10($target)));
+                $niceMax = $target <= $mag
+                    ? $mag
+                    : ($target <= 2 * $mag ? 2 * $mag : ($target <= 5 * $mag ? 5 * $mag : 10 * $mag));
+                $gridCount = 5;
+                $py = fn($v) => round($T + $ph - ($v / $niceMax) * $ph, 1);
                 $vals = $chartData->values();
                 $ptsV = $vals->map(fn($d, $i) => [$px($i), $py($d['total'])])->all();
                 $ptsR = $vals->map(fn($d, $i) => [$px($i), $py($d['readers'])])->all();
@@ -143,44 +299,53 @@
                     }
                     return $d;
                 };
-                $pathV = $smooth($ptsV);
-                $pathR = $smooth($ptsR);
+                $pathV = $smooth($ptsV); $pathR = $smooth($ptsR);
                 $lastV = end($ptsV); $lastR = end($ptsR);
                 $baseY = $T + $ph;
                 $areaV = $pathV . ' L' . $lastV[0] . ',' . $baseY . ' L' . $ptsV[0][0] . ',' . $baseY . ' Z';
-                $gridLines = [1, 0.75, 0.5, 0.25, 0];
-                $xl = [0, 7, 14, 21, 29];
+                $areaR = $pathR . ' L' . $lastR[0] . ',' . $baseY . ' L' . $ptsR[0][0] . ',' . $baseY . ' Z';
+                $xTicks = $n > 1 ? [0, (int)round(($n - 1) / 4), (int)round(($n - 1) / 2), (int)round(3 * ($n - 1) / 4), $n - 1] : [0];
             @endphp
-            <div class="relative mt-2" style="height:290px">
+            <div class="relative mt-3" style="height:300px">
                 <svg class="w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 {{ $W }} {{ $H }}">
                     <defs>
                         <linearGradient id="anaAreaV" x1="0" x2="0" y1="0" y2="1">
-                            <stop offset="0%" stop-color="#ff2e4d" stop-opacity="0.30"></stop>
+                            <stop offset="0%" stop-color="#ff2e4d" stop-opacity="0.28"></stop>
                             <stop offset="100%" stop-color="#ff2e4d" stop-opacity="0"></stop>
                         </linearGradient>
                         <linearGradient id="anaAreaR" x1="0" x2="0" y1="0" y2="1">
-                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.22"></stop>
+                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.20"></stop>
                             <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"></stop>
                         </linearGradient>
                     </defs>
-                    @foreach($gridLines as $gi => $f)
-                        @php $gy = $py($mx * $f); $gv = (int) round($mx * $f); @endphp
-                        <line stroke="rgba(255,255,255,.07)" stroke-dasharray="{{ $f == 0 ? 'none' : '3 5' }}" x1="{{ $L }}" x2="{{ $W - $R }}" y1="{{ $gy }}" y2="{{ $gy }}"></line>
-                        <text x="{{ $L - 8 }}" y="{{ $gy + 3 }}" text-anchor="end" font-size="9.5" fill="rgba(148,163,184,.85)" font-family="inherit">{{ $gv }}</text>
-                    @endforeach
-                    <polygon points="0,0" fill="none"></polygon>
+                    @for($gi = 0; $gi <= $gridCount; $gi++)
+                        @php
+                            $gv = $niceMax * $gi / $gridCount;
+                            $gy = $py($gv);
+                            $isBase = $gi === 0;
+                        @endphp
+                        <line stroke="{{ $isBase ? 'rgba(255,255,255,.14)' : 'rgba(255,255,255,.07)' }}" stroke-dasharray="{{ $isBase ? 'none' : '3 5' }}" x1="{{ $L }}" x2="{{ $W - $R }}" y1="{{ $gy }}" y2="{{ $gy }}"></line>
+                        <text x="{{ $L - 9 }}" y="{{ $gy + 3.5 }}" text-anchor="end" font-size="10.5" font-weight="600" fill="{{ $isBase ? 'rgba(148,163,184,.95)' : 'rgba(148,163,184,.8)' }}" font-family="inherit">{{ (int) $gv }}</text>
+                    @endfor
+                    <path d="{{ $areaR }}" fill="url(#anaAreaR)"></path>
                     <path d="{{ $areaV }}" fill="url(#anaAreaV)"></path>
-                    <path d="{{ $pathR }}" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.95"></path>
-                    <path d="{{ $pathV }}" stroke="#ff2e4d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <circle cx="{{ $lastR[0] }}" cy="{{ $lastR[1] }}" r="4" fill="#0d1220" stroke="#38bdf8" stroke-width="2"></circle>
-                    <circle cx="{{ $lastV[0] }}" cy="{{ $lastV[1] }}" r="4.5" fill="#0d1220" stroke="#ff2e4d" stroke-width="2.5"></circle>
-                    @foreach($xl as $xi)
-                        @if($xi < $n)
-                            <text x="{{ $px($xi) }}" y="{{ $H - 8 }}" text-anchor="middle" font-size="9.5" fill="rgba(148,163,184,.85)" font-family="inherit">{{ $vals[$xi]['label'] }}</text>
-                        @endif
+                    <path d="{{ $pathR }}" stroke="#38bdf8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.95"></path>
+                    <path d="{{ $pathV }}" stroke="#ff2e4d" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <circle cx="{{ $lastR[0] }}" cy="{{ $lastR[1] }}" r="4" fill="#0d1220" stroke="#38bdf8" stroke-width="2.2"></circle>
+                    <circle cx="{{ $lastV[0] }}" cy="{{ $lastV[1] }}" r="4.5" fill="#0d1220" stroke="#ff2e4d" stroke-width="2.6"></circle>
+                    @if($lastR[1] > $T + 16)
+                        <text x="{{ $lastR[0] + 9 }}" y="{{ $lastR[1] + 3.5 }}" font-size="10" font-weight="700" fill="#7dd3fc" font-family="inherit">{{ $vals[$n - 1]['readers'] }} unik</text>
+                    @endif
+                    @if($lastV[1] > $T + 16)
+                        <text x="{{ $lastV[0] + 9 }}" y="{{ $lastV[1] - 6 }}" font-size="10" font-weight="700" fill="#fda4af" font-family="inherit">{{ $vals[$n - 1]['total'] }} views</text>
+                    @endif
+                    @foreach($xTicks as $ti)
+                        @php $txi = $vals[$ti]; @endphp
+                        <text x="{{ $px($ti) }}" y="{{ $H - 9 }}" text-anchor="{{ $ti === 0 ? 'start' : ($ti === $n - 1 ? 'end' : 'middle') }}" font-size="10" fill="rgba(148,163,184,.85)" font-family="inherit">{{ $txi['label'] }}</text>
                     @endforeach
                 </svg>
             </div>
+            @endif
         </div>
 
         <div class="ana-span-5 flex flex-col gap-6">

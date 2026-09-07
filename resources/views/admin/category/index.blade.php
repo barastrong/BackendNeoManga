@@ -71,7 +71,7 @@
         <div class="overflow-x-auto">
             <table class="w-full" style="border-collapse:collapse;font-size:13px"
                    data-bulk-form="{{ route('admin.category.bulk') }}"
-                   data-bulk-actions='{{ Js::from([["value"=>"delete","label"=>"🗑 Hapus"]]) }}'>
+                   data-bulk-actions='{{ json_encode([["value"=>"delete","label"=>"🗑 Hapus"]]) }}'>
                 <thead>
                     <tr>
                         <th class="cat-th" style="width:50px">No</th>

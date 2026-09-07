@@ -28,12 +28,19 @@ class AnalyticsController extends Controller
         $mangaCount     = \App\Models\Manga::count();
         $chapterCount   = Chapter::count();
 
-        // ===== Dual-line: views + pembaca unik, 30 hari =====
-        $viewsDaily = MangaView::where('view_date', '>=', now()->subDays(29)->toDateString())
+        // ===== Dual-line: views + pembaca unik =====
+        // Jendela adaptif: 30 hari, atau sejak data pertama bila site masih muda —
+        // backfill 30 hari penuh di site baru cuma menghasilkan deret nol panjang yang merusak grafik.
+        $firstDate = MangaView::min('view_date');
+        $days = $firstDate
+            ? min(30, max(1, now()->startOfDay()->diffInDays(\Illuminate\Support\Carbon::parse($firstDate)->startOfDay()) + 1))
+            : 30;
+
+        $viewsDaily = MangaView::where('view_date', '>=', now()->subDays($days - 1)->toDateString())
             ->selectRaw('view_date, COUNT(*) as total, COUNT(DISTINCT user_id) as readers')
             ->groupBy('view_date')->orderBy('view_date')->get()->keyBy('view_date');
 
-        $chartData = collect(range(29, 0))->map(function ($i) use ($viewsDaily) {
+        $chartData = collect(range($days - 1, 0))->map(function ($i) use ($viewsDaily) {
             $date = now()->subDays($i)->toDateString();
             $row  = $viewsDaily->get($date);
             return [
@@ -43,7 +50,9 @@ class AnalyticsController extends Controller
                 'readers' => (int) ($row->readers ?? 0),
             ];
         });
-        $chartMax = max(1, $chartData->max('total'), $chartData->max('readers'));
+        $chartMax    = max(1, $chartData->max('total'), $chartData->max('readers'));
+        $chartHasData = $chartData->sum('total') + $chartData->sum('readers') > 0;
+        $chartSpanDays = $days;
 
         $viewsToday     = (int) ($viewsDaily->get(now()->toDateString())->total ?? 0);
         $viewsYesterday = (int) ($viewsDaily->get(now()->subDay()->toDateString())->total ?? 0);
@@ -120,13 +129,39 @@ class AnalyticsController extends Controller
             'chapters'  => Chapter::whereDate('created_at', now())->count(),
         ];
 
+        // ===== Rilis chapter 30 hari (bar mini di bawah KPI) =====
+        $chDaily = Chapter::where('created_at', '>=', now()->subDays(29)->startOfDay())
+            ->selectRaw('DATE(created_at) d, COUNT(*) c')
+            ->groupBy('d')->pluck('c', 'd');
+        $releaseSeries = collect(range(29, 0))->map(fn ($i) => [
+            'date'  => now()->subDays($i)->toDateString(),
+            'total' => (int) ($chDaily[now()->subDays($i)->toDateString()] ?? 0),
+        ]);
+        $releaseMax = max(1, $releaseSeries->max('total'));
+        $chapterToday = $todayStats['chapters'];
+
+        // ===== Manga baru + user baru 30 hari (bar mini) =====
+        $mangaDaily = Manga::where('created_at', '>=', now()->subDays(29)->startOfDay())
+            ->selectRaw('DATE(created_at) d, COUNT(*) c')
+            ->groupBy('d')->pluck('c', 'd');
+        $newMangaSeries = collect(range(29, 0))->map(fn ($i) => [
+            'date'  => now()->subDays($i)->toDateString(),
+            'total' => (int) ($mangaDaily[now()->subDays($i)->toDateString()] ?? 0),
+        ]);
+        $newMangaMax = max(1, $newMangaSeries->max('total'));
+        $mangaThisMonth = Manga::where('created_at', '>=', now()->startOfMonth())->count();
+        $mangaThisWeek  = Manga::where('created_at', '>=', now()->startOfWeek())->count();
+        $newUsersWeek   = User::where('created_at', '>=', now()->startOfWeek())->count();
+
         return view('admin.analytics', compact(
             'totalViews', 'readers30d', 'avgRating', 'ratingVotes', 'totalComments', 'commentsMonth',
             'totalBookmarks', 'totalUsers', 'usersMonth', 'mangaCount', 'chapterCount',
-            'chartData', 'chartMax', 'viewsToday', 'viewDelta',
+            'chartData', 'chartMax', 'chartHasData', 'chartSpanDays', 'viewsToday', 'viewDelta',
             'chapterSeries', 'chapterMax', 'userSeries', 'userMax',
             'genreViews', 'genreMax', 'topManga', 'topRated',
-            'recentComments', 'mangaByGenre', 'genreCatalogMax', 'todayStats'
+            'recentComments', 'mangaByGenre', 'genreCatalogMax', 'todayStats',
+            'releaseSeries', 'releaseMax', 'chapterToday', 'newMangaSeries', 'newMangaMax',
+            'mangaThisMonth', 'mangaThisWeek', 'newUsersWeek'
         ));
     }
 }
