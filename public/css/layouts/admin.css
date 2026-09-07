@@ -1,14 +1,73 @@
+/* ===== Admin shared helpers (dipakai semua halaman admin) ===== */
 .adm-surface { background-color: #0d1220; border-color: rgba(255,255,255,.06); }
-        .adm-card { background-color: #131a2c; border: 1px solid rgba(255,255,255,.06); }
-        .adm-card-hover:hover { border-color: rgba(255,46,77,.35); box-shadow: 0 10px 30px -12px rgba(255,46,77,.2); }
-        .adm-text-dim { color: #94a3b8; }
-        .adm-text-faint { color: #64748b; }
-        .adm-primary { color: #ff2e4d; }
-        .adm-primary-bg { background-color: #ff2e4d; }
-        .adm-chip { background-color: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
-        .adm-input { background-color: #0d1220; border: 1px solid rgba(255,255,255,.08); }
-        .adm-input:focus { border-color: rgba(255,46,77,.5); outline: none; }
-        .adm-svg-line { stroke: url(#lineGrad); }
-        .adm-area-path { fill: url(#areaGrad); }
-        .adm-tr-hover:hover { background-color: rgba(255,255,255,.03); }
-        .adm-th { color: #64748b; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.adm-card { background-color: #131a2c; border: 1px solid rgba(255,255,255,.06); }
+.adm-card-hover:hover { border-color: rgba(255,46,77,.35); box-shadow: 0 10px 30px -12px rgba(255,46,77,.2); }
+.adm-text-dim { color: #94a3b8; }
+.adm-text-faint { color: #64748b; }
+.adm-primary { color: #ff2e4d; }
+.adm-primary-bg { background-color: #ff2e4d; }
+.adm-chip { background-color: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+.adm-input { background-color: #0d1220; border: 1px solid rgba(255,255,255,.08); }
+.adm-input:focus { border-color: rgba(255,46,77,.5); outline: none; }
+.adm-svg-line { stroke: url(#lineGrad); }
+.adm-area-path { fill: url(#areaGrad); }
+.adm-tr-hover:hover { background-color: rgba(255,255,255,.03); }
+.adm-th { color: #64748b; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+
+/* ===== Admin Sidebar (adm-sb) — self-contained ANTI-PURGE =====
+   Utility responsive (lg:*) di sidebar TERPURGE dari app.css → semua
+   gaya sidebar didefinisikan native di sini. */
+.adm-layout { display: block; min-height: 100vh; }
+.adm-main { min-width: 0; display: flex; flex-direction: column; flex: 1; }
+
+.adm-sidebar {
+    position: fixed; inset: 0 auto 0 0; z-index: 40;
+    width: 264px; background: #0d1220; color: #fff;
+    display: flex; flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform .3s ease-in-out;
+    border-right: 1px solid rgba(255,255,255,.06);
+    overflow-y: auto;
+}
+.adm-sidebar.open { transform: translateX(0); }
+
+@media (min-width: 1024px) {
+    .adm-layout { display: flex; }
+    .adm-sidebar { position: static; transform: none; }
+}
+
+.adm-overlay {
+    position: fixed; inset: 0; z-index: 35;
+    background: rgba(0,0,0,.5);
+    display: none;
+}
+.adm-overlay.open { display: block; }
+@media (min-width: 1024px) { .adm-overlay { display: none !important; } }
+
+.adm-sb-brand { display: flex; align-items: center; gap: 12px; padding: 0 20px; height: 72px; border-bottom: 1px solid rgba(255,255,255,.05); flex-shrink: 0; }
+.adm-sb-logo { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #ff2e4d; color: #fff; box-shadow: 0 8px 20px -6px rgba(255,46,77,.4); flex-shrink: 0; }
+.adm-sb-name { font-size: 18px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; color: #fff; text-decoration: none; }
+.adm-sb-name span { color: #ff2e4d; }
+.adm-sb-sub { font-size: 9px; text-transform: uppercase; letter-spacing: .2em; color: #64748b; margin-top: 2px; }
+
+.adm-sb-label { padding: 16px 24px 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: #64748b; }
+
+.adm-sb-nav { padding: 0 12px; display: flex; flex-direction: column; gap: 2px; }
+.adm-sb-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 14px; border-radius: 12px;
+    font-size: 13.5px; font-weight: 500; color: #94a3b8;
+    text-decoration: none; transition: all .18s ease; position: relative;
+    font-family: inherit; line-height: 1.4;
+}
+.adm-sb-item i { width: 20px; text-align: center; font-size: 14px; }
+.adm-sb-item:hover { background: rgba(255,255,255,.05); color: #fff; }
+.adm-sb-item.active { background: #ff2e4d; color: #fff; box-shadow: 0 8px 18px -8px rgba(255,46,77,.55); }
+.adm-sb-item.active i { color: #fff; }
+
+.adm-sb-foot { margin-top: auto; padding: 24px 20px 20px; }
+.adm-sb-card { border-radius: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); padding: 12px 14px; font-size: 11.5px; color: #94a3b8; }
+.adm-sb-card b { display: block; color: #cbd5e1; font-size: 12.5px; margin-bottom: 2px; }
+
+.adm-sidebar::-webkit-scrollbar { width: 4px; }
+.adm-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 4px; }

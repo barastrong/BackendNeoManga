@@ -20,6 +20,7 @@
         })();
     </script>
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('css/layouts/admin.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/bulk.css') }}">
     <script defer src="{{ asset('js/admin/bulk.js') }}"></script>
@@ -31,96 +32,74 @@
 </head>
 <body class="bg-[#0b0f19] font-sans antialiased text-slate-300">
 
-<div x-data="{ sidebarOpen: false }" class="relative min-h-screen lg:flex">
+<div x-data="{ sidebarOpen: false }" class="adm-layout min-h-screen">
 
     {{-- Overlay mobile --}}
     <div x-show="sidebarOpen" @click="sidebarOpen = false"
-         class="fixed inset-0 z-20 bg-black/50 transition-opacity lg:hidden" x-cloak></div>
-
-    {{-- Theme var untuk admin (native CSS) --}}
-    <link rel="stylesheet" href="{{ asset('css/layouts/admin.css') }}">
+         class="adm-overlay" :class="sidebarOpen ? 'open' : ''" x-cloak></div>
 
     {{-- Sidebar --}}
-    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-           class="fixed inset-y-0 left-0 z-30 w-64 bg-[#0d1220] text-white flex flex-col transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static">
-        <div class="flex items-center gap-3 px-5 h-[72px] border-b border-white/5">
-            <span class="flex items-center justify-center w-9 h-9 rounded-xl bg-brand text-white shadow-lg shadow-brand/30">
-                <i class="fa-solid fa-book-open text-sm"></i>
-            </span>
-            <div class="leading-tight">
-                <a href="{{ route('admin.dashboard') }}" class="font-display text-lg font-bold tracking-tight">Neo<span class="text-brand">Manga</span></a>
-                <p class="text-[10px] uppercase tracking-widest text-slate-500">Admin Panel</p>
+    <aside :class="sidebarOpen ? 'open' : ''"
+           class="adm-sidebar">
+        <div class="adm-sb-brand">
+            <span class="adm-sb-logo"><i class="fa-solid fa-book-open text-sm"></i></span>
+            <div>
+                <a href="{{ route('admin.dashboard') }}" class="adm-sb-name">Neo<span>Manga</span></a>
+                <p class="adm-sb-sub">Admin Panel</p>
             </div>
         </div>
 
-        <div class="px-3 mt-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500 px-5 py-3">Menu Utama</div>
-        <nav class="px-3 space-y-1">
-            <a href="{{ route('admin.dashboard') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
-                      {{ request()->routeIs('admin.dashboard') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
-                <i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard
+        <div class="adm-sb-label">Menu Utama</div>
+        <nav class="adm-sb-nav">
+            <a href="{{ route('admin.dashboard') }}" class="adm-sb-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <i class="fa-solid fa-gauge-high"></i>Dashboard
             </a>
-            <a href="{{ route('admin.user.index') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
-                      {{ request()->routeIs('admin.user.*') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
-                <i class="fa-solid fa-users w-5 text-center"></i>Users
+            <a href="{{ route('admin.user.index') }}" class="adm-sb-item {{ request()->routeIs('admin.user.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-users"></i>Users
             </a>
-            <a href="{{ route('admin.analytics') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
-                      {{ request()->routeIs('admin.analytics') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
-                <i class="fa-solid fa-chart-line w-5 text-center"></i>Analisis &amp; Statistik
+            <a href="{{ route('admin.analytics') }}" class="adm-sb-item {{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
+                <i class="fa-solid fa-chart-line"></i>Analisis &amp; Statistik
             </a>
-            <a href="{{ route('admin.manga.index') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
-                      {{ request()->routeIs('admin.manga.*') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
-                <i class="fa-solid fa-book-open w-5 text-center"></i>Manga
+            <a href="{{ route('admin.manga.index') }}" class="adm-sb-item {{ request()->routeIs('admin.manga.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-book-open"></i>Manga
             </a>
-            <a href="{{ route('admin.chapter.index') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
-                      {{ request()->routeIs('admin.chapter.*') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
-                <i class="fa-solid fa-layer-group w-5 text-center"></i>Chapter
+            <a href="{{ route('admin.chapter.index') }}" class="adm-sb-item {{ request()->routeIs('admin.chapter.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-layer-group"></i>Chapter
             </a>
-            <a href="{{ route('admin.category.index') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
-                      {{ request()->routeIs('admin.category.*') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
-                <i class="fa-solid fa-tags w-5 text-center"></i>Kategori
+            <a href="{{ route('admin.category.index') }}" class="adm-sb-item {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-tags"></i>Kategori
             </a>
-            <a href="{{ route('admin.moderation.index') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
-                      {{ request()->routeIs('admin.moderation.*') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
-                <i class="fa-solid fa-flag w-5 text-center"></i>Moderasi
+            <a href="{{ route('admin.moderation.index') }}" class="adm-sb-item {{ request()->routeIs('admin.moderation.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-flag"></i>Moderasi
             </a>
         </nav>
 
-        <div class="px-3 mt-6 text-[10px] font-semibold uppercase tracking-widest text-slate-500 px-5 py-3">Lainnya</div>
-        <nav class="px-3 space-y-1">
-            <a href="{{ route('dashboard') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200 text-slate-400 hover:bg-white/5 hover:text-white">
-                <i class="fa-solid fa-globe w-5 text-center"></i>Lihat Situs
+        <div class="adm-sb-label">Lainnya</div>
+        <nav class="adm-sb-nav">
+            <a href="{{ route('dashboard') }}" class="adm-sb-item">
+                <i class="fa-solid fa-globe"></i>Lihat Situs
             </a>
-            <a href="{{ route('profile.edit') }}"
-               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200 text-slate-400 hover:bg-white/5 hover:text-white">
-                <i class="fa-solid fa-user-gear w-5 text-center"></i>Profil
+            <a href="{{ route('profile.edit') }}" class="adm-sb-item">
+                <i class="fa-solid fa-user-gear"></i>Profil
             </a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit"
-                        class="w-full flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200 text-red-400 hover:bg-red-500/10 hover:text-red-300">
-                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>Keluar
+                <button type="submit" class="adm-sb-item" style="width:100%;background:none;border:none;cursor:pointer;color:#f87171;text-align:left">
+                    <i class="fa-solid fa-right-from-bracket"></i>Keluar
                 </button>
             </form>
         </nav>
 
-        <div class="px-6 pb-6 pt-8 mt-auto">
-            <div class="rounded-xl bg-white/5 border border-white/10 p-3.5 text-xs text-slate-400">
-                <p class="font-semibold text-slate-300 mb-0.5">NeoManga v2.0</p>
-                <p>© {{ date('Y') }} — Semua hak cipta</p>
+        <div class="adm-sb-foot">
+            <div class="adm-sb-card">
+                <b>NeoManga v2.0</b>
+                <span>© {{ date('Y') }} — Semua hak cipta</span>
             </div>
         </div>
     </aside>
 
     {{-- Konten --}}
-    <div class="flex-1 flex flex-col min-w-0">
+    <div class="adm-main flex-1">
         <header class="flex items-center justify-between px-6 h-[72px] adm-surface border-b border-white/5 sticky top-0 z-10">
                     <div class="flex items-center gap-4">
                         <button @click="sidebarOpen = true" class="text-slate-400 hover:text-white focus:outline-none lg:hidden">
