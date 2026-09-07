@@ -1,7 +1,9 @@
 /* ===== Analytics Grid (ana-) — anti-purge ===== */
 /* xl:* Tailwind terpurge dari app.css → pakai grid custom. */
 .ana-cards{display:grid;grid-template-columns:1fr;gap:1rem}
-.ana-grid{display:grid;grid-template-columns:1fr;gap:1.5rem}
+.ana-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+.ana-cards .adm-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.ana-cards .adm-card:hover,.ana-grid .adm-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.35);border-color:rgba(255,46,77,.25)}
 .ana-span-4,.ana-span-5,.ana-span-6,.ana-span-7,.ana-span-8,.ana-span-12{grid-column:1/-1}
 
 @media (min-width:640px){

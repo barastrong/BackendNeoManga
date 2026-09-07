@@ -8,9 +8,12 @@
 
     {{-- Header --}}
     <div class="flex flex-wrap items-end justify-between gap-4">
-        <div>
-            <h1 class="font-display text-2xl font-bold text-white">Analisis &amp; Statistik</h1>
-            <p class="mt-1 text-sm text-slate-400">Pusat data lengkap NeoManga — performa katalog, pembaca, dan interaksi.</p>
+        <div class="flex items-center gap-4">
+            <span class="flex-shrink-0" style="width:46px;height:46px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(255,46,77,.16),rgba(56,189,248,.10));border:1px solid rgba(255,46,77,.25);color:#ff2e4d"><i class="fa-solid fa-chart-line"></i></span>
+            <div>
+                <h1 class="font-display text-2xl font-bold text-white">Analisis &amp; Statistik</h1>
+                <p class="mt-1 text-sm text-slate-400">Pusat data lengkap NeoManga — performa katalog, pembaca, dan interaksi.</p>
+            </div>
         </div>
         <div class="flex items-center gap-2 text-xs text-slate-500 adm-chip px-3 py-2 rounded-xl">
             <i class="fa-solid fa-calendar-days"></i> Data 30 hari terakhir
@@ -228,7 +231,10 @@
                             @endif
                         </div>
                     @empty
-                        <p class="px-5 py-8 text-center text-sm text-slate-500 italic">Belum ada komentar.</p>
+                        <div class="px-5 py-10 text-center">
+                            <i class="fa-solid fa-comment-slash text-2xl" style="color:rgba(148,163,184,.35)"></i>
+                            <p class="mt-2 text-sm text-slate-500">Belum ada komentar.</p>
+                        </div>
                     @endforelse
                 </div>
             </div>
@@ -238,9 +244,12 @@
     {{-- 3. Baris: chapter (4) + user growth (4) + genre (4) --}}
     <div class="mt-6 ana-grid">
         <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
-            <div class="pb-5">
-                <h2 class="font-display text-lg font-semibold text-white">Rilis Chapter per Bulan</h2>
-                <p class="mt-0.5 text-sm text-slate-500">Produktivitas upload 6 bulan terakhir.</p>
+            <div class="flex items-start justify-between gap-3 pb-5">
+                <div>
+                    <h2 class="font-display text-lg font-semibold text-white">Rilis Chapter per Bulan</h2>
+                    <p class="mt-0.5 text-sm text-slate-500">Produktivitas upload 6 bulan terakhir.</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap" style="color:#34d399;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25)"><i class="fa-solid fa-circle-check mr-1"></i>{{ number_format($chapterSeries->sum('total')) }} total</span>
             </div>
             @php $cm = $chapterMax; @endphp
             <div class="flex items-end justify-between gap-2 h-44 px-1">
@@ -308,7 +317,10 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-sm text-slate-500 italic">Belum ada data views.</p>
+                    <div class="py-6 text-center">
+                        <i class="fa-solid fa-chart-pie text-2xl" style="color:rgba(148,163,184,.35)"></i>
+                        <p class="mt-2 text-sm text-slate-500">Belum ada data views.</p>
+                    </div>
                 @endforelse
             </div>
         </div>
@@ -353,7 +365,10 @@
                                 <td class="py-3.5 px-5 text-right text-xs text-slate-500 font-mono">{{ number_format($m->votes) }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="3" class="py-8 text-center text-sm text-slate-500 italic">Belum ada rating.</td></tr>
+                            <tr><td colspan="3" class="py-10 text-center">
+                                <i class="fa-solid fa-star-half-stroke text-2xl" style="color:rgba(148,163,184,.35)"></i>
+                                <p class="mt-2 text-sm text-slate-500">Belum ada rating — ajak pembaca memberi skor.</p>
+                            </td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -401,7 +416,10 @@
                                 <td class="py-3.5 px-5 text-right text-xs text-slate-500 font-mono">{{ number_format($m->readers) }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" class="py-8 text-center text-sm text-slate-500 italic">Belum ada data views.</td></tr>
+                            <tr><td colspan="4" class="py-10 text-center">
+                                <i class="fa-solid fa-eye-slash text-2xl" style="color:rgba(148,163,184,.35)"></i>
+                                <p class="mt-2 text-sm text-slate-500">Belum ada data views 30 hari.</p>
+                            </td></tr>
                         @endforelse
                     </tbody>
                 </table>
