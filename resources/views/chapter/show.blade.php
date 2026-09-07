@@ -171,6 +171,12 @@
                                 <button data-comment-id="{{ $comment->id }}" data-username="{{ $comment->user->name }}" class="reply-btn font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition">
                                     <i class="fa-regular fa-comment mr-1"></i>Balas
                                 </button>
+                                @if (auth()->id() !== $comment->user_id)
+                                    <button type="button" data-report-btn data-comment-id="{{ $comment->id }}" data-author="{{ $comment->user->name }}"
+                                            class="report-btn font-medium text-slate-500 hover:text-red-600 dark:hover:text-red-400 transition" title="Laporkan komentar ini">
+                                        <i class="fa-solid fa-flag text-xs mr-1"></i>Report
+                                    </button>
+                                @endif
                             </div>
                             @endauth
                             <div id="reply-form-{{ $comment->id }}" class="mt-3 ml-4" style="display: none;">
@@ -248,6 +254,8 @@
     </div>
 </div>
 @endauth
+
+@include('partials.report-modal')
 
 <script src="{{ asset('js/chapter/show.js') }}"></script>
 

@@ -258,6 +258,12 @@
                                 <button data-comment-id="{{ $comment->id }}" data-username="{{ $comment->user->name }}" class="reply-btn font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition">
                                     Reply
                                 </button>
+                                @if (auth()->id() !== $comment->user_id)
+                                    <button type="button" data-report-btn data-comment-id="{{ $comment->id }}" data-author="{{ $comment->user->name }}"
+                                            class="report-btn font-medium text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition" title="Laporkan komentar ini">
+                                        <i class="fas fa-flag text-xs"></i> Report
+                                    </button>
+                                @endif
                             </div>
                             @endauth
                             <div id="reply-form-{{ $comment->id }}" class="mt-4 ml-4" style="display: none;">
@@ -379,6 +385,7 @@
     </div>
 </div>
 @endguest
+@include('partials.report-modal')
 @endsection
 
 <script src="{{ asset('js/manga/show.js') }}"></script>

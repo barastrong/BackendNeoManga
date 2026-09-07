@@ -88,6 +88,7 @@ Route::middleware('auth', 'verified')->group(function () {
 Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 Route::post('/comments/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
 Route::post('/comments/{comment}/like', [CommentController::class, 'toggleLike'])->name('comments.like');
+Route::post('/comments/{comment}/report', [CommentController::class, 'report'])->name('comments.report');
 
 // ===== SEO: sitemap / robots / llms =====
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
@@ -95,3 +96,4 @@ Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::get('/llms.txt', [SitemapController::class, 'llms'])->name('llms');
 
 require __DIR__.'/auth.php';
+require __DIR__.'/preview.php';

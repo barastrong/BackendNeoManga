@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Comment;
+use App\Models\CommentReport;
 use App\Models\Manga;
 use App\Models\Chapter;
 use Illuminate\Support\Facades\Auth;
@@ -75,11 +76,42 @@ class CommentController extends Controller
        return redirect(url()->previous() . '#comments-section')->with('success', 'Balasan berhasil ditambahkan');
     }
 
+    /**
+     * Report sebuah komentar (dari tombol 🚩 di halaman manga/chapter).
+     * Satu user hanya bisa report 1x per komentar (unique comment_id + reporter_id).
+     */
+    public function report(Request $request, Comment $comment)
+    {
+        // Jangan izinkan report komentar sendiri
+        if ($comment->user_id === Auth::id()) {
+            return back()->with('error', 'Kamu tidak bisa melaporkan komentarmu sendiri.');
+        }
+
+        $validated = $request->validate([
+            'reason' => 'required|string|in:spam,pelecehan,spoiler,offensive,lainnya|max:100',
+        ]);
+
+        $exists = CommentReport::where('comment_id', $comment->id)
+            ->where('reporter_id', Auth::id())
+            ->exists();
+
+        if ($exists) {
+            return back()->with('error', 'Kamu sudah melaporkan komentar ini.');
+        }
+
+        CommentReport::create([
+            'comment_id'  => $comment->id,
+            'reporter_id' => Auth::id(),
+            'reason'      => $validated['reason'],
+            'status'      => 'pending',
+        ]);
+
+        return back()->with('success', 'Laporan terkirim. Terima kasih, admin akan meninjaunya.');
+    }
+
     public function toggleLike(Comment $comment)
     {
         $likedComments = session()->get('liked_comments', []);
-        
-        $isLiked = false;
 
         if (in_array($comment->id, $likedComments)) {
             $comment->decrement('likes_count');

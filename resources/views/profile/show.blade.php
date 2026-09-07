@@ -1,3 +1,4 @@
+bash.exe: warning: could not find /tmp, please create!
 @extends('layouts.app')
 
 @section('title', 'Profil ' . e($user->name) . ' — NeoManga')
@@ -139,10 +140,13 @@
                         @endforeach
                     </div>
                 @else
-                    <div class="rounded-2xl border-2 border-dashed border-slate-200 dark:border-white/10 p-8 text-center">
-                        <p class="text-3xl mb-3"><i class="fa-regular fa-bookmark text-slate-300 dark:text-slate-600"></i></p>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Belum ada bookmark.</p>
-                        <a href="{{ route('manga.list') }}" class="inline-block mt-3 text-xs font-semibold text-[#ff2e4d] hover:text-[#e62242]">Jelajahi manga &rsaquo;</a>
+                    <div class="rounded-2xl border border-dashed border-slate-300 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] p-10 text-center">
+                        <div class="mx-auto w-16 h-16 rounded-2xl bg-[#ff2e4d]/10 text-[#ff4d66] flex items-center justify-center text-2xl mb-4">
+                            <i class="fa-regular fa-bookmark"></i>
+                        </div>
+                        <p class="font-display font-semibold text-slate-700 dark:text-slate-200">Belum ada bookmark</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-xs mx-auto">Simpan manga favoritmu biar gampang ditemukan lagi nanti.</p>
+                        <a href="{{ route('manga.list') }}" class="inline-flex items-center gap-1.5 mt-5 text-xs font-semibold text-[#ff2e4d] hover:text-[#e62242] transition-colors">Jelajahi manga <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 @endif
             </section>
