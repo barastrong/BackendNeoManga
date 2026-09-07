@@ -1,0 +1,19 @@
+/* ===== Analytics Grid (ana-) — anti-purge ===== */
+/* xl:* Tailwind terpurge dari app.css → pakai grid custom. */
+.ana-cards{display:grid;grid-template-columns:1fr;gap:1rem}
+.ana-grid{display:grid;grid-template-columns:1fr;gap:1.5rem}
+.ana-span-4,.ana-span-6,.ana-span-8,.ana-span-12{grid-column:1/-1}
+
+@media (min-width:640px){
+  .ana-cards{grid-template-columns:repeat(2,1fr)}
+}
+@media (min-width:1100px){
+  .ana-cards{grid-template-columns:repeat(3,1fr)}
+  .ana-span-4{grid-column:span 4}
+  .ana-span-6{grid-column:span 6}
+  .ana-span-8{grid-column:span 8}
+  .ana-span-12{grid-column:1/-1}
+}
+@media (min-width:1100px){
+  .ana-grid{grid-template-columns:repeat(12,1fr)}
+}

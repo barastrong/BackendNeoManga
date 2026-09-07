@@ -61,6 +61,11 @@
                       {{ request()->routeIs('admin.user.*') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
                 <i class="fa-solid fa-users w-5 text-center"></i>Users
             </a>
+            <a href="{{ route('admin.analytics') }}"
+               class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
+                      {{ request()->routeIs('admin.analytics') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i>Analisis &amp; Statistik
+            </a>
             <a href="{{ route('admin.manga.index') }}"
                class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200
                       {{ request()->routeIs('admin.manga.*') ? 'bg-brand text-white shadow-lg shadow-brand/25' : 'text-slate-400 hover:bg-white/5 hover:text-white' }}">

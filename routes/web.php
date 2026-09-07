@@ -9,6 +9,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ChapterController as AdminChapterController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 // ===== Panel Admin (auth + role admin) =====
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 
     // Manga
     Route::get('/manga', [AdminMangaController::class, 'index'])->name('manga.index');

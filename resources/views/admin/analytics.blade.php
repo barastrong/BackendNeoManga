@@ -1,0 +1,343 @@
+@extends('layouts.admin')
+
+@section('title', 'Analisis & Statistik — Admin NeoManga')
+@section('page-title', 'Analisis & Statistik')
+
+@section('content')
+    <link rel="stylesheet" href="/css/admin/analytics/index.css">
+
+    {{-- Header --}}
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <h1 class="font-display text-2xl font-bold text-white">Analisis &amp; Statistik</h1>
+            <p class="mt-1 text-sm text-slate-400">Pusat data lengkap NeoManga — performa katalog, pembaca, dan interaksi.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-500 adm-chip px-3 py-2 rounded-xl">
+            <i class="fa-solid fa-calendar-days"></i> Data 30 hari terakhir
+        </div>
+    </div>
+
+    {{-- 1. KPI strip (6 kartu) --}}
+    <div class="mt-6 ana-cards">
+        <div class="adm-card p-5 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Total Views</span>
+                <span class="p-2 rounded-lg adm-chip text-brand"><i class="fa-solid fa-eye text-sm"></i></span>
+            </div>
+            <div class="flex items-baseline gap-1.5 mt-3">
+                <span class="font-display text-3xl font-bold text-white">{{ number_format($totalViews) }}</span>
+                <span class="text-xs text-slate-500">sepanjang masa</span>
+            </div>
+            <div class="mt-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-md adm-chip {{ $viewDelta >= 0 ? 'text-emerald-400' : 'text-red-400' }} text-[11px] font-semibold">
+                <i class="fa-solid {{ $viewDelta >= 0 ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down' }} text-[10px]"></i>
+                {{ $viewDelta >= 0 ? '+' : '' }}{{ number_format($viewDelta) }} vs kemarin
+            </div>
+        </div>
+
+        <div class="adm-card p-5 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Pembaca Aktif</span>
+                <span class="p-2 rounded-lg adm-chip text-indigo-400"><i class="fa-solid fa-users text-sm"></i></span>
+            </div>
+            <div class="flex items-baseline gap-1.5 mt-3">
+                <span class="font-display text-3xl font-bold text-white">{{ number_format($readers30d) }}</span>
+                <span class="text-xs text-slate-500">unik / 30 hari</span>
+            </div>
+            <div class="mt-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-md adm-chip text-slate-400 text-[11px]">
+                <i class="fa-solid fa-user-group text-[10px]"></i> dari {{ number_format($totalUsers) }} user
+            </div>
+        </div>
+
+        <div class="adm-card p-5 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Rating Rata-rata</span>
+                <span class="p-2 rounded-lg adm-chip text-amber-400"><i class="fa-solid fa-star text-sm"></i></span>
+            </div>
+            <div class="flex items-baseline gap-1.5 mt-3">
+                <span class="font-display text-3xl font-bold text-white">{{ number_format($avgRating, 1) }}</span>
+                <span class="text-xs text-slate-500">/ 5 · {{ number_format($ratingVotes) }} vote</span>
+            </div>
+            <div class="mt-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-md adm-chip text-slate-400 text-[11px]">
+                <i class="fa-solid fa-comment-dots text-[10px]"></i> {{ number_format($totalComments) }} komentar
+            </div>
+        </div>
+
+        <div class="adm-card p-5 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Total User</span>
+                <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-user-plus text-sm"></i></span>
+            </div>
+            <div class="flex items-baseline gap-1.5 mt-3">
+                <span class="font-display text-3xl font-bold text-white">{{ number_format($totalUsers) }}</span>
+                <span class="text-xs text-slate-500">akun</span>
+            </div>
+            <div class="mt-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-md adm-chip text-emerald-400 text-[11px] font-semibold">
+                <i class="fa-solid fa-user-plus text-[10px]"></i> +{{ number_format($usersMonth) }} bulan ini
+            </div>
+        </div>
+
+        <div class="adm-card p-5 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Komentar Bulan Ini</span>
+                <span class="p-2 rounded-lg adm-chip text-sky-400"><i class="fa-solid fa-message text-sm"></i></span>
+            </div>
+            <div class="flex items-baseline gap-1.5 mt-3">
+                <span class="font-display text-3xl font-bold text-white">{{ number_format($commentsMonth) }}</span>
+                <span class="text-xs text-slate-500">/ {{ number_format($totalComments) }}</span>
+            </div>
+            <div class="mt-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-md adm-chip text-slate-400 text-[11px]">
+                <i class="fa-solid fa-bookmark text-[10px]"></i> {{ number_format($totalBookmarks) }} bookmark
+            </div>
+        </div>
+
+        <div class="adm-card p-5 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Katalog</span>
+                <span class="p-2 rounded-lg adm-chip text-fuchsia-400"><i class="fa-solid fa-book-open text-sm"></i></span>
+            </div>
+            <div class="flex items-baseline gap-1.5 mt-3">
+                <span class="font-display text-3xl font-bold text-white">{{ number_format($mangaCount) }}</span>
+                <span class="text-xs text-slate-500">manga</span>
+            </div>
+            <div class="mt-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-md adm-chip text-slate-400 text-[11px]">
+                <i class="fa-solid fa-layer-group text-[10px]"></i> {{ number_format($chapterCount) }} chapter
+            </div>
+        </div>
+    </div>
+
+    {{-- 2. Dual line chart (views + pembaca unik) — 12 kolom --}}
+    <div class="mt-8 ana-grid">
+        <div class="ana-span-12 adm-card p-6 rounded-2xl shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5">
+                <div>
+                    <h2 class="font-display text-lg font-semibold text-white">Trafik Pembaca — 30 Hari</h2>
+                    <p class="mt-0.5 text-sm text-slate-500">Perbandingan total views vs pembaca unik per hari.</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                    <span class="inline-flex items-center gap-1.5 text-slate-300">
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand"></span> Views
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 text-slate-300">
+                        <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> Pembaca Unik
+                    </span>
+                </div>
+            </div>
+
+            @php
+                $mx = $chartMax;
+                $ptsV = $chartData->map(fn($d, $i) => [round($i * (700 / 29)), round(220 - ($d['total'] / $mx) * 190)]);
+                $ptsR = $chartData->map(fn($d, $i) => [round($i * (700 / 29)), round(220 - ($d['readers'] / $mx) * 190)]);
+                $lineV = $ptsV->map(fn($p) => "{$p[0]},{$p[1]}")->implode(' ');
+                $lineR = $ptsR->map(fn($p) => "{$p[0]},{$p[1]}")->implode(' ');
+                $areaV = "0,220 {$lineV} 700,220";
+            @endphp
+            <div class="relative w-full h-72 mt-2">
+                <svg class="w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 700 240">
+                    <defs>
+                        <linearGradient id="anaAreaV" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stop-color="#ff2e4d" stop-opacity="0.28"></stop>
+                            <stop offset="100%" stop-color="#ff2e4d" stop-opacity="0"></stop>
+                        </linearGradient>
+                    </defs>
+                    @foreach([40, 90, 140, 190] as $gy)
+                        <line stroke="rgba(255,255,255,.06)" stroke-dasharray="4 4" x1="0" x2="700" y1="{{ $gy }}" y2="{{ $gy }}"></line>
+                    @endforeach
+                    <polygon points="{{ $areaV }}" fill="url(#anaAreaV)"></polygon>
+                    <polyline points="{{ $lineR }}" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" fill="none" stroke-opacity="0.9"></polyline>
+                    <polyline points="{{ $lineV }}" stroke="#ff2e4d" stroke-width="2.5" stroke-linecap="round" fill="none"></polyline>
+                    @foreach($ptsV as $i => $p)
+                        @if($i % 3 === 0 || $i === 29)
+                            <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="2.5" fill="#0d1220" stroke="#ff2e4d" stroke-width="1.5"></circle>
+                        @endif
+                    @endforeach
+                </svg>
+                <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2">
+                    <span>{{ $chartData->first()['date'] }}</span>
+                    <span class="text-slate-400">{{ now()->locale('id')->translatedFormat('F Y') }}</span>
+                    <span>{{ $chartData->last()['date'] }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 3. Bar chart chapter + line user growth --}}
+    <div class="mt-8 ana-grid">
+        {{-- Rilis chapter per bulan --}}
+        <div class="ana-span-6 adm-card p-6 rounded-2xl shadow-sm">
+            <div class="pb-5">
+                <h2 class="font-display text-lg font-semibold text-white">Rilis Chapter per Bulan</h2>
+                <p class="mt-0.5 text-sm text-slate-500">Produktivitas upload 6 bulan terakhir.</p>
+            </div>
+            @php $cm = $chapterMax; @endphp
+            <div class="flex items-end justify-between gap-3 h-44 px-1">
+                @foreach($chapterSeries as $b)
+                    <div class="flex-1 flex flex-col items-center gap-2 min-w-0">
+                        <span class="text-[11px] font-semibold {{ $b['total'] > 0 ? 'text-slate-300' : 'text-slate-600' }}">{{ $b['total'] }}</span>
+                        <div class="w-full max-w-[38px] rounded-t-lg bg-gradient-to-t from-brand/80 to-brand transition-all duration-500"
+                             style="height: {{ max(4, round($b['total'] / $cm * 130)) }}px"></div>
+                        <span class="text-[10px] text-slate-500">{{ $b['label'] }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Registrasi user per bulan (line) --}}
+        <div class="ana-span-6 adm-card p-6 rounded-2xl shadow-sm">
+            <div class="pb-5">
+                <h2 class="font-display text-lg font-semibold text-white">Pertumbuhan User</h2>
+                <p class="mt-0.5 text-sm text-slate-500">Registrasi akun baru 6 bulan terakhir.</p>
+            </div>
+            @php
+                $um = $userMax;
+                $up = collect(range(0, count($userSeries) - 1))->map(fn($i) => [round($i * (280 / max(1, count($userSeries) - 1))), round(110 - ($userSeries[$i]['total'] / $um) * 90)]);
+                $ul = $up->map(fn($p) => "{$p[0]},{$p[1]}")->implode(' ');
+            @endphp
+            <div class="relative w-full h-44 mt-1">
+                <svg class="w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 280 120">
+                    @foreach([25, 55, 85] as $gy)
+                        <line stroke="rgba(255,255,255,.06)" stroke-dasharray="3 3" x1="0" x2="280" y1="{{ $gy }}" y2="{{ $gy }}"></line>
+                    @endforeach
+                    <polyline points="{{ $ul }}" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" fill="none"></polyline>
+                    @foreach($up as $i => $p)
+                        <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="3" fill="#0d1220" stroke="#34d399" stroke-width="2"></circle>
+                    @endforeach
+                </svg>
+                <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2">
+                    @foreach($userSeries as $i => $u)
+                        <span>{{ $u['label'] }}</span>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 4. Genre views + rating --}}
+    <div class="mt-8 ana-grid">
+        {{-- Genre terpopuler by views --}}
+        <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between pb-2">
+                <h3 class="font-display text-lg font-semibold text-white">Genre Terpopuler</h3>
+                <span class="text-[11px] font-semibold text-brand adm-chip px-2 py-0.5 rounded-lg">Top 5</span>
+            </div>
+            <p class="text-sm text-slate-500">Berdasarkan total views 30 hari.</p>
+            <div class="space-y-4 mt-5">
+                @forelse($genreViews as $gi => $g)
+                    @php
+                        $pct = $genreMax > 0 ? round($g->total / $genreMax * 100) : 0;
+                        $cols = ['#ff2e4d', '#38bdf8', '#a78bfa', '#f59e0b', '#34d399'];
+                        $c = $cols[$gi % count($cols)];
+                    @endphp
+                    <div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-200 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full" style="background-color:{{ $c }}"></span>{{ $g->name }}
+                            </span>
+                            <span class="text-xs text-slate-500">{{ $pct }}% · {{ number_format($g->total) }}</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full bg-white/5 overflow-hidden mt-1.5">
+                            <div class="h-full rounded-full transition-all duration-500" style="width:{{ $pct }}%;background-color:{{ $c }}"></div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-sm text-slate-500 italic">Belum ada data views.</p>
+                @endforelse
+            </div>
+        </div>
+
+        {{-- Rating tertinggi --}}
+        <div class="ana-span-8 adm-card rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-6 py-5 border-b border-white/5 flex items-center justify-between">
+                <div>
+                    <h2 class="font-display text-lg font-semibold text-white">Rating Tertinggi</h2>
+                    <p class="mt-0.5 text-sm text-slate-500">Manga favorit pembaca berdasar skor & jumlah vote.</p>
+                </div>
+                <i class="fa-solid fa-star text-amber-400"></i>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th class="py-3 px-6 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Manga</th>
+                            <th class="py-3 px-3 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Rating</th>
+                            <th class="py-3 px-3 text-right font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Vote</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        @forelse($topRated as $i => $m)
+                            <tr class="adm-tr-hover transition-colors">
+                                <td class="py-3.5 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-6 text-center font-mono text-xs {{ $i === 0 ? 'text-amber-400' : 'text-slate-600' }}">{{ $i + 1 }}</span>
+                                        <img src="{{ $m->cover_image ?: asset('images/no-image.png') }}" alt="" class="h-12 w-9 object-cover rounded-md adm-chip">
+                                        <div class="min-w-0">
+                                            <a href="{{ route('manga.show', $m->slug) }}" class="font-medium text-slate-200 block truncate max-w-[240px] hover:text-brand">{{ $m->title }}</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-3">
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg adm-chip text-[12px] font-bold {{ $m->r >= 4.5 ? 'text-amber-400' : ($m->r >= 3.5 ? 'text-emerald-400' : 'text-slate-400') }}">
+                                        <i class="fa-solid fa-star text-[10px]"></i>{{ number_format($m->r, 1) }}
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-6 text-right text-xs text-slate-500 font-mono">{{ number_format($m->votes) }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="3" class="py-8 text-center text-sm text-slate-500 italic">Belum ada rating.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {{-- 5. Top manga --}}
+    <div class="mt-8 ana-grid">
+        <div class="ana-span-12 adm-card rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-6 py-5 border-b border-white/5 flex items-center justify-between">
+                <div>
+                    <h2 class="font-display text-lg font-semibold text-white">Manga Terpopuler</h2>
+                    <p class="mt-0.5 text-sm text-slate-500">Peringkat berdasar views & pembaca unik 30 hari terakhir.</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full adm-chip text-slate-400 text-[11px] font-code">Top 5</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th class="py-3 px-6 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">#</th>
+                            <th class="py-3 px-3 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Manga</th>
+                            <th class="py-3 px-3 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Views</th>
+                            <th class="py-3 px-6 text-right font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Pembaca Unik</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        @forelse($topManga as $i => $m)
+                            <tr class="adm-tr-hover transition-colors">
+                                <td class="py-3.5 px-6 font-mono text-xs {{ $i === 0 ? 'text-brand' : 'text-slate-600' }}">{{ $i + 1 }}</td>
+                                <td class="py-3.5 px-3">
+                                    <div class="flex items-center gap-3">
+                                        <img src="{{ $m->cover_image ?: asset('images/no-image.png') }}" alt="" class="h-12 w-9 object-cover rounded-md adm-chip">
+                                        <div class="min-w-0">
+                                            <a href="{{ route('manga.show', $m->slug) }}" class="font-medium text-slate-200 block truncate max-w-[280px] hover:text-brand">{{ $m->title }}</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm font-semibold text-slate-200">{{ number_format($m->total) }}</span>
+                                        <div class="w-20 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                                            <div class="h-full rounded-full bg-brand" style="width: {{ $topManga->max('total') > 0 ? round($m->total / $topManga->max('total') * 100) : 0 }}%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-6 text-right text-xs text-slate-500 font-mono">{{ number_format($m->readers) }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="4" class="py-8 text-center text-sm text-slate-500 italic">Belum ada data views.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+@endsection
