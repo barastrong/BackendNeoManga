@@ -93,12 +93,40 @@ class AnalyticsController extends Controller
             ->groupBy('mangas.id', 'mangas.title', 'mangas.slug', 'mangas.cover_image')
             ->orderByDesc('r')->orderByDesc('votes')->take(5)->get();
 
+        // ===== Komentar terbaru (panel samping) =====
+        $recentComments = Comment::with(['user:id,name', 'manga:id,title,slug'])
+            ->orderByDesc('created_at')->take(6)->get()
+            ->map(fn ($c) => [
+                'user'    => $c->user->name ?? 'User Terhapus',
+                'manga'   => $c->manga->title ?? '—',
+                'slug'    => $c->manga->slug ?? null,
+                'body'    => \Illuminate\Support\Str::limit($c->body, 90),
+                'time'    => $c->created_at->locale('id')->diffForHumans(),
+                'is_read' => false,
+            ]);
+
+        // ===== Statistik katalog (panel samping) =====
+        $mangaByGenre = DB::table('genres')
+            ->leftJoin('manga_genres', 'manga_genres.genre_id', '=', 'genres.id')
+            ->select('genres.name', DB::raw('COUNT(manga_genres.manga_id) total'))
+            ->groupBy('genres.name')->orderByDesc('total')->take(5)->get();
+        $genreCatalogMax = max(1, $mangaByGenre->max('total'));
+
+        // ===== Aktivitas hari ini =====
+        $todayStats = [
+            'views'     => MangaView::where('view_date', now()->toDateString())->count(),
+            'comments'  => Comment::whereDate('created_at', now())->count(),
+            'new_users' => User::whereDate('created_at', now())->count(),
+            'chapters'  => Chapter::whereDate('created_at', now())->count(),
+        ];
+
         return view('admin.analytics', compact(
             'totalViews', 'readers30d', 'avgRating', 'ratingVotes', 'totalComments', 'commentsMonth',
             'totalBookmarks', 'totalUsers', 'usersMonth', 'mangaCount', 'chapterCount',
             'chartData', 'chartMax', 'viewsToday', 'viewDelta',
             'chapterSeries', 'chapterMax', 'userSeries', 'userMax',
-            'genreViews', 'genreMax', 'topManga', 'topRated'
+            'genreViews', 'genreMax', 'topManga', 'topRated',
+            'recentComments', 'mangaByGenre', 'genreCatalogMax', 'todayStats'
         ));
     }
 }

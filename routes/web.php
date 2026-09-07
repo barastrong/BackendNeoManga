@@ -1,14 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\BookmarkController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MangaController;
-use App\Http\Controllers\ChapterController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\HistoryController;
-use App\Http\Controllers\SitemapController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ChapterController as AdminChapterController;
@@ -16,6 +7,16 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MangaController as AdminMangaController;
 use App\Http\Controllers\Admin\ModerationController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Site\BookmarkController;
+use App\Http\Controllers\Site\ChapterController;
+use App\Http\Controllers\Site\CommentController;
+use App\Http\Controllers\Site\DashboardController;
+use App\Http\Controllers\Site\HistoryController;
+use App\Http\Controllers\Site\MangaController;
+use App\Http\Controllers\Site\ProfileController;
+use App\Http\Controllers\Site\SitemapController;
+use Illuminate\Support\Facades\Route;
+
 
 // ===== Panel Admin (auth + role admin) =====
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {

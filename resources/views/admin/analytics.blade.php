@@ -105,9 +105,9 @@
         </div>
     </div>
 
-    {{-- 2. Dual line chart (views + pembaca unik) — 12 kolom --}}
-    <div class="mt-8 ana-grid">
-        <div class="ana-span-12 adm-card p-6 rounded-2xl shadow-sm">
+    {{-- 2. Baris utama: dual line chart (7) + kolom kanan (5: aktivitas + komentar) --}}
+    <div class="mt-6 ana-grid">
+        <div class="ana-span-7 adm-card p-6 rounded-2xl shadow-sm">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5">
                 <div>
                     <h2 class="font-display text-lg font-semibold text-white">Trafik Pembaca — 30 Hari</h2>
@@ -122,7 +122,6 @@
                     </span>
                 </div>
             </div>
-
             @php
                 $mx = $chartMax;
                 $ptsV = $chartData->map(fn($d, $i) => [round($i * (700 / 29)), round(220 - ($d['total'] / $mx) * 190)]);
@@ -158,18 +157,71 @@
                 </div>
             </div>
         </div>
+
+        <div class="ana-span-5 flex flex-col gap-6">
+            {{-- Aktivitas hari ini --}}
+            <div class="adm-card rounded-2xl shadow-sm p-6">
+                <div class="flex items-center justify-between pb-4">
+                    <div>
+                        <h3 class="font-display text-lg font-semibold text-white">Aktivitas Hari Ini</h3>
+                        <p class="text-sm text-slate-500">{{ now()->locale('id')->translatedFormat('l, d F Y') }}</p>
+                    </div>
+                    <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-bolt text-sm"></i></span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    @foreach([
+                        ['views', $todayStats['views'], 'text-brand', 'fa-eye'],
+                        ['komentar', $todayStats['comments'], 'text-sky-400', 'fa-message'],
+                        ['user baru', $todayStats['new_users'], 'text-emerald-400', 'fa-user-plus'],
+                        ['chapter', $todayStats['chapters'], 'text-fuchsia-400', 'fa-layer-group'],
+                    ] as $t)
+                        <div class="rounded-xl adm-chip p-3.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">{{ $t[0] }}</span>
+                                <i class="fa-solid {{ $t[3] }} text-[11px] {{ $t[2] }}"></i>
+                            </div>
+                            <div class="mt-1.5 font-display text-xl font-bold text-white">{{ number_format($t[1]) }}</div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Komentar terbaru --}}
+            <div class="adm-card rounded-2xl shadow-sm flex-1 overflow-hidden">
+                <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+                    <h3 class="font-display text-lg font-semibold text-white">Komentar Terbaru</h3>
+                    <span class="px-2 py-0.5 rounded-full adm-chip text-slate-400 text-[11px]">{{ count($recentComments) }}</span>
+                </div>
+                <div class="divide-y divide-white/5 max-h-[290px] overflow-y-auto">
+                    @forelse($recentComments as $c)
+                        <div class="px-5 py-3">
+                            <div class="flex items-center gap-2 text-xs">
+                                <span class="font-semibold text-slate-200 truncate">{{ $c['user'] }}</span>
+                                <span class="text-slate-600">·</span>
+                                <span class="text-slate-500 truncate">{{ $c['time'] }}</span>
+                            </div>
+                            <p class="text-[13px] text-slate-400 mt-1 leading-snug">{{ $c['body'] }}</p>
+                            @if($c['slug'])
+                                <a href="{{ route('manga.show', $c['slug']) }}" class="text-[11px] text-brand hover:text-brand-dark mt-0.5 inline-block">di {{ $c['manga'] }}</a>
+                            @endif
+                        </div>
+                    @empty
+                        <p class="px-5 py-8 text-center text-sm text-slate-500 italic">Belum ada komentar.</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
     </div>
 
-    {{-- 3. Bar chart chapter + line user growth --}}
-    <div class="mt-8 ana-grid">
-        {{-- Rilis chapter per bulan --}}
-        <div class="ana-span-6 adm-card p-6 rounded-2xl shadow-sm">
+    {{-- 3. Baris: chapter (4) + user growth (4) + genre (4) --}}
+    <div class="mt-6 ana-grid">
+        <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
             <div class="pb-5">
                 <h2 class="font-display text-lg font-semibold text-white">Rilis Chapter per Bulan</h2>
                 <p class="mt-0.5 text-sm text-slate-500">Produktivitas upload 6 bulan terakhir.</p>
             </div>
             @php $cm = $chapterMax; @endphp
-            <div class="flex items-end justify-between gap-3 h-44 px-1">
+            <div class="flex items-end justify-between gap-2 h-44 px-1">
                 @foreach($chapterSeries as $b)
                     <div class="flex-1 flex flex-col items-center gap-2 min-w-0">
                         <span class="text-[11px] font-semibold {{ $b['total'] > 0 ? 'text-slate-300' : 'text-slate-600' }}">{{ $b['total'] }}</span>
@@ -181,8 +233,7 @@
             </div>
         </div>
 
-        {{-- Registrasi user per bulan (line) --}}
-        <div class="ana-span-6 adm-card p-6 rounded-2xl shadow-sm">
+        <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
             <div class="pb-5">
                 <h2 class="font-display text-lg font-semibold text-white">Pertumbuhan User</h2>
                 <p class="mt-0.5 text-sm text-slate-500">Registrasi akun baru 6 bulan terakhir.</p>
@@ -203,17 +254,13 @@
                     @endforeach
                 </svg>
                 <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2">
-                    @foreach($userSeries as $i => $u)
+                    @foreach($userSeries as $u)
                         <span>{{ $u['label'] }}</span>
                     @endforeach
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- 4. Genre views + rating --}}
-    <div class="mt-8 ana-grid">
-        {{-- Genre terpopuler by views --}}
         <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
             <div class="flex items-center justify-between pb-2">
                 <h3 class="font-display text-lg font-semibold text-white">Genre Terpopuler</h3>
@@ -243,9 +290,11 @@
                 @endforelse
             </div>
         </div>
+    </div>
 
-        {{-- Rating tertinggi --}}
-        <div class="ana-span-8 adm-card rounded-2xl shadow-sm overflow-hidden">
+    {{-- 4. Baris: rating (6) + top manga (6) --}}
+    <div class="mt-6 ana-grid">
+        <div class="ana-span-6 adm-card rounded-2xl shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-white/5 flex items-center justify-between">
                 <div>
                     <h2 class="font-display text-lg font-semibold text-white">Rating Tertinggi</h2>
@@ -257,20 +306,20 @@
                 <table class="min-w-full text-sm">
                     <thead>
                         <tr>
-                            <th class="py-3 px-6 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Manga</th>
+                            <th class="py-3 px-5 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Manga</th>
                             <th class="py-3 px-3 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Rating</th>
-                            <th class="py-3 px-3 text-right font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Vote</th>
+                            <th class="py-3 px-5 text-right font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Vote</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/5">
                         @forelse($topRated as $i => $m)
                             <tr class="adm-tr-hover transition-colors">
-                                <td class="py-3.5 px-6">
+                                <td class="py-3.5 px-5">
                                     <div class="flex items-center gap-3">
                                         <span class="w-6 text-center font-mono text-xs {{ $i === 0 ? 'text-amber-400' : 'text-slate-600' }}">{{ $i + 1 }}</span>
                                         <img src="{{ $m->cover_image ?: asset('images/no-image.png') }}" alt="" class="h-12 w-9 object-cover rounded-md adm-chip">
                                         <div class="min-w-0">
-                                            <a href="{{ route('manga.show', $m->slug) }}" class="font-medium text-slate-200 block truncate max-w-[240px] hover:text-brand">{{ $m->title }}</a>
+                                            <a href="{{ route('manga.show', $m->slug) }}" class="font-medium text-slate-200 block truncate max-w-[200px] hover:text-brand">{{ $m->title }}</a>
                                         </div>
                                     </div>
                                 </td>
@@ -279,7 +328,7 @@
                                         <i class="fa-solid fa-star text-[10px]"></i>{{ number_format($m->r, 1) }}
                                     </span>
                                 </td>
-                                <td class="py-3.5 px-6 text-right text-xs text-slate-500 font-mono">{{ number_format($m->votes) }}</td>
+                                <td class="py-3.5 px-5 text-right text-xs text-slate-500 font-mono">{{ number_format($m->votes) }}</td>
                             </tr>
                         @empty
                             <tr><td colspan="3" class="py-8 text-center text-sm text-slate-500 italic">Belum ada rating.</td></tr>
@@ -288,55 +337,140 @@
                 </table>
             </div>
         </div>
-    </div>
 
-    {{-- 5. Top manga --}}
-    <div class="mt-8 ana-grid">
-        <div class="ana-span-12 adm-card rounded-2xl shadow-sm overflow-hidden">
+        <div class="ana-span-6 adm-card rounded-2xl shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-white/5 flex items-center justify-between">
                 <div>
                     <h2 class="font-display text-lg font-semibold text-white">Manga Terpopuler</h2>
                     <p class="mt-0.5 text-sm text-slate-500">Peringkat berdasar views & pembaca unik 30 hari terakhir.</p>
                 </div>
-                <span class="px-2 py-0.5 rounded-full adm-chip text-slate-400 text-[11px] font-code">Top 5</span>
+                <span class="px-2 py-0.5 rounded-full adm-chip text-slate-400 text-[11px]">Top 5</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead>
                         <tr>
-                            <th class="py-3 px-6 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">#</th>
+                            <th class="py-3 px-5 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">#</th>
                             <th class="py-3 px-3 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Manga</th>
                             <th class="py-3 px-3 text-left font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Views</th>
-                            <th class="py-3 px-6 text-right font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Pembaca Unik</th>
+                            <th class="py-3 px-5 text-right font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Pembaca Unik</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/5">
                         @forelse($topManga as $i => $m)
                             <tr class="adm-tr-hover transition-colors">
-                                <td class="py-3.5 px-6 font-mono text-xs {{ $i === 0 ? 'text-brand' : 'text-slate-600' }}">{{ $i + 1 }}</td>
+                                <td class="py-3.5 px-5 font-mono text-xs {{ $i === 0 ? 'text-brand' : 'text-slate-600' }}">{{ $i + 1 }}</td>
                                 <td class="py-3.5 px-3">
                                     <div class="flex items-center gap-3">
                                         <img src="{{ $m->cover_image ?: asset('images/no-image.png') }}" alt="" class="h-12 w-9 object-cover rounded-md adm-chip">
                                         <div class="min-w-0">
-                                            <a href="{{ route('manga.show', $m->slug) }}" class="font-medium text-slate-200 block truncate max-w-[280px] hover:text-brand">{{ $m->title }}</a>
+                                            <a href="{{ route('manga.show', $m->slug) }}" class="font-medium text-slate-200 block truncate max-w-[220px] hover:text-brand">{{ $m->title }}</a>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="py-3.5 px-3">
                                     <div class="flex items-center gap-2">
                                         <span class="text-sm font-semibold text-slate-200">{{ number_format($m->total) }}</span>
-                                        <div class="w-20 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                                        <div class="w-16 h-1.5 rounded-full bg-white/5 overflow-hidden">
                                             <div class="h-full rounded-full bg-brand" style="width: {{ $topManga->max('total') > 0 ? round($m->total / $topManga->max('total') * 100) : 0 }}%"></div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="py-3.5 px-6 text-right text-xs text-slate-500 font-mono">{{ number_format($m->readers) }}</td>
+                                <td class="py-3.5 px-5 text-right text-xs text-slate-500 font-mono">{{ number_format($m->readers) }}</td>
                             </tr>
                         @empty
                             <tr><td colspan="4" class="py-8 text-center text-sm text-slate-500 italic">Belum ada data views.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    {{-- 5. Baris bawah: komposisi katalog genre (4) + statistik cepat (4) + bookmark/chapter info (4) --}}
+    <div class="mt-6 ana-grid">
+        <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between pb-2">
+                <h3 class="font-display text-lg font-semibold text-white">Komposisi Katalog</h3>
+                <span class="text-[11px] font-semibold text-sky-400 adm-chip px-2 py-0.5 rounded-lg">by Genre</span>
+            </div>
+            <p class="text-sm text-slate-500">Jumlah judul manga per genre.</p>
+            <div class="space-y-3.5 mt-5">
+                @forelse($mangaByGenre as $g)
+                    <div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-200">{{ $g->name }}</span>
+                            <span class="text-xs text-slate-500 font-mono">{{ $g->total }} judul</span>
+                        </div>
+                        <div class="w-full h-1.5 rounded-full bg-white/5 overflow-hidden mt-1.5">
+                            <div class="h-full rounded-full" style="width:{{ round($g->total / $genreCatalogMax * 100) }}%;background-color:#38bdf8"></div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-sm text-slate-500 italic">Belum ada genre.</p>
+                @endforelse
+            </div>
+        </div>
+
+        <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
+            <h3 class="font-display text-lg font-semibold text-white pb-2">Perbandingan Interaksi</h3>
+            <p class="text-sm text-slate-500 pb-5">Komposisi aktivitas user di NeoManga.</p>
+            @php
+                $inter = ['Rating' => $ratingVotes, 'Komentar' => $totalComments, 'Bookmark' => $totalBookmarks];
+                $imax = max(1, max($inter));
+                $ic = ['Rating' => '#f59e0b', 'Komentar' => '#38bdf8', 'Bookmark' => '#a78bfa'];
+            @endphp
+            <div class="space-y-5">
+                @foreach($inter as $k => $v)
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1.5">
+                            <span class="text-slate-200 inline-flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full" style="background-color:{{ $ic[$k] }}"></span>{{ $k }}
+                            </span>
+                            <span class="text-xs text-slate-500 font-mono">{{ number_format($v) }}</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full bg-white/5 overflow-hidden">
+                            <div class="h-full rounded-full" style="width:{{ round($v / $imax * 100) }}%;background-color:{{ $ic[$k] }}"></div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between text-xs">
+                <span class="text-slate-500 inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-check-circle text-emerald-400"></i> Total interaksi
+                </span>
+                <span class="font-display text-lg font-bold text-white">{{ number_format($ratingVotes + $totalComments + $totalBookmarks) }}</span>
+            </div>
+        </div>
+
+        <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between pb-2">
+                <h3 class="font-display text-lg font-semibold text-white">Efisiensi Konten</h3>
+                <span class="p-2 rounded-lg adm-chip text-brand"><i class="fa-solid fa-chart-simple text-sm"></i></span>
+            </div>
+            <p class="text-sm text-slate-500 pb-5">Rasio performa tiap judul di katalog.</p>
+            <div class="space-y-4">
+                @php
+                    $ratioViews = $mangaCount > 0 ? round($totalViews / $mangaCount) : 0;
+                    $ratioCh = $mangaCount > 0 ? round($chapterCount / $mangaCount, 1) : 0;
+                    $ratioCm = $totalViews > 0 ? round($totalComments / $totalViews * 100, 1) : 0;
+                @endphp
+                <div class="flex items-center justify-between rounded-xl adm-chip px-4 py-3">
+                    <span class="text-sm text-slate-300 inline-flex items-center gap-2"><i class="fa-solid fa-eye text-brand text-xs"></i> Views / judul</span>
+                    <span class="font-display text-lg font-bold text-white">{{ number_format($ratioViews) }}</span>
+                </div>
+                <div class="flex items-center justify-between rounded-xl adm-chip px-4 py-3">
+                    <span class="text-sm text-slate-300 inline-flex items-center gap-2"><i class="fa-solid fa-layer-group text-sky-400 text-xs"></i> Chapter / judul</span>
+                    <span class="font-display text-lg font-bold text-white">{{ $ratioCh }}</span>
+                </div>
+                <div class="flex items-center justify-between rounded-xl adm-chip px-4 py-3">
+                    <span class="text-sm text-slate-300 inline-flex items-center gap-2"><i class="fa-solid fa-message text-fuchsia-400 text-xs"></i> Komentar / 100 views</span>
+                    <span class="font-display text-lg font-bold text-white">{{ $ratioCm }}</span>
+                </div>
+            </div>
+            <div class="mt-5 rounded-xl px-4 py-3 bg-gradient-to-r from-brand/15 to-transparent border border-brand/20 flex items-center gap-3">
+                <i class="fa-solid fa-circle-info text-brand text-sm"></i>
+                <p class="text-[11px] text-slate-400 leading-snug">Rata-rata tiap judul dikunjungi <b class="text-slate-200">{{ number_format($ratioViews) }} kali</b> — pantau judul di bawah rata-rata untuk promosi.</p>
             </div>
         </div>
     </div>
