@@ -33,8 +33,9 @@ class AnalyticsController extends Controller
         // Jendela adaptif: 30 hari, atau sejak data pertama bila site masih muda —
         // backfill 30 hari penuh di site baru cuma menghasilkan deret nol panjang yang merusak grafik.
         $firstDate = MangaView::min('view_date');
+        // diffInDays bertanda (negatif utk tanggal lampau) — hitung dari tanggal pertama ke hari ini.
         $days = $firstDate
-            ? min(30, max(1, now()->startOfDay()->diffInDays(\Illuminate\Support\Carbon::parse($firstDate)->startOfDay()) + 1))
+            ? min(30, max(1, \Illuminate\Support\Carbon::parse($firstDate)->startOfDay()->diffInDays(now()->startOfDay()) + 1))
             : 30;
 
         $viewsDaily = MangaView::where('view_date', '>=', now()->subDays($days - 1)->toDateString())
