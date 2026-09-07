@@ -51,4 +51,51 @@ class SitemapController extends Controller
             'Content-Type' => 'application/xml; charset=UTF-8',
         ]);
     }
+
+    /**
+     * robots.txt — izinkan crawler, blokir area privat, tunjuk sitemap.
+     */
+    public function robots(): \Illuminate\Http\Response
+    {
+        $lines = [
+            'User-agent: *',
+            'Allow: /',
+            'Disallow: /admin',
+            'Disallow: /login',
+            'Disallow: /register',
+            'Disallow: /verify-otp',
+            'Disallow: /profile',
+            '',
+            'Sitemap: ' . url('/sitemap.xml'),
+        ];
+        return response(implode("\n", $lines))
+            ->header('Content-Type', 'text/plain; charset=utf-8');
+    }
+
+    /**
+     * llms.txt — ringkasan situs untuk AI/LLM.
+     */
+    public function llms(): \Illuminate\Http\Response
+    {
+        $b = rtrim(url('/'), '/');
+        $lines = [
+            '# NeoManga',
+            '',
+            '> Web reader manga & komik modern (Laravel 12, dark-first).',
+            '',
+            '## Konten Utama',
+            '',
+            "- Beranda: {$b}/",
+            "- Semua Manga: {$b}/manga",
+            "- Pencarian: {$b}/search",
+            '',
+            '## Teknis',
+            '',
+            "- Sitemap: {$b}/sitemap.xml",
+            '- Repo: https://github.com/barastrong/BackendNeoManga',
+            '- Aplikasi butuh runtime PHP + MySQL (Laravel), bukan statis.',
+        ];
+        return response(implode("\n", $lines))
+            ->header('Content-Type', 'text/plain; charset=utf-8');
+    }
 }
