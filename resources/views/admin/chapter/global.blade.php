@@ -74,7 +74,7 @@
         <div class="overflow-x-auto">
             <table class="w-full" style="border-collapse:collapse;font-size:13px;min-width:760px"
                    data-bulk-form="{{ route('admin.chapter.bulk') }}"
-                   data-bulk-actions='@json([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"draft","label"=>"📝 Set Draft"],["value"=>"published","label"=>"✅ Set Published"]])'>
+                   data-bulk-actions='{{ Js::from([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"draft","label"=>"📝 Set Draft"],["value"=>"published","label"=>"✅ Set Published"]]) }}'>
                 <thead>
                     <tr>
                         <th class="ch-th" style="width:60px">Cover</th>

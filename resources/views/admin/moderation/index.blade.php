@@ -222,7 +222,7 @@
         <div class="overflow-x-auto">
             <table class="mx-table" id="comments-table"
                    data-bulk-form="{{ route('admin.moderation.bulk') }}"
-                   data-bulk-actions='@json([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"delete_ban","label"=>"🚫 Hapus & Ban User"]])'>
+                   data-bulk-actions='{{ Js::from([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"delete_ban","label"=>"🚫 Hapus & Ban User"]]) }}'>
                 <thead>
                     <tr>
                         <th>Pengguna</th>
@@ -297,7 +297,7 @@
         <div class="overflow-x-auto">
             <table class="mx-table" id="users-table"
                    data-bulk-form="{{ route('admin.user.bulk') }}"
-                   data-bulk-actions='@json([["value"=>"ban","label"=>"🚫 Ban"],["value"=>"unban","label"=>"🔓 Unban"]])'>
+                   data-bulk-actions='{{ Js::from([["value"=>"ban","label"=>"🚫 Ban"],["value"=>"unban","label"=>"🔓 Unban"]]) }}'>
                 <thead>
                     <tr>
                         <th>Pengguna</th>
