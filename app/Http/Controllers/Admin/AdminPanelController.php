@@ -282,8 +282,14 @@ class AdminPanelController extends Controller
 
     public function userIndex()
     {
-        $users = User::latest()->paginate(15);
-        return view('admin.user.index', compact('users'));
+        $users = User::withCount('comments')->latest()->paginate(15);
+        $stats = [
+            'total'     => User::count(),
+            'admins'    => User::where('role', 'admin')->count(),
+            'banned'    => User::banned()->count(),
+            'thisMonth' => User::where('created_at', '>=', now()->startOfMonth())->count(),
+        ];
+        return view('admin.user.index', compact('users', 'stats'));
     }
 
     // ===== Moderasi Komentar =====

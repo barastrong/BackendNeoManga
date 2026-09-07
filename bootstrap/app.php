@@ -15,6 +15,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // ngrok/rev-proxy: percaya X-Forwarded-Proto biar asset() generate https://
+        $middleware->trustProxies(at: '*');
         $middleware->alias([
             'auth.apikey' => ApikeyAuth::class,
             'admin' => AdminMiddleware::class,
