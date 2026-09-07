@@ -1,97 +1,143 @@
-/* ===== Manga Card (mc-*) — self-contained, ANTI-PURGE =====
-   Gaya meniru WestManga: cover 3:4 + badge status + flag + COLOR,
-   judul clamp, baris "CH n • waktu". SEMUA style di file ini sendiri,
-   TIDAK bergantung class Tailwind (yg terbukti terpurge dari app.css). */
+/* ===== Manga Card Grid (mcg-) — self-contained ANTI-PURGE v2 =====
+   Utility Tailwind arbitrary TERPURGE dari app.css → SEMUA gaya card
+   didefinisikan di file ini. Layout meniru WestManga, mobile-first.
+   Struktur: cover(3:4) [badge status kiri, flag kanan, badge COLOR bawah]
+             → judul (clamp 2 baris, fixed min-height)
+             → baris CH + waktu relatif
+======================================================================*/
 
-/* ---------- Grid ---------- */
-.mcg, .mcg-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 8px; }
-@media (min-width: 640px)  { .mcg, .mcg-list { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px 14px; } }
-@media (min-width: 1024px) { .mcg-list { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
-@media (min-width: 1400px) { .mcg-list { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+/* ---------- Grid wrapper ---------- */
+.mcg, .mcg-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* MOBILE: 3 kolom */
+    gap: 14px 10px;
+}
+@media (min-width: 521px) {
+    .mcg, .mcg-list { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 12px; }
+}
+@media (min-width: 641px) {
+    .mcg, .mcg-list { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px 14px; }
+}
+@media (min-width: 1024px) {
+    .mcg, .mcg-list { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 26px 16px; }
+}
+@media (min-width: 1280px) {
+    .mcg-list { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
 
 /* ---------- Kartu ---------- */
-.manga-card { display: flex; flex-direction: column; height: 100%; min-width: 0; }
+.manga-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.manga-card a { text-decoration: none; }
 
-/* ---------- Cover ---------- */
+/* ---------- Cover 3:4 ---------- */
 .manga-cover {
-    position: relative; display: block; width: 100%;
+    position: relative;
+    display: block;
     aspect-ratio: 3 / 4;
-    border-radius: 8px; overflow: hidden;
-    background: #10162a;
-    box-shadow: 0 1px 3px rgba(0,0,0,.35);
-    isolation: isolate;
-}
-.manga-cover img { width: 100%; height: 100%; object-fit: cover; display: block;
-    transition: transform .35s ease; }
-.manga-card:hover .manga-cover img { transform: scale(1.06); }
-.mc-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(160deg, #1a2138, #0d1220); color: #3b4a6b; font-size: 26px; }
-
-/* ---------- Badge status (kiri atas) ---------- */
-.mc-badge {
-    position: absolute; top: 6px; left: 6px; z-index: 5;
-    font-size: 8.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
-    color: #fff; padding: 2px 6px; border-radius: 4px; line-height: 1.4;
-    box-shadow: 0 1px 4px rgba(0,0,0,.45);
-}
-.mc-badge-ongoing { background: #ff2e4d; }
-.mc-badge-tamat   { background: #10b981; }
-.mc-badge-hiatus  { background: #f59e0b; }
-
-/* ---------- Flag asal (kanan atas) ---------- */
-.mc-flag { position: absolute; top: 6px; right: 6px; z-index: 5; line-height: 0;
-    border-radius: 3px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.45); }
-.mc-flag img { width: 21px; height: 15px; object-fit: cover; display: block; }
-
-/* ---------- Badge COLOR (bawah tengah) ---------- */
-.mc-color {
-    position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); z-index: 5;
-    display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
-    background: rgba(0,0,0,.68); border: 1px solid rgba(255,255,255,.22);
-    color: #fff; font-size: 8px; font-weight: 700; letter-spacing: .05em;
-    padding: 2px 7px; border-radius: 999px; backdrop-filter: blur(3px);
-}
-.mc-color i { font-size: 7px; color: #ffd166; }
-
-/* ---------- Body (judul + baris CH) ---------- */
-.mc-body { display: flex; flex-direction: column; flex: 1; min-height: 0; padding-top: 7px; }
-
-.manga-title {
-    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+    border-radius: 8px;
     overflow: hidden;
-    font-size: 12.5px; font-weight: 600; line-height: 1.35;
-    height: 33.75px; /* fixed 2 baris → baris CH sejajar antar kartu */
-    color: #e2e8f0;
+    background: #1a2136;
+    box-shadow: 0 2px 6px rgba(0,0,0,.35);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.manga-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.manga-card:hover .manga-cover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(255,46,77,.15);
+}
+.manga-cover .no-cover {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: #3a4468;
 }
 
-/* Baris info chapter: CH + waktu (gaya WestManga, polos tanpa pill) */
+/* Badge status — kecil & premium di kiri atas */
+.mc-badge {
+    position: absolute;
+    top: 6px; left: 6px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    background: rgba(255,46,77,.92);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.4);
+    z-index: 2;
+}
+.mc-badge.completed { background: rgba(16,185,129,.92); }
+.mc-badge.hiatus   { background: rgba(245,158,11,.92); }
+
+/* Flag negara — kanan atas, proporsional */
+.mc-flag {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 16px; height: 11px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.5);
+    z-index: 2;
+}
+
+/* Badge COLOR (manhwa/manhua berwarna) — bawah kanan */
+.mc-color {
+    position: absolute;
+    right: 0; bottom: 0;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    padding: 2px 5px;
+    border-radius: 3px 0 0 0;
+    background: rgba(15,23,42,.85);
+    color: #f59e0b;
+    z-index: 2;
+}
+
+/* ---------- Judul ---------- */
+.mc-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #e8ecf4;
+    min-height: 32px;   /* 2 baris × 12px × 1.35 */
+    margin-top: 7px;
+}
+@media (min-width: 641px) {
+    .mc-title { font-size: 13px; min-height: 35px; }
+}
+
+/* ---------- Baris CH + waktu — SATU BARIS sejajar ---------- */
 .mc-ch-row {
-    display: flex; align-items: baseline; justify-content: space-between; gap: 6px;
-    padding-top: 5px; margin-top: 2px;
-    font-size: 10.5px; color: #8fa0bd; line-height: 1.2; text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 1;
 }
-.mc-ch-num { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: #cbd5e1;
-    transition: color .15s; }
-.mc-ch-num i { font-size: 8px; color: #ff4d66; }
-.mc-ch-row:hover .mc-ch-num { color: #ff4d66; }
-.mc-date { color: #7c8db0; font-size: 9.5px; white-space: nowrap; }
-.mc-ch-empty { padding-top: 5px; font-size: 10px; color: #5b6b8c; font-style: italic; }
-
-/* ---------- Mobile (3 kolom) ---------- */
-@media (max-width: 640px) {
-    .manga-cover { border-radius: 6px; }
-    .manga-title { font-size: 10.5px; line-height: 1.3; height: 13.65px; /* 1 baris */ }
-    .mc-body { padding-top: 5px; }
-    .mc-ch-row { font-size: 9px; padding-top: 3px; }
-    .mc-ch-num { gap: 3px; }
-    .mc-ch-num i { display: none; }
-    .mc-date { font-size: 8px; }
-    .mc-badge { font-size: 7px; padding: 1.5px 4px; top: 4px; left: 4px; border-radius: 3px; }
-    .mc-flag { top: 4px; right: 4px; }
-    .mc-flag img { width: 16px; height: 11px; }
-    .mc-color { font-size: 7px; padding: 1.5px 5px; bottom: 4px; }
+.mc-ch-num {
+    color: #ff2e4d;
+    font-weight: 700;
+    white-space: nowrap;
 }
-@media (max-width: 360px) {
-    .mc-date { display: none; }
-    .mc-ch-row { justify-content: flex-start; }
+.mc-ch-num i { display: none; } /* ikon disembunyikan, teks CH lebih bersih */
+.mc-date {
+    color: #7c8598;
+    font-weight: 500;
+    margin-left: auto;   /* dorong ke kanan → CH kiri, waktu kanan */
+    white-space: nowrap;
 }
+.manga-card:hover .mc-ch-num { color: #ff5770; }
