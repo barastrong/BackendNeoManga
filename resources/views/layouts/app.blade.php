@@ -19,6 +19,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/layouts/user-dropdown.css">
     <!-- Theme restore inline sebelum CSS render (anti flash) -->
     <script>
         (function () {
@@ -93,38 +94,25 @@
                             @endif
 
                             <div class="relative" x-data="{ dropdownOpen: false }" @click.outside="dropdownOpen = false">
-                                <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-2 group focus:outline-none transition-transform duration-200 hover:scale-105" :aria-expanded="dropdownOpen.toString()" aria-label="Menu akun">
-                                    <span class="relative inline-flex flex-shrink-0">
-                                        <img class="w-9 h-9 rounded-full object-cover ring-2 ring-[#ff2e4d]/60 ring-offset-2 ring-offset-white dark:ring-offset-[#0b0f19]" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&font-size=0.45" alt="Avatar">
-                                        <span class="absolute rounded-full bg-emerald-500" style="width:8px;height:8px;right:-1px;bottom:-1px;box-shadow:0 0 0 2px #ffffff"></span>
-                                    </span>
-                                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200" :style="dropdownOpen ? 'transform: rotate(180deg); color:#ff2e4d' : ''"></i>
+                                <button @click="dropdownOpen = !dropdownOpen" class="udd-avatar group" :aria-expanded="dropdownOpen.toString()" aria-label="Menu akun">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&font-size=0.45" alt="Avatar">
+                                    <span class="udd-dot"></span>
+                                    <i class="fa-solid fa-chevron-down udd-caret" :class="dropdownOpen && 'udd-caret-open'"></i>
                                 </button>
-                                <div x-show="dropdownOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-3 w-72 bg-white dark:bg-[#0d1220] rounded-2xl shadow-2xl shadow-black/40 ring-1 ring-black/5 dark:ring-white/10 origin-top-right overflow-hidden z-50" style="display: none;">
-                                    {{-- Header kartu profil --}}
-                                    <div class="relative px-5 pt-5 pb-4 overflow-hidden" style="background:linear-gradient(135deg, rgba(255,46,77,.16) 0%, rgba(255,255,255,0) 55%, rgba(99,102,241,.12) 100%)">
-                                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#ff2e4d]/20 rounded-full blur-2xl pointer-events-none"></div>
-                                        <div class="absolute -bottom-12 -left-8 w-28 h-28 rounded-full blur-2xl pointer-events-none" style="background:rgba(99,102,241,.16)"></div>
-                                        <div class="flex items-center gap-3.5 relative">
-                                            <div class="relative flex-shrink-0">
-                                                <img class="w-14 h-14 rounded-2xl object-cover ring-2 ring-[#ff2e4d]/50 ring-offset-2 ring-offset-[#0d1220]" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&size=112&font-size=0.4" alt="{{ auth()->user()->name }}">
-                                                @if(auth()->user()->isAdmin())
-                                                    <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#ff2e4d] text-white text-[9px] flex items-center justify-center ring-2 ring-[#0d1220]"><i class="fa-solid fa-shield-halved"></i></span>
-                                                @else
-                                                    <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 text-white text-[9px] flex items-center justify-center ring-2 ring-[#0d1220]"><i class="fa-solid fa-check"></i></span>
-                                                @endif
-                                            </div>
-                                            <div class="min-w-0 flex-1">
-                                                <p class="font-display font-bold text-[15px] text-slate-900 dark:text-white truncate leading-tight">{{ auth()->user()->name }}</p>
-                                                <p class="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">{{ auth()->user()->email }}</p>
-                                                @if(auth()->user()->isAdmin())
-                                                    <span class="inline-flex items-center gap-1 mt-1.5 text-[9px] font-bold uppercase tracking-wider bg-[#ff2e4d]/15 text-[#ff4d66] border border-[#ff2e4d]/25 rounded-full px-2 py-0.5"><i class="fa-solid fa-user-shield text-[8px]"></i> Admin</span>
-                                                @else
-                                                    <span class="inline-flex items-center gap-1 mt-1.5 text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 rounded-full px-2 py-0.5"><i class="fa-solid fa-circle-check text-[8px]"></i> Member</span>
-                                                @endif
-                                            </div>
+                                <div x-show="dropdownOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="udd-panel" style="display: none;">
+                                    <div class="udd-head">
+                                        <img class="udd-head-avatar" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&size=112&font-size=0.4" alt="{{ auth()->user()->name }}">
+                                        <div class="udd-head-info">
+                                            <p class="udd-head-name">{{ auth()->user()->name }}</p>
+                                            <p class="udd-head-email">{{ auth()->user()->email }}</p>
+                                            @if(auth()->user()->isAdmin())
+                                                <span class="udd-badge udd-badge-admin"><i class="fa-solid fa-user-shield"></i> Admin</span>
+                                            @else
+                                                <span class="udd-badge udd-badge-member"><i class="fa-solid fa-circle-check"></i> Member</span>
+                                            @endif
                                         </div>
                                     </div>
+                                    <div class="udd-sep"></div>
                                     @php
                                         $userMenu = [
                                             ['route' => 'user.profile', 'label' => 'Profil Saya', 'icon' => 'fa-regular fa-user'],
@@ -132,40 +120,31 @@
                                             ['route' => 'bookmark.index', 'label' => 'Bookmark', 'icon' => 'fa-solid fa-bookmark'],
                                         ];
                                     @endphp
-                                    <div class="p-2 border-t border-slate-200 dark:border-white/5">
-                                        <p class="px-3 pt-1 pb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Menu Saya</p>
+                                    <div class="udd-body">
+                                        <p class="udd-label">Menu Saya</p>
                                         @foreach($userMenu as $item)
                                             @php $isActive = request()->routeIs($item['route']); @endphp
-                                            <a href="{{ route($item['route']) }}" class="dropdown-item !rounded-xl" style="{{ $isActive ? 'background:rgba(255,46,77,.10)' : '' }}">
-                                                <span class="flex items-center justify-center flex-shrink-0" style="width:26px;height:26px;border-radius:8px;background:{{ $isActive ? 'rgba(255,46,77,.16)' : 'rgba(148,163,184,.14)' }}">
-                                                    <i class="{{ $item['icon'] }} text-xs" style="{{ $isActive ? 'color:#ff2e4d' : '' }}"></i>
-                                                </span>
-                                                <span style="{{ $isActive ? 'color:#ff2e4d;font-weight:600' : '' }}">{{ $item['label'] }}</span>
-                                                <i class="fa-solid fa-chevron-right ml-auto text-[10px] {{ $isActive ? 'text-[#ff2e4d]' : 'text-slate-400' }}"></i>
+                                            <a href="{{ route($item['route']) }}" class="udd-item {{ $isActive ? 'udd-active' : '' }}">
+                                                <span class="udd-ic"><i class="{{ $item['icon'] }}"></i></span>
+                                                <span class="udd-txt">{{ $item['label'] }}</span>
+                                                <i class="fa-solid fa-chevron-right udd-arrow"></i>
                                             </a>
                                         @endforeach
+                                        @if(auth()->user()->isAdmin())
+                                            <p class="udd-label">Administrasi</p>
+                                            <a href="{{ route('admin.dashboard') }}" class="udd-item {{ request()->routeIs('admin.*') ? 'udd-active' : '' }}">
+                                                <span class="udd-ic"><i class="fa-solid fa-user-shield"></i></span>
+                                                <span class="udd-txt">Panel Admin</span>
+                                                <i class="fa-solid fa-chevron-right udd-arrow"></i>
+                                            </a>
+                                        @endif
                                     </div>
-                                    @if(auth()->check() && auth()->user()->isAdmin())
-                                    @php $isAdminActive = request()->routeIs('admin.*'); @endphp
-                                    <div class="p-2 pt-0">
-                                        <p class="px-3 pt-1 pb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Administrasi</p>
-                                        <a href="{{ route('admin.dashboard') }}" class="dropdown-item !rounded-xl" style="{{ $isAdminActive ? 'background:rgba(255,46,77,.10)' : '' }}">
-                                            <span class="flex items-center justify-center flex-shrink-0" style="width:26px;height:26px;border-radius:8px;background:{{ $isAdminActive ? 'rgba(255,46,77,.16)' : 'rgba(148,163,184,.14)' }}">
-                                                <i class="fa-solid fa-user-shield text-xs" style="{{ $isAdminActive ? 'color:#ff2e4d' : '' }}"></i>
-                                            </span>
-                                            <span style="{{ $isAdminActive ? 'color:#ff2e4d;font-weight:600' : '' }}">Panel Admin</span>
-                                            <i class="fa-solid fa-chevron-right ml-auto text-[10px] {{ $isAdminActive ? 'text-[#ff2e4d]' : 'text-slate-400' }}"></i>
-                                        </a>
-                                    </div>
-                                    @endif
-                                    <div class="p-2 pt-0 border-t border-slate-200 dark:border-white/5">
+                                    <div class="udd-foot">
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
-                                            <button type="submit" class="dropdown-item !rounded-xl !text-red-600 dark:!text-[#ff4d66] hover:!bg-red-50 dark:hover:!bg-[#ff2e4d]/10">
-                                                <span class="flex items-center justify-center flex-shrink-0" style="width:26px;height:26px;border-radius:8px;background:rgba(255,46,77,.12)">
-                                                    <i class="fa-solid fa-right-from-bracket text-xs !text-red-600 dark:!text-[#ff4d66]"></i>
-                                                </span>
-                                                <span>Keluar</span>
+                                            <button type="submit" class="udd-item udd-item-danger">
+                                                <span class="udd-ic"><i class="fa-solid fa-right-from-bracket"></i></span>
+                                                <span class="udd-txt">Keluar</span>
                                             </button>
                                         </form>
                                     </div>
