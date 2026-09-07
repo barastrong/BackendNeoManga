@@ -249,8 +249,11 @@ class AdminPanelController extends Controller
         ];
 
         if ($request->hasFile('chapter_images')) {
-            $oldPaths = array_map(fn($url) => $this->pathFromUrl($url, 'chapters'), $chapter->chapter_images ?? []);
-            $this->storage->deleteFiles('chapters', array_filter($oldPaths));
+            // URL chapter_images asli = Cloudinary (res.cloudinary.com/...).
+            // Kirim URL mentah langsung; CloudinaryStorageService::deleteFiles
+            // yang parse public_id-nya. Jangan via pathFromUrl (base-nya Supabase, salah).
+            $oldUrls = $chapter->chapter_images ?? [];
+            $this->storage->deleteFiles('chapters', array_filter($oldUrls));
 
             $dataToUpdate['chapter_images'] = $this->storage->uploadChapterImages(
                 $request->file('chapter_images'),
@@ -266,18 +269,14 @@ class AdminPanelController extends Controller
 
     public function chapterDestroy(Manga $manga, Chapter $chapter)
     {
-        $paths = array_map(fn($url) => $this->pathFromUrl($url, 'chapters'), $chapter->chapter_images ?? []);
-        $this->storage->deleteFiles('chapters', array_filter($paths));
+        // Hapus file Cloudinary dulu (URL mentah, service yang parse public_id),
+        // baru hapus record DB.
+        $urls = $chapter->chapter_images ?? [];
+        $this->storage->deleteFiles('chapters', array_filter($urls));
 
         $chapter->delete();
 
         return redirect()->route('admin.manga.chapters.index', $manga)->with('success', "Chapter {$chapter->number} berhasil dihapus.");
-    }
-
-    private function pathFromUrl(string $url, string $bucket): ?string
-    {
-        $base = rtrim(env('SUPABASE_URL'), '/') . "/storage/v1/object/public/{$bucket}/";
-        return str_starts_with($url, $base) ? substr($url, strlen($base)) : null;
     }
 
     public function userIndex()
