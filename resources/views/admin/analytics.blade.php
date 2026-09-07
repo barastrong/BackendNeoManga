@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/admin/analytics/index.css">
 
     {{-- Header --}}
-    <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-4">
             <span class="flex-shrink-0" style="width:46px;height:46px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(255,46,77,.16),rgba(56,189,248,.10));border:1px solid rgba(255,46,77,.25);color:#ff2e4d"><i class="fa-solid fa-chart-line"></i></span>
             <div>
@@ -241,11 +241,11 @@
                 <svg class="w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 {{ $W }} {{ $H }}">
                     <defs>
                         <linearGradient id="anaAreaV" x1="0" x2="0" y1="0" y2="1">
-                            <stop offset="0%" stop-color="#ff2e4d" stop-opacity="0.28"></stop>
+                            <stop offset="0%" stop-color="#ff2e4d" stop-opacity="0.14"></stop>
                             <stop offset="100%" stop-color="#ff2e4d" stop-opacity="0"></stop>
                         </linearGradient>
                         <linearGradient id="anaAreaR" x1="0" x2="0" y1="0" y2="1">
-                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.20"></stop>
+                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.10"></stop>
                             <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"></stop>
                         </linearGradient>
                     </defs>
@@ -374,20 +374,28 @@
             </div>
             @php
                 $um = $userMax;
-                $up = collect(range(0, count($userSeries) - 1))->map(fn($i) => [round($i * (280 / max(1, count($userSeries) - 1))), round(110 - ($userSeries[$i]['total'] / $um) * 90)]);
+                $ugMax = max(1, $um);
+                // skala Y: 0 .. max (label di kiri, garis grid)
+                $us = count($userSeries) > 1 ? (280 / (count($userSeries) - 1)) : 0;
+                $up = collect(range(0, count($userSeries) - 1))->map(fn($i) => [round($i * $us), round(100 - ($userSeries[$i]['total'] / $ugMax) * 80)]);
                 $ul = $up->map(fn($p) => "{$p[0]},{$p[1]}")->implode(' ');
             @endphp
-            <div class="relative w-full h-44 mt-1">
-                <svg class="w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 280 120">
-                    @foreach([25, 55, 85] as $gy)
-                        <line stroke="rgba(255,255,255,.06)" stroke-dasharray="3 3" x1="0" x2="280" y1="{{ $gy }}" y2="{{ $gy }}"></line>
+            <div class="relative w-full mt-2">
+                <svg class="w-full" fill="none" preserveAspectRatio="none" viewBox="0 0 280 120" style="height:150px">
+                    @foreach([0, 0.5, 1] as $frac)
+                        @php
+                            $gy = round(100 - $frac * 80);
+                            $gv = $ugMax * $frac;
+                        @endphp
+                        <line stroke="rgba(255,255,255,.06)" stroke-dasharray="3 3" x1="30" x2="280" y1="{{ $gy }}" y2="{{ $gy }}"></line>
+                        <text x="24" y="{{ $gy + 3 }}" text-anchor="end" font-size="8.5" fill="rgba(148,163,184,.7)" font-family="inherit">{{ (int) round($gv) }}</text>
                     @endforeach
                     <polyline points="{{ $ul }}" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" fill="none"></polyline>
                     @foreach($up as $i => $p)
                         <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="3" fill="#0d1220" stroke="#34d399" stroke-width="2"></circle>
                     @endforeach
                 </svg>
-                <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2">
+                <div class="flex items-center justify-between text-[11px] text-slate-500 pt-2 pl-7">
                     @foreach($userSeries as $u)
                         <span>{{ $u['label'] }}</span>
                     @endforeach
@@ -468,9 +476,12 @@
                                 <td class="py-3.5 px-5 text-right text-xs text-slate-500 font-mono">{{ number_format($m->votes) }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="3" class="py-10 text-center">
-                                <i class="fa-solid fa-star-half-stroke text-2xl" style="color:rgba(148,163,184,.35)"></i>
-                                <p class="mt-2 text-sm text-slate-500">Belum ada rating — ajak pembaca memberi skor.</p>
+                            <tr><td colspan="3" class="py-12 text-center">
+                                <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl adm-chip mb-3">
+                                    <i class="fa-solid fa-star-half-stroke text-xl" style="color:rgba(148,163,184,.5)"></i>
+                                </div>
+                                <p class="text-sm font-medium text-slate-300">Belum ada rating</p>
+                                <p class="mt-1 text-xs text-slate-500 max-w-[260px] mx-auto leading-relaxed">Fitur rating belum dipakai pembaca. Begitu ada yang memberi skor, peringkatnya muncul di sini.</p>
                             </td></tr>
                         @endforelse
                     </tbody>
@@ -504,7 +515,7 @@
                                     <div class="flex items-center gap-3">
                                         <img src="{{ $m->cover_image ?: asset('images/no-image.png') }}" alt="" class="h-12 w-9 object-cover rounded-md adm-chip">
                                         <div class="min-w-0">
-                                            <a href="{{ route('manga.show', $m->slug) }}" class="font-medium text-slate-200 block truncate max-w-[220px] hover:text-brand">{{ $m->title }}</a>
+                                            <a href="{{ route('manga.show', $m->slug) }}" class="font-medium text-slate-200 block truncate max-w-[240px] hover:text-brand">{{ $m->title }}</a>
                                         </div>
                                     </div>
                                 </td>
@@ -532,13 +543,13 @@
 
     {{-- 5. Baris bawah: komposisi katalog genre (4) + statistik cepat (4) + bookmark/chapter info (4) --}}
     <div class="mt-6 ana-grid">
-        <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm">
+        <div class="ana-span-4 adm-card p-6 rounded-2xl shadow-sm grow-y-wrap">
             <div class="flex items-center justify-between pb-2">
                 <h3 class="font-display text-lg font-semibold text-white">Komposisi Katalog</h3>
                 <span class="text-[11px] font-semibold text-sky-400 adm-chip px-2 py-0.5 rounded-lg">by Genre</span>
             </div>
             <p class="text-sm text-slate-500">Jumlah judul manga per genre.</p>
-            <div class="space-y-3.5 mt-5">
+            <div class="space-y-3.5 mt-5 grow-y">
                 @forelse($mangaByGenre as $g)
                     <div>
                         <div class="flex items-center justify-between text-sm">
@@ -563,7 +574,7 @@
                 $imax = max(1, max($inter));
                 $ic = ['Rating' => '#f59e0b', 'Komentar' => '#38bdf8', 'Bookmark' => '#a78bfa'];
             @endphp
-            <div class="space-y-5">
+            <div class="space-y-5 grow-y">
                 @foreach($inter as $k => $v)
                     <div>
                         <div class="flex items-center justify-between text-sm mb-1.5">
@@ -594,21 +605,21 @@
             <p class="text-sm text-slate-500 pb-5">Rasio performa tiap judul di katalog.</p>
             <div class="space-y-4">
                 @php
-                    $ratioViews = $mangaCount > 0 ? round($totalViews / $mangaCount) : 0;
+                    $ratioViews = $mangaCount > 0 ? round($totalViews / $mangaCount, 1) : 0;
                     $ratioCh = $mangaCount > 0 ? round($chapterCount / $mangaCount, 1) : 0;
                     $ratioCm = $totalViews > 0 ? round($totalComments / $totalViews * 100, 1) : 0;
                 @endphp
                 <div class="flex items-center justify-between rounded-xl adm-chip px-4 py-3">
                     <span class="text-sm text-slate-300 inline-flex items-center gap-2"><i class="fa-solid fa-eye text-brand text-xs"></i> Views / judul</span>
-                    <span class="font-display text-lg font-bold text-white">{{ number_format($ratioViews) }}</span>
+                    <span class="font-display text-lg font-bold text-white">{{ number_format($ratioViews, 1) }}</span>
                 </div>
                 <div class="flex items-center justify-between rounded-xl adm-chip px-4 py-3">
                     <span class="text-sm text-slate-300 inline-flex items-center gap-2"><i class="fa-solid fa-layer-group text-sky-400 text-xs"></i> Chapter / judul</span>
-                    <span class="font-display text-lg font-bold text-white">{{ $ratioCh }}</span>
+                    <span class="font-display text-lg font-bold text-white">{{ number_format($ratioCh, 1) }}</span>
                 </div>
                 <div class="flex items-center justify-between rounded-xl adm-chip px-4 py-3">
                     <span class="text-sm text-slate-300 inline-flex items-center gap-2"><i class="fa-solid fa-message text-fuchsia-400 text-xs"></i> Komentar / 100 views</span>
-                    <span class="font-display text-lg font-bold text-white">{{ $ratioCm }}</span>
+                    <span class="font-display text-lg font-bold text-white">{{ number_format($ratioCm, 1) }}</span>
                 </div>
             </div>
             <div class="mt-5 rounded-xl px-4 py-3 bg-gradient-to-r from-brand/15 to-transparent border border-brand/20 flex items-center gap-3">
