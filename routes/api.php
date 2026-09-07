@@ -17,7 +17,8 @@ Route::get('/manga/check/{slug}', [ChapterImportController::class, 'checkMangaEx
 Route::post('/manga/import', [ChapterImportController::class, 'importManga'])->middleware('auth.apikey');
 
 Route::post('/register', [ApiAuthController::class, 'register']);
-Route::post('/login', [ApiAuthController::class, 'login']);
+Route::post('/login', [ApiAuthController::class, 'login'])
+    ->middleware('throttle:20,1'); // API login: max 20/menit/IP
 
 Route::get('/mangas', [ApiProductController::class, 'index']) ;
 
