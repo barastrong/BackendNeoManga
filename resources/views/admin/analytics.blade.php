@@ -264,11 +264,18 @@
                     <path d="{{ $pathV }}" stroke="#ff2e4d" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"></path>
                     <circle cx="{{ $lastR[0] }}" cy="{{ $lastR[1] }}" r="4" fill="#0d1220" stroke="#38bdf8" stroke-width="2.2"></circle>
                     <circle cx="{{ $lastV[0] }}" cy="{{ $lastV[1] }}" r="4.5" fill="#0d1220" stroke="#ff2e4d" stroke-width="2.6"></circle>
+                    @php
+                        // Label nilai akhir: di kanan titik, kecuali titik di ujung kanan → geser ke kiri (anchor end) agar tidak kepotong.
+                        $endRight = $lastV[0] > $W - $R - ($W - $L - $R) * 0.25;
+                        $endAnchor = $endRight ? 'end' : 'start';
+                        $endDx = $endRight ? -9 : 9;
+                        $endDy = $endRight ? 0 : 0;
+                    @endphp
                     @if($lastR[1] > $T + 16)
-                        <text x="{{ $lastR[0] + 9 }}" y="{{ $lastR[1] + 3.5 }}" font-size="10" font-weight="700" fill="#7dd3fc" font-family="inherit">{{ $vals[$n - 1]['readers'] }} unik</text>
+                        <text x="{{ $lastR[0] + $endDx }}" y="{{ $lastR[1] + 3.5 }}" text-anchor="{{ $endAnchor }}" font-size="10" font-weight="700" fill="#7dd3fc" font-family="inherit">{{ $vals[$n - 1]['readers'] }} unik</text>
                     @endif
                     @if($lastV[1] > $T + 16)
-                        <text x="{{ $lastV[0] + 9 }}" y="{{ $lastV[1] - 6 }}" font-size="10" font-weight="700" fill="#fda4af" font-family="inherit">{{ $vals[$n - 1]['total'] }} views</text>
+                        <text x="{{ $lastV[0] + $endDx }}" y="{{ $lastV[1] - 6 }}" text-anchor="{{ $endAnchor }}" font-size="10" font-weight="700" fill="#fda4af" font-family="inherit">{{ $vals[$n - 1]['total'] }} views</text>
                     @endif
                     @foreach($xTicks as $ti)
                         @php $txi = $vals[$ti]; @endphp
