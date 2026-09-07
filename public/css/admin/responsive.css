@@ -1,0 +1,34 @@
+/* ===== Responsive revive (anti-purge) ===== */
+/* Utility Tailwind responsive yang TERPURGE dari app.css saat build.
+   Dihidupkan ulang manual biar semua halaman responsif konsisten. */
+
+/* --- lg: (>=1024px) --- */
+@media (min-width: 1024px) {
+    .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .lg\:flex-col { flex-direction: column; }
+    .lg\:flex-row { flex-direction: row; }
+    .lg\:items-stretch { align-items: stretch; }
+    .lg\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+    .lg\:w-52 { width: 13rem; }
+    .lg\:focus\:w-60:focus { width: 15rem; }
+}
+
+/* --- xl: (>=1280px) --- */
+@media (min-width: 1280px) {
+    .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* --- Bantalan umum: cegah konten meluber / kepotong di layar kecil --- */
+.adm-card, .mg-item, .cat-item, .us-item { min-width: 0; }
+.ana-grid > *, .ana-quick > *, .ana-cards > *, .dash-grid > * { min-width: 0; }
+/* Form 2 kolom yang sengaja di-grid pakai class induk pemulih */
+.rsp-2col { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+@media (min-width: 640px) { .rsp-2col { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Tombol/aksi yang berjejer: boleh bungkus rapi di layar sempit */
+.btn-row { display: flex; flex-direction: column; align-items: stretch; gap: 0.75rem; }
+@media (min-width: 640px) { .btn-row { flex-direction: row; align-items: center; justify-content: flex-end; } }
+
+/* Header halaman: judul + aksi turun ke baris sendiri saat sempit */
+.page-head { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+@media (min-width: 640px) { .page-head { flex-direction: row; align-items: center; justify-content: space-between; } }

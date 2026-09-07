@@ -41,19 +41,19 @@
 <div class="mt-6 grid grid-cols-2 xl:grid-cols-4 gap-3.5">
     <div class="mg-stat">
         <span class="ic" style="background:rgba(255,46,77,.13);color:#ff2e4d"><i class="fa-solid fa-book-open"></i></span>
-        <div><p class="lbl">Total Judul</p><p class="val">{{ number_format($stManga) }}</p></div>
+        <div class="st-txt"><p class="lbl">Total Judul</p><p class="val">{{ number_format($stManga) }}</p></div>
     </div>
     <div class="mg-stat">
         <span class="ic" style="background:rgba(56,189,248,.13);color:#38bdf8"><i class="fa-solid fa-layer-group"></i></span>
-        <div><p class="lbl">Total Chapter</p><p class="val">{{ number_format($stChapter) }}</p></div>
+        <div class="st-txt"><p class="lbl">Total Chapter</p><p class="val">{{ number_format($stChapter) }}</p></div>
     </div>
     <div class="mg-stat">
         <span class="ic" style="background:rgba(52,211,153,.13);color:#34d399"><i class="fa-solid fa-play"></i></span>
-        <div><p class="lbl">Ongoing</p><p class="val">{{ number_format($stOngoing) }}</p></div>
+        <div class="st-txt"><p class="lbl">Ongoing</p><p class="val">{{ number_format($stOngoing) }}</p></div>
     </div>
     <div class="mg-stat">
         <span class="ic" style="background:rgba(167,139,250,.13);color:#a78bfa"><i class="fa-solid fa-check-double"></i></span>
-        <div><p class="lbl">Completed</p><p class="val">{{ number_format($stDone) }}</p></div>
+        <div class="st-txt"><p class="lbl">Completed</p><p class="val">{{ number_format($stDone) }}</p></div>
     </div>
 </div>
 

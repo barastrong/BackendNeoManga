@@ -11,10 +11,11 @@
     .mg-btn-primary:hover { background: #ff4d66; color: #fff; }
 
     /* Stats */
-    .mg-stat { background: #131a2c; border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 16px 18px; display: flex; align-items: center; gap: 14px; }
+    .mg-stat { background: #131a2c; border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 16px 18px; display: flex; align-items: center; gap: 14px; min-width: 0; }
     .mg-stat .ic { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-    .mg-stat .lbl { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #64748b; }
-    .mg-stat .val { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 21px; font-weight: 700; color: #fff; line-height: 1.15; margin-top: 2px; }
+    .mg-stat .st-txt { min-width: 0; flex: 1; }
+    .mg-stat .lbl { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mg-stat .val { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 21px; font-weight: 700; color: #fff; line-height: 1.15; margin-top: 2px; white-space: nowrap; }
 
     /* Gallery grid — napas & responsif: 2→3→4→5→6 kolom bertahap */
     .mg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
