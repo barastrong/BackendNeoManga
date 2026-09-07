@@ -41,7 +41,7 @@
 
     {{-- Sidebar --}}
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-           class="fixed inset-y-0 left-0 z-30 w-64 bg-[#0d1220] text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static">
+           class="fixed inset-y-0 left-0 z-30 w-64 bg-[#0d1220] text-white flex flex-col transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static">
         <div class="flex items-center gap-3 px-5 h-[72px] border-b border-white/5">
             <span class="flex items-center justify-center w-9 h-9 rounded-xl bg-brand text-white shadow-lg shadow-brand/30">
                 <i class="fa-solid fa-book-open text-sm"></i>
@@ -110,7 +110,7 @@
             </form>
         </nav>
 
-        <div class="absolute bottom-5 left-0 right-0 px-6">
+        <div class="px-6 pb-6 pt-8 mt-auto">
             <div class="rounded-xl bg-white/5 border border-white/10 p-3.5 text-xs text-slate-400">
                 <p class="font-semibold text-slate-300 mb-0.5">NeoManga v2.0</p>
                 <p>© {{ date('Y') }} — Semua hak cipta</p>

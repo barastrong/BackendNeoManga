@@ -100,8 +100,10 @@
                             </td>
                             <td class="us-td text-slate-500 text-xs whitespace-nowrap">{{ $user->created_at->format('d M Y') }}</td>
                             <td class="us-td text-right whitespace-nowrap">
-                                <a href="#" class="us-ico-btn edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
-                                <a href="#" class="us-ico-btn danger" title="Hapus"><i class="fa-solid fa-trash-can"></i></a>
+                                <div class="inline-flex items-center gap-2">
+                                    <a href="#" class="us-ico-btn edit" title="Edit"><i class="fa-solid fa-pen"></i>Edit</a>
+                                    <a href="#" class="us-ico-btn danger" title="Hapus"><i class="fa-solid fa-trash-can"></i>Hapus</a>
+                                </div>
                             </td>
                         </tr>
                     @empty

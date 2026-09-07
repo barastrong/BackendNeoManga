@@ -7,12 +7,13 @@
 .us-pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 99px; font-size: 10.5px; font-weight: 700; }
 .us-tr { transition: background .14s; border-bottom: 1px solid rgba(255,255,255,.04); }
 .us-tr:hover { background: rgba(255,255,255,.03); }
-.us-th { text-align: left; padding: 11px 16px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #64748b; border-bottom: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02); }
-.us-td { padding: 11px 16px; vertical-align: middle; }
-.us-ico-btn { width: 30px; height: 30px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; color: #64748b; cursor: pointer; transition: all .14s; }
-.us-ico-btn:hover { background: rgba(255,255,255,.07); color: #fff; }
-.us-ico-btn.edit:hover { color: #ff2e4d; }
-.us-ico-btn.danger:hover { background: rgba(244,63,94,.14); color: #fb7185; }
+.us-th { text-align: left; padding: 13px 18px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #64748b; border-bottom: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02); }
+.us-td { padding: 14px 18px; vertical-align: middle; }
+.us-ico-btn { height: 32px; padding: 0 12px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .14s; text-decoration: none; }
+.us-ico-btn i { font-size: 11px; }
+.us-ico-btn:hover { background: rgba(255,255,255,.09); color: #fff; border-color: rgba(255,255,255,.16); }
+.us-ico-btn.edit:hover { color: #ff2e4d; border-color: rgba(255,46,77,.35); background: rgba(255,46,77,.08); }
+.us-ico-btn.danger:hover { background: rgba(244,63,94,.14); color: #fb7185; border-color: rgba(244,63,94,.35); }
 .us-pag { min-width: 32px; height: 32px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; border-radius: 9px; font-size: 12.5px; font-weight: 600; color: #94a3b8; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); text-decoration: none; transition: all .14s; }
 .us-pag:hover { background: rgba(255,46,77,.12); color: #ff2e4d; border-color: rgba(255,46,77,.25); }
 .us-pag.cur { background: #ff2e4d; color: #fff; border-color: #ff2e4d; box-shadow: 0 3px 10px -3px rgba(255,46,77,.5); }

@@ -17,10 +17,11 @@
     .cat-card { background: #131a2c; border: 1px solid rgba(255,255,255,.06); border-radius: 16px; overflow: hidden; }
     .cat-ico { width: 34px; height: 34px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
     .cat-mid { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; }
-    .cat-ico-btn { width: 30px; height: 30px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; color: #64748b; cursor: pointer; transition: all .14s; }
-    .cat-ico-btn:hover { background: rgba(255,255,255,.07); color: #fff; }
-    .cat-ico-btn.edit:hover { color: #ff2e4d; }
-    .cat-ico-btn.danger:hover { background: rgba(244,63,94,.14); color: #fb7185; }
+    .cat-ico-btn { height: 32px; padding: 0 12px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .14s; text-decoration: none; }
+    .cat-ico-btn i { font-size: 11px; }
+    .cat-ico-btn:hover { background: rgba(255,255,255,.09); color: #fff; border-color: rgba(255,255,255,.16); }
+    .cat-ico-btn.edit:hover { color: #ff2e4d; border-color: rgba(255,46,77,.35); background: rgba(255,46,77,.08); }
+    .cat-ico-btn.danger:hover { background: rgba(244,63,94,.14); color: #fb7185; border-color: rgba(244,63,94,.35); }
     .cat-input { width: 100%; background: #0d1220; border: 1px solid rgba(255,255,255,.09); border-radius: 10px; padding: 9px 13px; font-size: 13.5px; color: #e2e8f0; outline: none; transition: border .2s; }
     .cat-input:focus { border-color: rgba(255,46,77,.6); box-shadow: 0 0 0 3px rgba(255,46,77,.1); }
     .cat-input::placeholder { color: #4b5563; }
@@ -30,8 +31,13 @@
     .cat-pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 99px; font-size: 10.5px; font-weight: 700; }
     .cat-tr { transition: background .14s; border-bottom: 1px solid rgba(255,255,255,.04); }
     .cat-tr:hover { background: rgba(255,255,255,.03); }
-    .cat-th { text-align: left; padding: 11px 16px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #64748b; border-bottom: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02); }
-    .cat-td { padding: 11px 16px; vertical-align: middle; }
+    .cat-th { text-align: left; padding: 13px 18px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #64748b; border-bottom: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02); }
+    .cat-td { padding: 13px 18px; vertical-align: middle; }
     .cat-slug { display: inline-block; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
     .cat-empty { text-align: center; padding: 56px 20px; color: #64748b; }
     .cat-empty .ic { font-size: 36px; opacity: .4; }
+    /* Pagination custom (konsisten dgn manga/user) */
+    .cat-pg { min-width: 36px; height: 36px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 13px; font-weight: 600; color: #94a3b8; background: #131a2c; border: 1px solid rgba(255,255,255,.07); text-decoration: none; transition: all .15s; }
+    .cat-pg:hover { color: #fff; border-color: rgba(255,46,77,.4); }
+    .cat-pg.cur { background: #ff2e4d; color: #fff; border-color: #ff2e4d; box-shadow: 0 4px 14px -4px rgba(255,46,77,.55); cursor: default; }
+    .cat-pg.dis { opacity: .35; cursor: not-allowed; pointer-events: none; }

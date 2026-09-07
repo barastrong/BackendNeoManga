@@ -101,15 +101,17 @@
                                 </span>
                             </td>
                             <td class="cat-td text-right whitespace-nowrap">
-                                <button class="cat-ico-btn edit" title="Edit" onclick='openModal("edit", {{ $genre->id }}, {{ json_encode($genre->name) }})'>
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <form action="{{ route('admin.category.destroy', $genre) }}" method="POST" class="inline"
-                                      onsubmit="return confirm('Hapus kategori &quot;{{ $genre->name }}&quot;? Manga tidak ikut terhapus, hanya lepas dari kategori ini.');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="cat-ico-btn danger" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
-                                </form>
+                                <div class="inline-flex items-center gap-2">
+                                    <button class="cat-ico-btn edit" title="Edit" onclick='openModal("edit", {{ $genre->id }}, {{ json_encode($genre->name) }})'>
+                                        <i class="fa-solid fa-pen"></i>Edit
+                                    </button>
+                                    <form action="{{ route('admin.category.destroy', $genre) }}" method="POST" class="inline"
+                                          onsubmit="return confirm('Hapus kategori &quot;{{ $genre->name }}&quot;? Manga tidak ikut terhapus, hanya lepas dari kategori ini.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="cat-ico-btn danger" title="Hapus"><i class="fa-solid fa-trash-can"></i>Hapus</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -129,14 +131,36 @@
 
     {{-- PAGINATION --}}
     @if($genres->hasPages())
-        <div class="mt-5 flex items-center justify-between flex-wrap gap-3">
+        <div class="mt-6 flex items-center justify-between flex-wrap gap-3" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
             <p class="text-xs" style="color:#64748b">
-                Menampilkan <span class="text-slate-300 font-semibold">{{ $genres->firstItem() }}</span>–
-                <span class="text-slate-300 font-semibold">{{ $genres->lastItem() }}</span> dari
-                <span class="text-slate-300 font-semibold">{{ $genres->total() }}</span>
+                Menampilkan <span style="color:#cbd5e1;font-weight:600">{{ $genres->firstItem() }}</span>–
+                <span style="color:#cbd5e1;font-weight:600">{{ $genres->lastItem() }}</span> dari
+                <span style="color:#cbd5e1;font-weight:600">{{ $genres->total() }}</span> kategori
             </p>
-            <div class="flex gap-1.5">
-                {{ $genres->appends(request()->query())->links('pagination::tailwind') }}
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                @if ($genres->onFirstPage())
+                    <span class="cat-pg dis"><i class="fa-solid fa-chevron-left text-[10px]"></i></span>
+                @else
+                    <a href="{{ $genres->appends(request()->query())->previousPageUrl() }}" class="cat-pg"><i class="fa-solid fa-chevron-left text-[10px]"></i></a>
+                @endif
+                @php
+                    $cur = $genres->currentPage();
+                    $last = $genres->lastPage();
+                    $start = max(1, $cur - 2);
+                    $end = min($last, $cur + 2);
+                @endphp
+                @for($i = $start; $i <= $end; $i++)
+                    @if($i == $cur)
+                        <span class="cat-pg cur">{{ $i }}</span>
+                    @else
+                        <a href="{{ $genres->appends(request()->query())->url($i) }}" class="cat-pg">{{ $i }}</a>
+                    @endif
+                @endfor
+                @if ($genres->hasMorePages())
+                    <a href="{{ $genres->appends(request()->query())->nextPageUrl() }}" class="cat-pg"><i class="fa-solid fa-chevron-right text-[10px]"></i></a>
+                @else
+                    <span class="cat-pg dis"><i class="fa-solid fa-chevron-right text-[10px]"></i></span>
+                @endif
             </div>
         </div>
     @endif
