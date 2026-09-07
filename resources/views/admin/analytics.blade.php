@@ -119,7 +119,7 @@
                 <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-layer-group text-sm"></i></span>
             </div>
             <div class="flex items-end gap-1.5 mt-4 h-16">
-                @foreach($releaseSeries->take(7) as $b)
+                @foreach($releaseSeries->slice(-7) as $b)
                     <div class="flex-1 flex flex-col items-center gap-1 min-w-0" title="{{ $b['date'] }} · {{ $b['total'] }} chapter">
                         <span class="text-[10px] font-semibold {{ $b['total'] > 0 ? 'text-slate-300' : 'text-slate-600' }}">{{ $b['total'] }}</span>
                         <div class="w-full max-w-[30px] rounded-t-md transition-all duration-500" style="height:{{ max(2, round($b['total'] / $releaseMax * 46)) }}px;background:linear-gradient(to top,rgba(52,211,153,.35),#34d399)"></div>
