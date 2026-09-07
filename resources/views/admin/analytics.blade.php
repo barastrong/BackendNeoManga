@@ -108,76 +108,7 @@
         </div>
     </div>
 
-    {{-- 1b. Baris cepat: rekap 7/30 hari + tren upload + rekap cepat --}}
-    <div class="mt-4 ana-quick">
-        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
-            <div class="flex items-center justify-between gap-3">
-                <div>
-                    <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Upload Chapter — 7 Hari Terakhir</h3>
-                    <p class="mt-1 text-xs text-slate-500">Total {{ number_format($releaseSeries->take(7)->sum('total')) }} chapter · {{ $chapterToday }} hari ini</p>
-                </div>
-                <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-layer-group text-sm"></i></span>
-            </div>
-            <div class="flex items-end gap-1.5 mt-4 h-16">
-                @foreach($releaseSeries->take(7) as $b)
-                    <div class="flex-1 flex flex-col items-center gap-1 min-w-0" title="{{ $b['date'] }} · {{ $b['total'] }} chapter">
-                        <span class="text-[10px] font-semibold {{ $b['total'] > 0 ? 'text-slate-300' : 'text-slate-600' }}">{{ $b['total'] }}</span>
-                        <div class="w-full max-w-[30px] rounded-t-md transition-all duration-500" style="height:{{ max(2, round($b['total'] / $releaseMax * 46)) }}px;background:linear-gradient(to top,rgba(52,211,153,.35),#34d399)"></div>
-                        <span class="text-[9px] text-slate-500">{{ \Carbon\Carbon::parse($b['date'])->locale('id')->isoFormat('dd') }}</span>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
-            <div class="flex items-center justify-between gap-3">
-                <div>
-                    <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Judul Baru — 30 Hari Terakhir</h3>
-                    <p class="mt-1 text-xs text-slate-500">{{ number_format($mangaThisMonth) }} bulan ini · {{ number_format($mangaThisWeek) }} minggu ini</p>
-                </div>
-                <span class="p-2 rounded-lg adm-chip text-sky-400"><i class="fa-solid fa-book-medical text-sm"></i></span>
-            </div>
-            <div class="flex items-end gap-1.5 mt-4 h-16">
-                @foreach($newMangaSeries->take(30)->filter(fn ($b) => $b['total'] > 0)->take(7) as $b)
-                    <div class="flex-1 flex flex-col items-center gap-1 min-w-0" title="{{ $b['date'] }} · {{ $b['total'] }} judul">
-                        <span class="text-[10px] font-semibold text-slate-300">{{ $b['total'] }}</span>
-                        <div class="w-full max-w-[30px] rounded-t-md transition-all duration-500" style="height:{{ max(2, round($b['total'] / $newMangaMax * 46)) }}px;background:linear-gradient(to top,rgba(56,189,248,.35),#38bdf8)"></div>
-                        <span class="text-[9px] text-slate-500">{{ \Carbon\Carbon::parse($b['date'])->locale('id')->isoFormat('dd') }}</span>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
-            <h3 class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Rekap Cepat</h3>
-            <div class="grid grid-cols-3 gap-3 mt-4">
-                <div class="ana-mini">
-                    <span class="p-2 rounded-lg adm-chip text-brand"><i class="fa-solid fa-eye text-[11px]"></i></span>
-                    <div class="min-w-0">
-                        <div class="ana-mini-label">7 hari</div>
-                        <div class="ana-mini-value">{{ number_format($viewsWeek ?? 0) }}</div>
-                    </div>
-                </div>
-                <div class="ana-mini">
-                    <span class="p-2 rounded-lg adm-chip text-indigo-400"><i class="fa-solid fa-fire text-[11px]"></i></span>
-                    <div class="min-w-0">
-                        <div class="ana-mini-label">30 hari</div>
-                        <div class="ana-mini-value">{{ number_format($views30d ?? 0) }}</div>
-                    </div>
-                </div>
-                <div class="ana-mini">
-                    <span class="p-2 rounded-lg adm-chip text-emerald-400"><i class="fa-solid fa-user-plus text-[11px]"></i></span>
-                    <div class="min-w-0">
-                        <div class="ana-mini-label">user baru / pekan</div>
-                        <div class="ana-mini-value">{{ number_format($newUsersWeek) }}</div>
-                    </div>
-                </div>
-            </div>
-            <p class="mt-4 text-[11px] text-slate-500 leading-snug"><i class="fa-solid fa-circle-info text-sky-400 mr-1"></i>Peak upload &amp; judul baru = momen terbaik untuk push promosi.</p>
-        </div>
-    </div>
-
-    {{-- 1b. Baris cepat: tren upload 7/30 hari + rekap cepat --}}
+{{-- 1b. Baris cepat: tren upload 7/30 hari + rekap cepat --}}
     <div class="mt-4 ana-quick">
         <div class="adm-card rounded-2xl shadow-sm px-5 py-4">
             <div class="flex items-center justify-between gap-3">
