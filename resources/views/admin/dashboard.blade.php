@@ -4,6 +4,7 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
+    <link rel="stylesheet" href="/css/admin/dashboard/index.css">
     <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
             <h1 class="font-display text-2xl font-bold text-white">Ringkasan Operasional</h1>
@@ -15,7 +16,7 @@
     </div>
 
     {{-- 1. Metric cards (bento grid + sparkline) --}}
-    <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="mt-8 dash-cards">
         {{-- Total Manga --}}
         <div class="adm-card adm-card-hover relative overflow-hidden flex flex-col justify-between p-5 rounded-2xl shadow-sm transition-all duration-300 group">
             <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-brand/5 blur-2xl group-hover:bg-brand/10 transition-colors"></div>
@@ -110,10 +111,10 @@
     </div>
 
     {{-- 2. Area chart + distribusi genre --}}
-    <div class="mt-8 grid grid-cols-1 xl:grid-cols-12 gap-5">
+    <div class="mt-8 dash-grid">
 
         {{-- Area chart 30 hari --}}
-        <div class="xl:col-span-8 adm-card flex flex-col justify-between p-6 rounded-2xl shadow-sm">
+        <div class="dash-span-8 adm-card flex flex-col justify-between p-6 rounded-2xl shadow-sm">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5">
                 <div>
                     <h2 class="font-display text-lg font-semibold text-white">Tren Pembaca &amp; Kunjungan Harian</h2>
@@ -178,7 +179,7 @@
         </div>
 
         {{-- Distribusi genre --}}
-        <div class="xl:col-span-4 adm-card flex flex-col justify-between p-6 rounded-2xl shadow-sm">
+        <div class="dash-span-4 adm-card flex flex-col justify-between p-6 rounded-2xl shadow-sm">
             <div>
                 <div class="flex items-center justify-between pb-2">
                     <h3 class="font-display text-lg font-semibold text-white">Distribusi Genre</h3>
@@ -220,10 +221,10 @@
     </div>
 
     {{-- 3. Rilis chapter + feed komentar --}}
-    <div class="mt-8 grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
+    <div class="mt-8 dash-grid items-start">
 
         {{-- Tabel rilis chapter (8 col) --}}
-        <div class="xl:col-span-8 adm-card rounded-2xl shadow-sm overflow-hidden">
+        <div class="dash-span-8 adm-card rounded-2xl shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-white/5 flex items-center justify-between">
                 <div>
                     <h2 class="font-display text-lg font-semibold text-white">Rilis Chapter Terbaru</h2>
@@ -286,7 +287,7 @@
         </div>
 
         {{-- Feed komentar terbaru (4 col) --}}
-        <div class="xl:col-span-4 space-y-5">
+        <div class="dash-span-4 space-y-5">
             <div class="adm-card rounded-2xl shadow-sm p-6">
                 <div class="flex items-center justify-between pb-2">
                     <div class="flex items-center gap-2.5">

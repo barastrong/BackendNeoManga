@@ -1,0 +1,15 @@
+/* ===== Dashboard Admin Grid (dash) — anti-purge ===== */
+/* Grid 2 kolom aktif ≥1100px (konten di samping sidebar 256px).
+   Fallback 1 kolom di layar kecil. Class Tailwind xl:* terpurge dari app.css. */
+
+.dash-cards{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media (min-width:640px){.dash-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1100px){.dash-cards{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+.dash-grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media (min-width:1100px){.dash-grid{grid-template-columns:repeat(12,minmax(0,1fr))}}
+
+.dash-span-8{grid-column:span 1}
+.dash-span-4{grid-column:span 1}
+@media (min-width:1100px){.dash-span-8{grid-column:span 8}}
+@media (min-width:1100px){.dash-span-4{grid-column:span 4}}
