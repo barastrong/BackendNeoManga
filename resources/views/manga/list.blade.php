@@ -114,7 +114,7 @@
     </form>
 
     @if($mangas->count() > 0)
-        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-x-4 gap-y-7">
+        <div class="mcg-list">
             @foreach($mangas as $manga)
                 @include('partials.manga-card', ['manga' => $manga])
             @endforeach
