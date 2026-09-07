@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bookmark;
 use App\Models\Chapter;
 use App\Models\Comment;
+use App\Models\Manga;
 use App\Models\MangaView;
 use App\Models\Rating;
 use App\Models\User;
