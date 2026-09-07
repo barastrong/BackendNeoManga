@@ -52,7 +52,7 @@
                 <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug) }}"
                    class="mt-2 flex items-center justify-between text-xs bg-slate-100 dark:bg-white/5 hover:bg-[#ff2e4d]/10 dark:hover:bg-[#ff2e4d]/15 text-slate-600 dark:text-slate-300 hover:text-[#e62242] dark:hover:text-[#ff4d66] border border-slate-200 dark:border-white/5 rounded-lg px-2.5 py-1.5 transition-colors"
                    style="height:30px">
-                    <span class="font-semibold flex items-center gap-1.5"><i class="fa-solid fa-book-open-reader text-[10px] opacity-60"></i>Chapter {{ $manga->latestPublishedChapter->number }}</span>
+                    <span class="font-semibold flex items-center gap-1.5"><i class="fa-solid fa-book-open-reader text-[10px] opacity-60"></i>CH {{ $manga->latestPublishedChapter->number }}</span>
                     <span class="opacity-70">{{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}</span>
                 </a>
             @else
