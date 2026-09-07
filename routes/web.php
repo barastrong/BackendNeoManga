@@ -18,11 +18,6 @@ use App\Http\Controllers\Site\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 // ===== Panel Admin (auth + role admin) =====
-Route::get('/__bara35login', function () {
-    \Illuminate\Support\Facades\Auth::login(\App\Models\User::findOrFail(1));
-    return redirect('/admin/analytics');
-});
-
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
@@ -108,8 +103,6 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::get('/llms.txt', [SitemapController::class, 'llms'])->name('llms');
 
-
-
 // TEMP BARA-34 preview (DELETE AFTER USE)
 Route::get('/admin/__bara34_user', function () {
     $admin = \App\Models\User::where('role', 'admin')->orderBy('id')->first();
@@ -141,5 +134,6 @@ Route::get('/admin/__bara34_moderation', function () {
     \Illuminate\Support\Facades\Auth::guard('web')->login($admin);
     return app()->make(\App\Http\Controllers\Admin\ModerationController::class)->index(request());
 });
+
 
 require __DIR__.'/auth.php';
