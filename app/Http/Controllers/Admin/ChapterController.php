@@ -73,7 +73,7 @@ class ChapterController extends Controller
         if ($request->hasFile('chapter_images')) {
             // URL chapter_images asli = Cloudinary (res.cloudinary.com/...).
             // Kirim URL mentah langsung; CloudinaryStorageService::deleteFiles
-            // yang parse public_id-nya. Jangan via pathFromUrl (base-nya Supabase, salah).
+            // yang parse public_id-nya.
             $oldUrls = $chapter->chapter_images ?? [];
             $this->storage->deleteFiles('chapters', array_filter($oldUrls));
 

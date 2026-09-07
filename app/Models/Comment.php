@@ -53,6 +53,16 @@ class Comment extends Model
         return $this->belongsToMany(User::class, 'comment_likes');
     }
 
+    /**
+     * Cek apakah user yang sedang login sudah like komentar ini.
+     * Like berbasis session (toggleLike di CommentController) — konsisten di sini.
+     */
+    public function isLikedBy(?int $userId = null): bool
+    {
+        $likedComments = session()->get('liked_comments', []);
+        return in_array($this->id, $likedComments, true);
+    }
+
     public function reports(): HasMany
     {
         return $this->hasMany(CommentReport::class);

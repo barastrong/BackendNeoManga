@@ -84,12 +84,12 @@ class Chapter extends Model
 
     private function resolveImageUrl(string $path): string
     {
+        // chapter_images sudah selalu full URL Cloudinary (res.cloudinary.com/...) — langsung pakai.
         if (str_starts_with($path, 'http')) {
             return $path;
         }
 
-        $supabaseUrl = rtrim(env('SUPABASE_URL'), '/');
-        return "{$supabaseUrl}/storage/v1/object/public/{$path}";
+        return asset('images/no-image.png');
     }
 
     public function getCoverImageUrlAttribute()

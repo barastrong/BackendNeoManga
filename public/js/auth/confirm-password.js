@@ -1,41 +1,28 @@
-// Membuat partikel
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            if (!particlesContainer) return;
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', createParticles);
-        
-        // Validasi Form
-        const form = document.querySelector('form');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                const password = document.getElementById('password').value;
-                const passwordError = document.getElementById('passwordError');
-                let hasError = false;
+// Eye toggle untuk field password di halaman konfirmasi
+function togglePass(fieldId, iconId) {
+    const input = document.getElementById(fieldId);
+    const icon = document.getElementById(iconId);
+    if (!input || !icon) return;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    icon.className = show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+}
 
-                // Reset error
-                passwordError.classList.add('hidden');
+// Validasi form konfirmasi password
+(function () {
+    const form = document.querySelector('form[action*="confirm-password"]');
+    if (!form) return;
 
-                // Validasi Password
-                if (!password) {
-                    passwordError.textContent = 'Password wajib diisi.';
-                    passwordError.classList.remove('hidden');
-                    hasError = true;
-                }
-                
-                if (hasError) {
-                    e.preventDefault(); // Mencegah form dikirim jika ada error
-                }
-            });
+    form.addEventListener('submit', function (e) {
+        const password = document.getElementById('password');
+        const passwordError = document.getElementById('passwordError');
+        if (!password || !passwordError) return;
+
+        passwordError.classList.add('hidden');
+        if (!password.value) {
+            passwordError.textContent = 'Password wajib diisi.';
+            passwordError.classList.remove('hidden');
+            e.preventDefault();
         }
+    });
+})();
