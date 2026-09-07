@@ -52,4 +52,24 @@ class CategoryController extends Controller
 
         return back()->with('success', "Kategori \"{$name}\" berhasil dihapus.");
     }
+
+    /**
+     * Aksi massal kategori: delete.
+     */
+    public function bulk(Request $request)
+    {
+        $validated = $request->validate([
+            'ids'    => 'required|array',
+            'ids.*'  => 'exists:genres,id',
+            'action' => 'required|in:delete',
+        ]);
+
+        $genres = Genre::whereIn('id', $validated['ids'])->get();
+        foreach ($genres as $genre) {
+            $genre->mangas()->detach();
+        }
+        Genre::whereIn('id', $genres->pluck('id'))->delete();
+
+        return back()->with('success', count($genres) . ' kategori berhasil dihapus.');
+    }
 }

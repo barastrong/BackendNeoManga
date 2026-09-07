@@ -158,4 +158,60 @@ class ChapterController extends Controller
         return redirect()->route('admin.chapter.index')
             ->with('success', "Chapter {$chapter->number} dari \"{$manga->title}\" berhasil dihapus.");
     }
+
+    /**
+     * Aksi massal chapter dari halaman per-manga:
+     * delete / set status (draft, published).
+     */
+    public function bulk(Request $request, Manga $manga)
+    {
+        $validated = $request->validate([
+            'ids'    => 'required|array',
+            'ids.*'  => 'exists:chapters,id',
+            'action' => 'required|in:delete,draft,published',
+        ]);
+
+        $chapters = Chapter::whereIn('id', $validated['ids'])->get();
+
+        if ($validated['action'] === 'delete') {
+            foreach ($chapters as $chapter) {
+                $this->storage->deleteFiles('chapters', array_filter($chapter->chapter_images ?? []));
+            }
+            Chapter::whereIn('id', $chapters->pluck('id'))->delete();
+            $msg = count($chapters) . ' chapter berhasil dihapus.';
+        } else {
+            Chapter::whereIn('id', $chapters->pluck('id'))->update(['status' => $validated['action']]);
+            $msg = 'Status ' . count($chapters) . " chapter diubah ke {$validated['action']}.";
+        }
+
+        return redirect()->route('admin.manga.chapters.index', $manga)->with('success', $msg);
+    }
+
+    /**
+     * Aksi massal chapter dari halaman global (admin.chapter.index):
+     * delete / set status (draft, published).
+     */
+    public function globalBulk(Request $request)
+    {
+        $validated = $request->validate([
+            'ids'    => 'required|array',
+            'ids.*'  => 'exists:chapters,id',
+            'action' => 'required|in:delete,draft,published',
+        ]);
+
+        $chapters = Chapter::whereIn('id', $validated['ids'])->get();
+
+        if ($validated['action'] === 'delete') {
+            foreach ($chapters as $chapter) {
+                $this->storage->deleteFiles('chapters', array_filter($chapter->chapter_images ?? []));
+            }
+            Chapter::whereIn('id', $chapters->pluck('id'))->delete();
+            $msg = count($chapters) . ' chapter berhasil dihapus.';
+        } else {
+            Chapter::whereIn('id', $chapters->pluck('id'))->update(['status' => $validated['action']]);
+            $msg = 'Status ' . count($chapters) . " chapter diubah ke {$validated['action']}.";
+        }
+
+        return redirect()->route('admin.chapter.index')->with('success', $msg);
+    }
 }

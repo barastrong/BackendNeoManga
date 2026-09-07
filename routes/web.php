@@ -26,6 +26,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/manga', [AdminMangaController::class, 'index'])->name('manga.index');
     Route::post('/manga/bulk', [AdminMangaController::class, 'bulk'])->name('manga.bulk');
     Route::get('/manga/create', [AdminMangaController::class, 'create'])->name('manga.create');
+    Route::post('/manga', [AdminMangaController::class, 'store'])->name('manga.store');
+    Route::get('/manga/{manga}/edit', [AdminMangaController::class, 'edit'])->name('manga.edit');
+    Route::put('/manga/{manga}', [AdminMangaController::class, 'update'])->name('manga.update');
+    Route::delete('/manga/{manga}', [AdminMangaController::class, 'destroy'])->name('manga.destroy');
+
+    // Chapter per-manga
+    Route::get('/manga/{manga}/chapters', [AdminChapterController::class, 'index'])->name('manga.chapters.index');
+    Route::post('/manga/{manga}/chapters/bulk', [AdminChapterController::class, 'bulk'])->name('manga.chapters.bulk');
     Route::get('/manga/{manga}/chapters/create', [AdminChapterController::class, 'create'])->name('manga.chapters.create');
     Route::post('/manga/{manga}/chapters', [AdminChapterController::class, 'store'])->name('manga.chapters.store');
     Route::get('/manga/{manga}/chapters/{chapter}/edit', [AdminChapterController::class, 'edit'])->name('manga.chapters.edit');
@@ -34,6 +42,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Chapter global
     Route::get('/chapters', [AdminChapterController::class, 'globalIndex'])->name('chapter.index');
+    Route::post('/chapters/bulk', [AdminChapterController::class, 'globalBulk'])->name('chapter.bulk');
     Route::get('/chapters/{chapter}/edit', [AdminChapterController::class, 'globalEdit'])->name('chapter.edit');
     Route::put('/chapters/{chapter}', [AdminChapterController::class, 'globalUpdate'])->name('chapter.update');
     Route::delete('/chapters/{chapter}', [AdminChapterController::class, 'globalDestroy'])->name('chapter.destroy');
@@ -41,14 +50,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Kategori
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/categories', [CategoryController::class, 'store'])->name('category.store');
+    Route::post('/categories/bulk', [CategoryController::class, 'bulk'])->name('category.bulk');
     Route::put('/categories/{genre}', [CategoryController::class, 'update'])->name('category.update');
     Route::delete('/categories/{genre}', [CategoryController::class, 'destroy'])->name('category.destroy');
 
     // Users & Moderasi
     Route::get('/users', [AdminUserController::class, 'index'])->name('user.index');
+    Route::post('/users/bulk', [AdminUserController::class, 'bulk'])->name('user.bulk');
     Route::get('/moderasi', [ModerationController::class, 'index'])->name('moderation.index');
     Route::post('/moderasi/komentar/{comment}', [ModerationController::class, 'action'])->name('moderation.action');
     Route::post('/moderasi/user/{user}', [ModerationController::class, 'userAction'])->name('moderation.user');
+    Route::post('/moderasi/bulk', [ModerationController::class, 'bulk'])->name('moderation.bulk');
 });
 
 // ===== Frontend publik =====

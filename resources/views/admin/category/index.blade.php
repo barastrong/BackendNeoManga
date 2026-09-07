@@ -69,7 +69,9 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full" style="border-collapse:collapse;font-size:13px">
+            <table class="w-full" style="border-collapse:collapse;font-size:13px"
+                   data-bulk-form="{{ route('admin.category.bulk') }}"
+                   data-bulk-actions='@json([["value"=>"delete","label"=>"🗑 Hapus"]])'>
                 <thead>
                     <tr>
                         <th class="cat-th" style="width:50px">No</th>
@@ -81,7 +83,7 @@
                 </thead>
                 <tbody>
                     @forelse($genres as $genre)
-                        <tr class="cat-tr">
+                        <tr class="cat-tr" data-id="{{ $genre->id }}">
                             <td class="cat-td text-slate-600 font-mono text-xs">{{ $genres->firstItem() + $loop->index }}</td>
                             <td class="cat-td">
                                 <div class="flex items-center gap-3">

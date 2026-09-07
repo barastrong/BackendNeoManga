@@ -1,0 +1,18 @@
+/* Bulk actions UI — shared admin */
+.bulk-col { width: 36px; text-align: center; }
+.bulk-th { width: 36px; text-align: center; }
+.bulk-col input[type="checkbox"],
+.bulk-th input[type="checkbox"] {
+    width: 15px; height: 15px; accent-color: #ff2e4d; cursor: pointer; vertical-align: middle;
+}
+tr.bulk-selected { background: rgba(255,46,77,.08) !important; }
+tr.bulk-selected td:first-child { border-left: 2px solid #ff2e4d; }
+
+/* Grid mode (halaman manga) */
+.mg-item, .mg-item .mg-coverwrap { position: relative; }
+.mg-item .bulk-check { right: 32px; top: 8px; }
+.mg-item.bulk-selected .mg-coverwrap {
+    outline: 2px solid rgba(255,46,77,.75);
+    box-shadow: 0 0 0 4px rgba(255,46,77,.12);
+    border-radius: 14px;
+}

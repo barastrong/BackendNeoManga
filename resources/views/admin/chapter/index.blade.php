@@ -33,7 +33,9 @@
 
     <div class="ch-card mt-6">
         <div class="overflow-x-auto">
-            <table class="w-full" style="border-collapse:collapse;font-size:13.5px;min-width:640px">
+            <table class="w-full" style="border-collapse:collapse;font-size:13.5px;min-width:640px"
+                   data-bulk-form="{{ route('admin.manga.chapters.bulk', $manga) }}"
+                   data-bulk-actions='@json([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"draft","label"=>"📝 Set Draft"],["value"=>"published","label"=>"✅ Set Published"]])'>
                 <thead>
                     <tr>
                         <th class="ch-th">Chapter</th>
@@ -48,7 +50,7 @@
                         @php
                             $imgCount = is_array($chapter->chapter_images) ? count($chapter->chapter_images) : (is_string($chapter->chapter_images) ? count(json_decode($chapter->chapter_images, true) ?? []) : 0);
                         @endphp
-                        <tr class="ch-tr">
+                        <tr class="ch-tr" data-id="{{ $chapter->id }}">
                             <td class="ch-td">
                                 <span class="inline-flex items-center gap-1.5 font-bold text-white">
                                     <i class="fa-solid fa-hashtag text-[10px]" style="color:#ff8a9c"></i>{{ $chapter->number }}

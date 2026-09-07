@@ -107,4 +107,36 @@ class ModerationController extends Controller
 
         return back()->with('success', 'Pengguna ' . ($validated['action'] === 'ban' ? 'di-ban' : 'di-unban') . '.');
     }
+
+    /**
+     * Aksi massal moderasi komentar: delete (dari tabel Semua Komentar).
+     * ids = comment id. Bisa juga sekalian ban user via action delete_ban.
+     */
+    public function bulk(Request $request)
+    {
+        $validated = $request->validate([
+            'ids'    => 'required|array',
+            'ids.*'  => 'exists:comments,id',
+            'action' => 'required|in:delete,delete_ban',
+        ]);
+
+        $comments = Comment::whereIn('id', $validated['ids'])->get();
+
+        if ($validated['action'] === 'delete_ban') {
+            $userIds = $comments->pluck('user_id')->filter()->unique();
+            User::whereIn('id', $userIds)->update(['banned_at' => now()]);
+        }
+
+        foreach ($comments as $comment) {
+            $comment->replies()->delete();
+            $comment->delete();
+        }
+
+        // Tutup semua report pending terkait
+        CommentReport::whereIn('comment_id', $comments->pluck('id'))
+            ->where('status', 'pending')
+            ->update(['status' => 'resolved', 'handled_by' => auth()->id(), 'handled_at' => now()]);
+
+        return back()->with('success', count($comments) . ' komentar berhasil dihapus.');
+    }
 }

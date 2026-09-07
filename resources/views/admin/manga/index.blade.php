@@ -72,7 +72,9 @@
 @endif
 
 {{-- GRID --}}
-<div class="mt-6 mg-grid">
+<div class="mt-6 mg-grid"
+     data-bulk-form="{{ route('admin.manga.bulk') }}"
+     data-bulk-actions='@json([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"ongoing","label"=>"▶ Set Ongoing"],["value"=>"completed","label"=>"✅ Set Completed"],["value"=>"hiatus","label"=>"⏸ Set Hiatus"],["value"=>"cancelled","label"=>"⛔ Set Cancelled"]])'>
     @forelse ($mangas as $manga)
         @php
             $typeMeta = [
@@ -92,7 +94,7 @@
             $chCount = $manga->chapters_count ?? $manga->chapters()->count();
         @endphp
 
-        <div class="mg-item">
+        <div class="mg-item" data-bulk-item data-id="{{ $manga->id }}">
             <div class="mg-coverwrap" x-data="{ open: false }">
                 {{-- Badge tipe --}}
                 <span class="mg-type" style="color:{{ $tp[1] }}">{{ $tp[0] }}</span>

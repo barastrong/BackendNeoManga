@@ -120,4 +120,32 @@ class MangaController extends Controller
         $manga->delete();
         return redirect()->route('admin.manga.index')->with('success', 'Manga berhasil dihapus.');
     }
+
+    /**
+     * Aksi massal: delete / set status (ongoing, completed, hiatus, cancelled).
+     */
+    public function bulk(Request $request)
+    {
+        $validated = $request->validate([
+            'ids'    => 'required|array',
+            'ids.*'  => 'exists:mangas,id',
+            'action' => 'required|in:delete,ongoing,completed,hiatus,cancelled',
+        ]);
+
+        $mangas = Manga::whereIn('id', $validated['ids'])->get();
+        $count  = $mangas->count();
+
+        if ($validated['action'] === 'delete') {
+            foreach ($mangas as $manga) {
+                $this->storage->deleteCover($manga->cover_image);
+                $manga->delete(); // chapters ikut cascade via FK
+            }
+            $msg = "$count manga berhasil dihapus.";
+        } else {
+            Manga::whereIn('id', $mangas->pluck('id'))->update(['status' => $validated['action']]);
+            $msg = "Status $count manga diubah ke {$validated['action']}.";
+        }
+
+        return redirect()->route('admin.manga.index')->with('success', $msg);
+    }
 }

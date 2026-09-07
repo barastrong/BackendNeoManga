@@ -220,7 +220,9 @@
 
     <div class="mx-card mt-4 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="mx-table" id="comments-table">
+            <table class="mx-table" id="comments-table"
+                   data-bulk-form="{{ route('admin.moderation.bulk') }}"
+                   data-bulk-actions='@json([["value"=>"delete","label"=>"🗑 Hapus"],["value"=>"delete_ban","label"=>"🚫 Hapus & Ban User"]])'>
                 <thead>
                     <tr>
                         <th>Pengguna</th>
@@ -232,7 +234,7 @@
                 </thead>
                 <tbody>
                     @forelse($comments as $cm)
-                        <tr data-search="{{ strtolower(($cm->user->name ?? '') . ' ' . $cm->content) }}">
+                        <tr data-search="{{ strtolower(($cm->user->name ?? '') . ' ' . $cm->content) }}" data-id="{{ $cm->id }}">
                             <td>
                                 <div class="flex items-center gap-2.5">
                                     <img class="mx-avatar sm" src="https://ui-avatars.com/api/?name={{ urlencode($cm->user->name ?? '?') }}&background=ff2e4d&color=fff&bold=true" alt="">
@@ -293,7 +295,9 @@
 
     <div class="mx-card mt-4 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="mx-table" id="users-table">
+            <table class="mx-table" id="users-table"
+                   data-bulk-form="{{ route('admin.user.bulk') }}"
+                   data-bulk-actions='@json([["value"=>"ban","label"=>"🚫 Ban"],["value"=>"unban","label"=>"🔓 Unban"]])'>
                 <thead>
                     <tr>
                         <th>Pengguna</th>
@@ -306,7 +310,7 @@
                 </thead>
                 <tbody>
                     @forelse($users as $us)
-                        <tr data-search="{{ strtolower($us->name . ' ' . $us->email) }}" style="{{ $us->isBanned() ? 'background:rgba(244,63,94,.05)' : '' }}">
+                        <tr data-search="{{ strtolower($us->name . ' ' . $us->email) }}" style="{{ $us->isBanned() ? 'background:rgba(244,63,94,.05)' : '' }}" data-id="{{ $us->id }}">
                             <td>
                                 <div class="flex items-center gap-2.5">
                                     <img class="mx-avatar sm" src="{{ $us->photo_profile ?? 'https://ui-avatars.com/api/?name=' . urlencode($us->name) . '&background=ff2e4d&color=fff&bold=true' }}" alt="">

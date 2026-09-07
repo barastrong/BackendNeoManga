@@ -50,7 +50,9 @@
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full" style="border-collapse:collapse;font-size:13.5px;min-width:680px">
+            <table class="w-full" style="border-collapse:collapse;font-size:13.5px;min-width:680px"
+                   data-bulk-form="{{ route('admin.user.bulk') }}"
+                   data-bulk-actions='@json([["value"=>"ban","label"=>"🚫 Ban"],["value"=>"unban","label"=>"🔓 Unban"],["value"=>"delete","label"=>"🗑 Hapus"]])'>
                 <thead>
                     <tr>
                         <th class="us-th">Pengguna</th>
@@ -63,7 +65,7 @@
                 </thead>
                 <tbody>
                     @forelse ($users as $user)
-                        <tr class="us-tr">
+                        <tr class="us-tr" data-id="{{ $user->id }}">
                             <td class="us-td">
                                 <div class="flex items-center gap-3">
                                     <img class="h-9 w-9 rounded-full object-cover ring-2 ring-white/10"
