@@ -93,13 +93,18 @@
                             @endif
 
                             <div class="relative" x-data="{ dropdownOpen: false }" @click.outside="dropdownOpen = false">
-                                <button @click="dropdownOpen = !dropdownOpen" class="block focus:outline-none transition-transform duration-200 hover:scale-105" :aria-expanded="dropdownOpen.toString()">
-                                    <img class="w-9 h-9 rounded-full object-cover ring-2 ring-[#ff2e4d]/60 ring-offset-2 ring-offset-white dark:ring-offset-[#0b0f19]" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&font-size=0.45" alt="Avatar">
+                                <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-2 group focus:outline-none transition-transform duration-200 hover:scale-105" :aria-expanded="dropdownOpen.toString()" aria-label="Menu akun">
+                                    <span class="relative inline-flex flex-shrink-0">
+                                        <img class="w-9 h-9 rounded-full object-cover ring-2 ring-[#ff2e4d]/60 ring-offset-2 ring-offset-white dark:ring-offset-[#0b0f19]" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&font-size=0.45" alt="Avatar">
+                                        <span class="absolute rounded-full bg-emerald-500" style="width:8px;height:8px;right:-1px;bottom:-1px;box-shadow:0 0 0 2px #ffffff"></span>
+                                    </span>
+                                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200" :style="dropdownOpen ? 'transform: rotate(180deg); color:#ff2e4d' : ''"></i>
                                 </button>
                                 <div x-show="dropdownOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-3 w-72 bg-white dark:bg-[#0d1220] rounded-2xl shadow-2xl shadow-black/40 ring-1 ring-black/5 dark:ring-white/10 origin-top-right overflow-hidden z-50" style="display: none;">
-                                    {{-- Header card user --}}
-                                    <div class="relative px-5 pt-5 pb-4 bg-gradient-to-br from-[#ff2e4d]/15 via-transparent to-indigo-500/10 dark:from-[#ff2e4d]/20 dark:via-transparent dark:to-indigo-500/10">
+                                    {{-- Header kartu profil --}}
+                                    <div class="relative px-5 pt-5 pb-4 overflow-hidden" style="background:linear-gradient(135deg, rgba(255,46,77,.16) 0%, rgba(255,255,255,0) 55%, rgba(99,102,241,.12) 100%)">
                                         <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#ff2e4d]/20 rounded-full blur-2xl pointer-events-none"></div>
+                                        <div class="absolute -bottom-12 -left-8 w-28 h-28 rounded-full blur-2xl pointer-events-none" style="background:rgba(99,102,241,.16)"></div>
                                         <div class="flex items-center gap-3.5 relative">
                                             <div class="relative flex-shrink-0">
                                                 <img class="w-14 h-14 rounded-2xl object-cover ring-2 ring-[#ff2e4d]/50 ring-offset-2 ring-offset-[#0d1220]" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&size=112&font-size=0.4" alt="{{ auth()->user()->name }}">
@@ -120,21 +125,47 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @php
+                                        $userMenu = [
+                                            ['route' => 'user.profile', 'label' => 'Profil Saya', 'icon' => 'fa-regular fa-user'],
+                                            ['route' => 'history.index', 'label' => 'Riwayat Baca', 'icon' => 'fa-solid fa-clock-rotate-left'],
+                                            ['route' => 'bookmark.index', 'label' => 'Bookmark', 'icon' => 'fa-solid fa-bookmark'],
+                                        ];
+                                    @endphp
                                     <div class="p-2 border-t border-slate-200 dark:border-white/5">
-                                        <a href="{{ route('user.profile') }}" class="dropdown-item !rounded-xl"><i class="fa-regular fa-user w-5 text-slate-400"></i><span>Profil Saya</span><i class="fa-solid fa-chevron-right ml-auto text-[10px] text-slate-300 dark:text-slate-600"></i></a>
-                                        <a href="{{ route('history.index') }}" class="dropdown-item !rounded-xl"><i class="fa-solid fa-clock-rotate-left w-5 text-slate-400"></i><span>Riwayat Baca</span><i class="fa-solid fa-chevron-right ml-auto text-[10px] text-slate-300 dark:text-slate-600"></i></a>
-                                        <a href="{{ route('bookmark.index') }}" class="dropdown-item !rounded-xl"><i class="fa-solid fa-bookmark w-5 text-slate-400"></i><span>Bookmark</span><i class="fa-solid fa-chevron-right ml-auto text-[10px] text-slate-300 dark:text-slate-600"></i></a>
+                                        <p class="px-3 pt-1 pb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Menu Saya</p>
+                                        @foreach($userMenu as $item)
+                                            @php $isActive = request()->routeIs($item['route']); @endphp
+                                            <a href="{{ route($item['route']) }}" class="dropdown-item !rounded-xl" style="{{ $isActive ? 'background:rgba(255,46,77,.10)' : '' }}">
+                                                <span class="flex items-center justify-center flex-shrink-0" style="width:26px;height:26px;border-radius:8px;background:{{ $isActive ? 'rgba(255,46,77,.16)' : 'rgba(148,163,184,.14)' }}">
+                                                    <i class="{{ $item['icon'] }} text-xs" style="{{ $isActive ? 'color:#ff2e4d' : '' }}"></i>
+                                                </span>
+                                                <span style="{{ $isActive ? 'color:#ff2e4d;font-weight:600' : '' }}">{{ $item['label'] }}</span>
+                                                <i class="fa-solid fa-chevron-right ml-auto text-[10px] {{ $isActive ? 'text-[#ff2e4d]' : 'text-slate-400' }}"></i>
+                                            </a>
+                                        @endforeach
                                     </div>
                                     @if(auth()->check() && auth()->user()->isAdmin())
+                                    @php $isAdminActive = request()->routeIs('admin.*'); @endphp
                                     <div class="p-2 pt-0">
-                                        <a href="{{ route('admin.dashboard') }}" class="dropdown-item !rounded-xl"><i class="fa-solid fa-user-shield w-5 text-slate-400"></i><span>Panel Admin</span><i class="fa-solid fa-chevron-right ml-auto text-[10px] text-slate-300 dark:text-slate-600"></i></a>
+                                        <p class="px-3 pt-1 pb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Administrasi</p>
+                                        <a href="{{ route('admin.dashboard') }}" class="dropdown-item !rounded-xl" style="{{ $isAdminActive ? 'background:rgba(255,46,77,.10)' : '' }}">
+                                            <span class="flex items-center justify-center flex-shrink-0" style="width:26px;height:26px;border-radius:8px;background:{{ $isAdminActive ? 'rgba(255,46,77,.16)' : 'rgba(148,163,184,.14)' }}">
+                                                <i class="fa-solid fa-user-shield text-xs" style="{{ $isAdminActive ? 'color:#ff2e4d' : '' }}"></i>
+                                            </span>
+                                            <span style="{{ $isAdminActive ? 'color:#ff2e4d;font-weight:600' : '' }}">Panel Admin</span>
+                                            <i class="fa-solid fa-chevron-right ml-auto text-[10px] {{ $isAdminActive ? 'text-[#ff2e4d]' : 'text-slate-400' }}"></i>
+                                        </a>
                                     </div>
                                     @endif
                                     <div class="p-2 pt-0 border-t border-slate-200 dark:border-white/5">
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
                                             <button type="submit" class="dropdown-item !rounded-xl !text-red-600 dark:!text-[#ff4d66] hover:!bg-red-50 dark:hover:!bg-[#ff2e4d]/10">
-                                                <i class="fa-solid fa-right-from-bracket w-5"></i><span>Keluar</span><i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-0"></i>
+                                                <span class="flex items-center justify-center flex-shrink-0" style="width:26px;height:26px;border-radius:8px;background:rgba(255,46,77,.12)">
+                                                    <i class="fa-solid fa-right-from-bracket text-xs !text-red-600 dark:!text-[#ff4d66]"></i>
+                                                </span>
+                                                <span>Keluar</span>
                                             </button>
                                         </form>
                                     </div>
