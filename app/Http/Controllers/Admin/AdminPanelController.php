@@ -481,6 +481,14 @@ class AdminPanelController extends Controller
     public function chapterGlobalDestroy(Chapter $chapter)
     {
         $manga = $chapter->manga;
-        return $this->chapterDestroy($manga, $chapter);
+
+        // Hapus file Cloudinary dulu, baru record DB.
+        $urls = $chapter->chapter_images ?? [];
+        $this->storage->deleteFiles('chapters', array_filter($urls));
+        $chapter->delete();
+
+        // Tetap di halaman global (admin.chapter.index), bukan per-manga.
+        return redirect()->route('admin.chapter.index')
+            ->with('success', "Chapter {$chapter->number} dari \"{$manga->title}\" berhasil dihapus.");
     }
 }
