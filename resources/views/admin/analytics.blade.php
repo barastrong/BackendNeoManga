@@ -549,7 +549,7 @@
                 <span class="text-[11px] font-semibold text-sky-400 adm-chip px-2 py-0.5 rounded-lg">by Genre</span>
             </div>
             <p class="text-sm text-slate-500">Jumlah judul manga per genre.</p>
-            <div class="space-y-3.5 mt-5 grow-y">
+            <div class="space-y-3.5 mt-5">
                 @forelse($mangaByGenre as $g)
                     <div>
                         <div class="flex items-center justify-between text-sm">
@@ -574,7 +574,7 @@
                 $imax = max(1, max($inter));
                 $ic = ['Rating' => '#f59e0b', 'Komentar' => '#38bdf8', 'Bookmark' => '#a78bfa'];
             @endphp
-            <div class="space-y-5 grow-y">
+            <div class="space-y-5 mt-5">
                 @foreach($inter as $k => $v)
                     <div>
                         <div class="flex items-center justify-between text-sm mb-1.5">
@@ -589,7 +589,7 @@
                     </div>
                 @endforeach
             </div>
-            <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between text-xs">
+            <div class="mt-auto pt-5 border-t border-white/5 flex items-center justify-between text-xs">
                 <span class="text-slate-500 inline-flex items-center gap-1.5">
                     <i class="fa-solid fa-check-circle text-emerald-400"></i> Total interaksi
                 </span>
@@ -624,7 +624,7 @@
             </div>
             <div class="mt-5 rounded-xl px-4 py-3 bg-gradient-to-r from-brand/15 to-transparent border border-brand/20 flex items-center gap-3">
                 <i class="fa-solid fa-circle-info text-brand text-sm"></i>
-                <p class="text-[11px] text-slate-400 leading-snug">Rata-rata tiap judul dikunjungi <b class="text-slate-200">{{ number_format($ratioViews) }} kali</b> — pantau judul di bawah rata-rata untuk promosi.</p>
+                <p class="text-[11px] text-slate-400 leading-snug">Rata-rata tiap judul dikunjungi <b class="text-slate-200">{{ number_format($ratioViews, 1) }}×</b> — pantau judul di bawah rata-rata untuk promosi.</p>
             </div>
         </div>
     </div>
