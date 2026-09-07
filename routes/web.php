@@ -103,37 +103,4 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::get('/llms.txt', [SitemapController::class, 'llms'])->name('llms');
 
-// TEMP BARA-34 preview (DELETE AFTER USE)
-Route::get('/admin/__bara34_user', function () {
-    $admin = \App\Models\User::where('role', 'admin')->orderBy('id')->first();
-    if (!$admin) { abort(403, 'NO ADMIN'); }
-    \Illuminate\Support\Facades\Auth::guard('web')->login($admin);
-    return app()->make(\App\Http\Controllers\Admin\UserController::class)->index();
-});
-Route::get('/admin/__bara34_manga', function () {
-    $admin = \App\Models\User::where('role', 'admin')->orderBy('id')->first();
-    if (!$admin) { abort(403, 'NO ADMIN'); }
-    \Illuminate\Support\Facades\Auth::guard('web')->login($admin);
-    return app()->make(\App\Http\Controllers\Admin\MangaController::class)->index(request());
-});
-Route::get('/admin/__bara34_category', function () {
-    $admin = \App\Models\User::where('role', 'admin')->orderBy('id')->first();
-    if (!$admin) { abort(403, 'NO ADMIN'); }
-    \Illuminate\Support\Facades\Auth::guard('web')->login($admin);
-    return app()->make(\App\Http\Controllers\Admin\CategoryController::class)->index(request());
-});
-Route::get('/admin/__bara34_chapters', function () {
-    $admin = \App\Models\User::where('role', 'admin')->orderBy('id')->first();
-    if (!$admin) { abort(403, 'NO ADMIN'); }
-    \Illuminate\Support\Facades\Auth::guard('web')->login($admin);
-    return app()->make(\App\Http\Controllers\Admin\ChapterController::class)->globalIndex(request());
-});
-Route::get('/admin/__bara34_moderation', function () {
-    $admin = \App\Models\User::where('role', 'admin')->orderBy('id')->first();
-    if (!$admin) { abort(403, 'NO ADMIN'); }
-    \Illuminate\Support\Facades\Auth::guard('web')->login($admin);
-    return app()->make(\App\Http\Controllers\Admin\ModerationController::class)->index(request());
-});
-
-
 require __DIR__.'/auth.php';
