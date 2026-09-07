@@ -94,9 +94,11 @@
                             @endif
 
                             <div class="relative" x-data="{ dropdownOpen: false }" @click.outside="dropdownOpen = false">
-                                <button @click="dropdownOpen = !dropdownOpen" class="udd-avatar group" :aria-expanded="dropdownOpen.toString()" aria-label="Menu akun">
-                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&font-size=0.45" alt="Avatar">
-                                    <span class="udd-dot"></span>
+                                <button @click="dropdownOpen = !dropdownOpen" class="udd-trigger" :aria-expanded="dropdownOpen.toString()" aria-label="Menu akun">
+                                    <span class="udd-avatar">
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=ff2e4d&color=fff&font-size=0.45" alt="Avatar">
+                                        <span class="udd-dot"></span>
+                                    </span>
                                     <i class="fa-solid fa-chevron-down udd-caret" :class="dropdownOpen && 'udd-caret-open'"></i>
                                 </button>
                                 <div x-show="dropdownOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="udd-panel" style="display: none;">
