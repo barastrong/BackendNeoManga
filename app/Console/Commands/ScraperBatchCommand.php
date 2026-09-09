@@ -76,7 +76,10 @@ class ScraperBatchCommand extends Command
                 $t0 = microtime(true);
 
                 // Serial: tunggu script selesai (semua halaman / auto-stop) baru lanjut
-                $proc = new Process([$python, $path], $dir);
+                $proc = new Process([$python, $path], $dir, [
+                    'PYTHONIOENCODING' => 'utf-8',   // fix: emoji 🤖 di print() gagal di cp1252
+                    'PYTHONUTF8' => '1',
+                ]);
                 $proc->setTimeout(0);      // tanpa batas waktu
                 $proc->setIdleTimeout(0);
 
