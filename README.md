@@ -1,5 +1,7 @@
 # NeoManga - A Modern Web Reader for Manga & Comics
 
+![NeoManga Logo](public/images/neomanga-logo.jpg)
+
 ![NeoManga Showcase](docs/images/Dashboard_Dark.png)
 
 <p align="center">

@@ -49,9 +49,7 @@
                             <i class="fa-solid fa-bars text-xl"></i>
                         </button>
                         <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 flex-shrink-0">
-                            <span class="flex items-center justify-center w-9 h-9 rounded-xl bg-[#ff2e4d] text-white shadow-lg shadow-[#ff2e4d]/30">
-                                <i class="fa-solid fa-book-open text-lg"></i>
-                            </span>
+                            <img src="/images/neomanga-logo.jpg" alt="NeoManga" class="w-9 h-9 rounded-xl object-cover shadow-lg shadow-[#ff2e4d]/30 ring-1 ring-white/10">
                             <span class="font-display text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                                 Neo<span class="text-[#ff2e4d]">Manga</span>
                             </span>

@@ -42,7 +42,7 @@
     <aside :class="sidebarOpen ? 'open' : ''"
            class="adm-sidebar">
         <div class="adm-sb-brand">
-            <span class="adm-sb-logo"><i class="fa-solid fa-book-open text-sm"></i></span>
+            <img src="/images/neomanga-logo.jpg" alt="NeoManga" class="adm-sb-logo">
             <div>
                 <a href="{{ route('admin.dashboard') }}" class="adm-sb-name">Neo<span>Manga</span></a>
                 <p class="adm-sb-sub">Admin Panel</p>

@@ -6,15 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const replyForm = document.getElementById(`reply-form-${commentId}`);
             const textarea = replyForm.querySelector('textarea');
             const isHidden = replyForm.style.display === 'none';
-            
+
             document.querySelectorAll('[id^="reply-form-"]').forEach(form => form.style.display = 'none');
-            
+
             replyForm.style.display = isHidden ? 'block' : 'none';
 
             if (isHidden) {
                 const mentionPrefix = `@${username} `;
                 textarea.value = mentionPrefix;
-                
+
                 textarea.focus();
                 const end = textarea.value.length;
                 textarea.setSelectionRange(end, end);
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     document.querySelectorAll('.close-reply-btn').forEach(button => {
         button.addEventListener('click', function() {
             const commentId = this.dataset.commentId;
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sortChaptersBtn = document.getElementById('sortChaptersBtn');
     const sortIcon = document.getElementById('sortIcon');
     const sortText = document.getElementById('sortText');
-    
+
     const chapterElements = chapterGrid ? Array.from(chapterGrid.querySelectorAll('.chapter-item')).map(el => ({
         element: el,
         number: parseFloat(el.dataset.chapterNumber)
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const updateChapterList = () => {
         if (!chapterGrid) return;
-        
+
         const searchTerm = chapterSearchInput.value.toLowerCase().trim();
         const sortOrder = sortChaptersBtn.dataset.sortOrder;
 
@@ -72,27 +72,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
         filteredChapters.sort((a, b) => {
             if (sortOrder === 'desc') {
-                return b.number - a.number; 
+                return b.number - a.number;
             } else {
-                return a.number - b.number; 
+                return a.number - b.number;
             }
         });
 
-        chapterGrid.innerHTML = ''; 
+        chapterGrid.innerHTML = '';
         filteredChapters.forEach(chapter => {
             chapterGrid.appendChild(chapter.element);
         });
-        
+
         const hasResults = filteredChapters.length > 0;
         if(chapterListContainer) chapterListContainer.classList.toggle('hidden', !hasResults);
         if(noChaptersFoundMessage) noChaptersFoundMessage.classList.toggle('hidden', hasResults);
         if(clearSearchBtn) clearSearchBtn.classList.toggle('hidden', searchTerm.length === 0);
     };
-    
+
     if (chapterSearchInput) {
         chapterSearchInput.addEventListener('input', updateChapterList);
     }
-    
+
     if (clearSearchBtn) {
         clearSearchBtn.addEventListener('click', () => {
             chapterSearchInput.value = '';
@@ -113,7 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    @auth
+    // ===== Interaksi bookmark, like, modal — JS murni (NO direktif Blade) =====
+    // File .js ini diserve mentah (bukan lewat Blade), jadi @auth/@guest bikin
+    // SyntaxError. Semua blok di-guard dengan cek elemen karena elemen di-render kondisional.
+
+    // --- Bookmark toggle (render hanya saat login) ---
     const bookmarkBtn = document.getElementById('bookmarkBtn');
     if (bookmarkBtn) {
         bookmarkBtn.addEventListener('click', function() {
@@ -141,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- Like komentar (event delegation, aman walau tombol ada/tidak) ---
     document.body.addEventListener('click', function(e) {
         if (e.target.closest('.like-btn')) {
             e.preventDefault();
@@ -164,64 +169,67 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error liking comment:', error));
         }
     });
-    @endauth
 
+    // --- Delete modal komentar ---
     const deleteModal = document.getElementById('deleteConfirmModal');
-    const deleteModalContent = document.getElementById('deleteModalContent');
-    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-    let formToSubmit = null;
+    if (deleteModal) {
+        const deleteModalContent = document.getElementById('deleteModalContent');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        let formToSubmit = null;
 
-    const showModal = () => {
-        deleteModal.classList.remove('hidden');
-        setTimeout(() => {
-            deleteModalContent.classList.remove('scale-95', 'opacity-0');
-            deleteModalContent.classList.add('scale-100', 'opacity-100');
-        }, 10);
-    };
+        const showModal = () => {
+            deleteModal.classList.remove('hidden');
+            setTimeout(() => {
+                deleteModalContent.classList.remove('scale-95', 'opacity-0');
+                deleteModalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
 
-    const hideModal = () => {
-        deleteModalContent.classList.add('scale-95', 'opacity-0');
-        deleteModalContent.classList.remove('scale-100', 'opacity-100');
-        setTimeout(() => {
-            deleteModal.classList.add('hidden');
-        }, 200);
-    };
+        const hideModal = () => {
+            deleteModalContent.classList.add('scale-95', 'opacity-0');
+            deleteModalContent.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                deleteModal.classList.add('hidden');
+            }, 200);
+        };
 
-    document.querySelectorAll('.delete-comment-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            formToSubmit = document.getElementById(this.dataset.formId);
-            if (formToSubmit) showModal();
+        document.querySelectorAll('.delete-comment-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                formToSubmit = document.getElementById(this.dataset.formId);
+                if (formToSubmit) showModal();
+            });
         });
-    });
 
-    confirmDeleteBtn.addEventListener('click', () => {
-        if (formToSubmit) formToSubmit.submit();
-        hideModal();
-    });
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (formToSubmit) formToSubmit.submit();
+            hideModal();
+        });
 
-    cancelDeleteBtn.addEventListener('click', hideModal);
-    deleteModal.addEventListener('click', (e) => { if (e.target === deleteModal) hideModal(); });
+        cancelDeleteBtn.addEventListener('click', hideModal);
+        deleteModal.addEventListener('click', (e) => { if (e.target === deleteModal) hideModal(); });
+    }
 
-    @guest
+    // --- Login modal (render hanya saat guest) ---
     const loginModal = document.getElementById('loginModal');
-    const closeModal = document.getElementById('closeModal');
-    const loginPromptTriggers = document.querySelectorAll('.js-login-prompt');
+    if (loginModal) {
+        const closeModal = document.getElementById('closeModal');
+        const loginPromptTriggers = document.querySelectorAll('.js-login-prompt');
 
-    const showLoginModal = () => {
-        loginModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    };
+        const showLoginModal = () => {
+            loginModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        };
 
-    const hideLoginModal = () => {
-        loginModal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    };
+        const hideLoginModal = () => {
+            loginModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        };
 
-    loginPromptTriggers.forEach(trigger => trigger.addEventListener('click', showLoginModal));
-    if (closeModal) closeModal.addEventListener('click', hideLoginModal);
-    loginModal.addEventListener('click', (e) => { if (e.target === loginModal) hideLoginModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !loginModal.classList.contains('hidden')) hideLoginModal(); });
-    @endguest
+        loginPromptTriggers.forEach(trigger => trigger.addEventListener('click', showLoginModal));
+        if (closeModal) closeModal.addEventListener('click', hideLoginModal);
+        loginModal.addEventListener('click', (e) => { if (e.target === loginModal) hideLoginModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !loginModal.classList.contains('hidden')) hideLoginModal(); });
+    }
 });
