@@ -4,7 +4,7 @@
         @if($manga->cover_image)
             <img src="{{ $manga->cover_url }}" alt="{{ $manga->title }}" loading="lazy">
         @else
-            <span class="mc-ph"><i class="fa-solid fa-book-open"></i></span>
+            <span class="mc-ph"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:40px;height:40px;object-fit:contain;border-radius:4px"></span>
         @endif
 
         {{-- Badge status kiri atas --}}
@@ -36,7 +36,7 @@
 
         @if($manga->latestPublishedChapter)
             <a href="{{ route('chapter.show', $manga->latestPublishedChapter->slug) }}" class="mc-ch-row" title="Baca chapter terbaru">
-                <span class="mc-ch-num"><i class="fa-solid fa-book-open-reader"></i>CH {{ $manga->latestPublishedChapter->number }}</span>
+                <span class="mc-ch-num"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:11px;height:11px;object-fit:contain;border-radius:2px;vertical-align:-2px">CH {{ $manga->latestPublishedChapter->number }}</span>
                 <span class="mc-date">{{ $manga->latestPublishedChapter->created_at->diffForHumans(['short' => true, 'parts' => 1]) }}</span>
             </a>
         @else

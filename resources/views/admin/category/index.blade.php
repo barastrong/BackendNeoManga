@@ -30,7 +30,7 @@
             <div><p class="lbl">Total Kategori</p><p class="val">{{ number_format($genres->total()) }}</p></div>
         </div>
         <div class="cat-stat">
-            <span class="ic" style="background:rgba(56,189,248,.13);color:#38bdf8"><i class="fa-solid fa-book-open"></i></span>
+            <span class="ic" style="background:rgba(56,189,248,.13)"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:18px;height:18px;object-fit:contain;border-radius:4px"></span>
             <div><p class="lbl">Manga</p><p class="val">{{ number_format(\App\Models\Manga::count()) }}</p></div>
         </div>
         <div class="cat-stat">
@@ -97,7 +97,7 @@
                             <td class="cat-td"><span class="cat-slug cat-pill" style="background:rgba(255,255,255,.05);color:#64748b;font-family:ui-monospace,monospace">/{{ strtolower(str_replace(' ', '-', $genre->name)) }}</span></td>
                             <td class="cat-td text-center">
                                 <span class="cat-mid" style="background:rgba(56,189,248,.1);color:#38bdf8">
-                                    <i class="fa-solid fa-book-open text-[9px]"></i>{{ $genre->mangas_count }}
+                                    <img src="/images/neomanga-logo.png" alt="NeoManga" style="width:11px;height:11px;object-fit:contain;border-radius:4px;vertical-align:-2px">{{ $genre->mangas_count }}
                                 </span>
                             </td>
                             <td class="cat-td text-right whitespace-nowrap">

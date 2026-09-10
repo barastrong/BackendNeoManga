@@ -23,9 +23,7 @@
     <div class="relative w-full max-w-md">
         {{-- Logo --}}
         <a href="{{ route('dashboard') }}" class="flex items-center justify-center gap-3 mb-7 group">
-            <span class="flex items-center justify-center w-12 h-12 rounded-2xl bg-brand text-white text-xl shadow-lg glow-brand group-hover:scale-105 transition-transform">
-                <i class="fa-solid fa-book-open"></i>
-            </span>
+            <img src="/images/neomanga-logo.png" alt="NeoManga" class="w-12 h-12 rounded-2xl object-contain shadow-lg glow-brand group-hover:scale-105 transition-transform">
             <span class="font-display text-3xl font-bold tracking-tight">Neo<span class="text-brand">Manga</span></span>
         </a>
 

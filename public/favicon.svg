@@ -7,5 +7,6 @@
   </defs>
   <rect width="64" height="64" rx="14" fill="#0b0f19"/>
   <rect x="2" y="2" width="60" height="60" rx="12" fill="none" stroke="url(#g)" stroke-width="2.5"/>
-  <path d="M18 20 L32 44 L46 20" fill="none" stroke="url(#g)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M20 14 h26 v22 L33 44 L20 44 Z" fill="url(#g)" opacity="0.9"/>
+  <path d="M28 18 h12 v6 h-12 Z" fill="#fff" opacity="0.85"/>
 </svg>

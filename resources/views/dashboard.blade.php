@@ -80,7 +80,7 @@
         @else
             <div class="text-center py-14 rounded-2xl bg-white dark:bg-[#0d1220] border border-dashed border-slate-300 dark:border-white/10">
                 <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-400 mb-4">
-                    <i class="fa-solid fa-book-open text-xl"></i>
+                    <img src="/images/neomanga-logo.png" alt="NeoManga" style="width:44px;height:44px;object-fit:contain;border-radius:4px">
                 </div>
                 <p class="font-display font-semibold text-slate-700 dark:text-slate-200">Belum ada update chapter</p>
                 <p class="text-sm text-slate-400 mt-1">Begitu chapter manga di-upload, langsung muncul di sini.</p>

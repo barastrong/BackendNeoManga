@@ -146,7 +146,7 @@
                                         <p class="tt">{{ $history->manga->title }}</p>
                                         <div class="sub">
                                             @if($history->chapter)
-                                                <span class="pf-ch"><i class="fa-solid fa-book-open-reader"></i>Chapter {{ $history->chapter->number }}</span>
+                                                <span class="pf-ch"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:12px;height:12px;object-fit:contain;border-radius:2px;vertical-align:-2px">Chapter {{ $history->chapter->number }}</span>
                                             @else
                                                 <span class="pf-ch plain">Mulai baca</span>
                                             @endif

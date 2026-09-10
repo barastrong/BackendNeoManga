@@ -49,7 +49,7 @@
                             <i class="fa-solid fa-bars text-xl"></i>
                         </button>
                         <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 flex-shrink-0">
-                            <img src="/images/neomanga-logo.jpg" alt="NeoManga" class="w-9 h-9 rounded-xl object-cover shadow-lg shadow-[#ff2e4d]/30 ring-1 ring-white/10">
+                            <img src="/images/neomanga-logo.png" alt="NeoManga" class="w-9 h-9 rounded-xl object-cover shadow-lg shadow-[#ff2e4d]/30 ring-1 ring-white/10">
                             <span class="font-display text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                                 Neo<span class="text-[#ff2e4d]">Manga</span>
                             </span>
@@ -178,7 +178,7 @@
             <div x-show="mobileMenuOpen" x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="relative w-72 max-w-[80vw] h-full bg-white dark:bg-[#0d1220] shadow-xl flex flex-col">
                 <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-white/5">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#ff2e4d] text-white"><i class="fa-solid fa-book-open text-sm"></i></span>
+                        <span class="flex items-center justify-center w-8 h-8 rounded-lg overflow-hidden"><img src="/images/neomanga-logo.png" alt="NeoManga" class="w-8 h-8 object-contain"></span>
                         <span class="font-display text-lg font-bold text-slate-900 dark:text-white">Neo<span class="text-[#ff2e4d]">Manga</span></span>
                     </a>
                     <button @click="mobileMenuOpen = false" class="btn-icon -mr-2"><i class="fa-solid fa-xmark text-2xl"></i></button>
@@ -213,7 +213,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
                     <div class="lg:col-span-1">
                         <a href="{{ url('/') }}" class="flex items-center gap-2.5 mb-4">
-                            <span class="flex items-center justify-center w-9 h-9 rounded-xl bg-[#ff2e4d] text-white"><i class="fa-solid fa-book-open"></i></span>
+                            <span class="flex items-center justify-center w-9 h-9 rounded-xl overflow-hidden"><img src="/images/neomanga-logo.png" alt="NeoManga" class="w-9 h-9 object-contain"></span>
                             <span class="font-display text-xl font-extrabold text-slate-900 dark:text-white">Neo<span class="text-[#ff2e4d]">Manga</span></span>
                         </a>
                         <p class="text-sm leading-relaxed text-slate-500 dark:text-slate-400">Platform baca manga, manhwa &amp; manhua bahasa Indonesia. Update terbaru setiap hari, gratis dan nyaman.</p>

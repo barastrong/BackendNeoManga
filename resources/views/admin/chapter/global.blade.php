@@ -20,7 +20,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-2.5">
             <a href="{{ route('admin.category.index') }}" class="ch-btn ch-btn-ghost"><i class="fa-solid fa-tags text-xs"></i>Kategori</a>
-            <a href="{{ route('admin.manga.index') }}" class="ch-btn ch-btn-ghost"><i class="fa-solid fa-book-open text-xs"></i>Manga</a>
+            <a href="{{ route('admin.manga.index') }}" class="ch-btn ch-btn-ghost"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:14px;height:14px;object-fit:contain;border-radius:4px;vertical-align:-2px">Manga</a>
             <a href="{{ route('admin.manga.create') }}" class="ch-btn ch-btn-primary"><i class="fa-solid fa-plus text-xs"></i>Tambah Manga</a>
         </div>
     </div>
@@ -40,7 +40,7 @@
             <div><p class="lbl">Draft</p><p class="val">{{ number_format($stats['draft']) }}</p></div>
         </div>
         <div class="ch-stat">
-            <span class="ic" style="background:rgba(56,189,248,.13);color:#38bdf8"><i class="fa-solid fa-book-open"></i></span>
+            <span class="ic" style="background:rgba(56,189,248,.13)"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:18px;height:18px;object-fit:contain;border-radius:4px"></span>
             <div><p class="lbl">Manga</p><p class="val">{{ number_format($stats['manga']) }}</p></div>
         </div>
     </div>
@@ -96,7 +96,7 @@
                                 @if($chapter->manga?->cover_url)
                                     <img src="{{ $chapter->manga->cover_url }}" class="ch-cover" alt="">
                                 @else
-                                    <div class="ch-cover flex items-center justify-center" style="background:#0d1220;border:1px dashed rgba(255,255,255,.15)"><i class="fa-solid fa-book-open text-slate-600" style="font-size:12px"></i></div>
+                                    <div class="ch-cover flex items-center justify-center" style="background:#0d1220;border:1px dashed rgba(255,255,255,.15)"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:14px;height:14px;object-fit:contain;border-radius:4px"></div>
                                 @endif
                             </td>
                             <td class="ch-td">

@@ -42,7 +42,7 @@
     <aside :class="sidebarOpen ? 'open' : ''"
            class="adm-sidebar">
         <div class="adm-sb-brand">
-            <img src="/images/neomanga-logo.jpg" alt="NeoManga" class="adm-sb-logo">
+            <img src="/images/neomanga-logo.png" alt="NeoManga" class="adm-sb-logo">
             <div>
                 <a href="{{ route('admin.dashboard') }}" class="adm-sb-name">Neo<span>Manga</span></a>
                 <p class="adm-sb-sub">Admin Panel</p>
@@ -61,7 +61,7 @@
                 <i class="fa-solid fa-chart-line"></i>Analisis &amp; Statistik
             </a>
             <a href="{{ route('admin.manga.index') }}" class="adm-sb-item {{ request()->routeIs('admin.manga.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-book-open"></i>Manga
+                <img src="/images/neomanga-logo.png" alt="NeoManga" style="width:18px;height:18px;object-fit:contain;border-radius:4px;vertical-align:-3px">Manga
             </a>
             <a href="{{ route('admin.chapter.index') }}" class="adm-sb-item {{ request()->routeIs('admin.chapter.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-layer-group"></i>Chapter

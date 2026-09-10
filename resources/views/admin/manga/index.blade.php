@@ -10,7 +10,7 @@
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
         <div class="flex items-center gap-2">
-            <span class="mg-eyebrow"><i class="fa-solid fa-book-open mr-1.5"></i>Katalog</span>
+            <span class="mg-eyebrow"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:14px;height:14px;object-fit:contain;border-radius:4px;vertical-align:-2px">Katalog</span>
             <span class="text-slate-600 text-xs">•</span>
             <span class="text-[11px] font-semibold tracking-wide text-brand/90 uppercase">Manga &amp; Komik</span>
         </div>
@@ -40,7 +40,7 @@
 @endphp
 <div class="mt-6 grid grid-cols-2 xl:grid-cols-4 gap-3.5">
     <div class="mg-stat">
-        <span class="ic" style="background:rgba(255,46,77,.13);color:#ff2e4d"><i class="fa-solid fa-book-open"></i></span>
+        <span class="ic" style="background:rgba(255,46,77,.13)"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:18px;height:18px;object-fit:contain;border-radius:4px"></span>
         <div class="st-txt"><p class="lbl">Total Judul</p><p class="val">{{ number_format($stManga) }}</p></div>
     </div>
     <div class="mg-stat">
@@ -113,7 +113,7 @@
                     </a>
                 @else
                     <a href="{{ route('admin.manga.edit', $manga) }}" class="mg-coverph" title="{{ $manga->title }}">
-                        <i class="fa-solid fa-book-open" style="font-size:26px"></i>
+                        <img src="/images/neomanga-logo.png" alt="NeoManga" style="width:26px;height:26px;object-fit:contain;border-radius:4px">
                         <span style="font-size:10px;max-width:90%;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $manga->title }}</span>
                     </a>
                 @endif
@@ -154,7 +154,7 @@
         </div>
     @empty
         <div class="mg-empty">
-            <i class="fa-solid fa-book-open ic"></i>
+            <img src="/images/neomanga-logo.png" alt="NeoManga" style="width:40px;height:40px;object-fit:contain;border-radius:4px">
             <h3 class="text-lg font-semibold text-white mt-3">
                 {{ request('search') ? 'Tidak ada hasil untuk "' . request('search') . '"' : 'Koleksi Manga Kosong' }}
             </h3>

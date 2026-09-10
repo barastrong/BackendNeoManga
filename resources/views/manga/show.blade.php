@@ -178,7 +178,7 @@
                 </div>
             @else
                 <div class="text-center py-12">
-                    <i class="fas fa-book-open text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                    <img src="/images/neomanga-logo.png" alt="NeoManga" style="width:64px;height:64px;object-fit:contain;border-radius:4px">
                     <div class="text-lg text-gray-600 dark:text-gray-400">No chapters available yet</div>
                     <div class="text-sm mt-2 text-gray-500 dark:text-gray-500">Check back later for updates.</div>
                 </div>

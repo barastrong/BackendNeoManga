@@ -96,7 +96,7 @@
         <div class="adm-card p-5 rounded-2xl shadow-sm">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Katalog</span>
-                <span class="p-2 rounded-lg adm-chip text-fuchsia-400"><i class="fa-solid fa-book-open text-sm"></i></span>
+                <span class="p-2 rounded-lg adm-chip text-fuchsia-400"><img src="/images/neomanga-logo.png" alt="NeoManga" style="width:16px;height:16px;object-fit:contain;border-radius:4px;vertical-align:-2px"></span>
             </div>
             <div class="flex items-baseline gap-1.5 mt-3">
                 <span class="font-display text-3xl font-bold text-white">{{ number_format($mangaCount) }}</span>
