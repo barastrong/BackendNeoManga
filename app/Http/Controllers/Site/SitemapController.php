@@ -33,6 +33,19 @@ class SitemapController extends Controller
             ]);
         }
 
+        // Semua chapter (URL: /chapter/{slug}) — ini yang bikin sitemap gede,
+        // cache 6 jam karena 3.000+ baris & jarang berubah.
+        $chapters = cache()->remember('sitemap_chapters', 21600, fn () =>
+            \App\Models\Chapter::select('slug', 'updated_at')->get()
+        );
+        foreach ($chapters as $c) {
+            $urls->push([
+                'loc'      => "$base/chapter/{$c->slug}",
+                'priority' => '0.6',
+                'lastmod'  => $c->updated_at?->toIso8601String(),
+            ]);
+        }
+
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
              . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
@@ -58,6 +71,7 @@ class SitemapController extends Controller
      */
     public function robots(): \Illuminate\Http\Response
     {
+        $base = rtrim(config('app.seo_base_url') ?: config('app.url'), '/');
         $lines = [
             'User-agent: *',
             'Allow: /',
@@ -65,9 +79,16 @@ class SitemapController extends Controller
             'Disallow: /login',
             'Disallow: /register',
             'Disallow: /verify-otp',
+            'Disallow: /forgot-password',
+            'Disallow: /reset-password',
             'Disallow: /profile',
+            'Disallow: /bookmarks',
+            'Disallow: /history',
+            'Disallow: /comments',
+            'Disallow: /api/',
+            'Disallow: /up',
             '',
-            'Sitemap: ' . url('/sitemap.xml'),
+            "Sitemap: $base/sitemap.xml",
         ];
         return response(implode("\n", $lines))
             ->header('Content-Type', 'text/plain; charset=utf-8');
