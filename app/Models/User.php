@@ -30,7 +30,9 @@ class User extends Authenticatable
         'otp_code',
         'otp_expires_at',
         'google_id',
-        'banned_at'
+        'banned_at',
+        'email_verified',
+        'email_verified_at',
     ];
 
     /**
@@ -41,6 +43,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'otp_code',
     ];
 
     /**
@@ -64,6 +67,11 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function isVerified(): bool
+    {
+        return (bool) $this->email_verified;
     }
 
     public function isBanned(): bool

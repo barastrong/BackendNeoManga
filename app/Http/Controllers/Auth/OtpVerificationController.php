@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpVerification;
+use Illuminate\Validation\ValidationException;
 
 class OtpVerificationController extends Controller
 {
@@ -39,15 +41,16 @@ class OtpVerificationController extends Controller
                 ->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        if ($user->otp_code !== $request->otp) {
-            return back()->with('error', 'Kode OTP tidak valid.');
+        if (!Hash::check($request->otp, $user->otp_code)) {
+            throw ValidationException::withMessages(['otp' => 'Kode OTP tidak valid.']);
         }
 
-        if (Carbon::parse($user->otp_expires_at)->isPast()) {
-            return back()->with('error', 'Kode OTP sudah kadaluarsa.');
+        if ($user->otp_expires_at && Carbon::parse($user->otp_expires_at)->isPast()) {
+            throw ValidationException::withMessages(['otp' => 'Kode OTP sudah kadaluarsa.']);
         }
 
         $user->email_verified = true;
+        $user->email_verified_at = now();
         $user->otp_code = null;
         $user->otp_expires_at = null;
         $user->save();
@@ -70,10 +73,11 @@ class OtpVerificationController extends Controller
                 ->with('info', 'Email Anda sudah terverifikasi.');
         }
 
-        // Generate new OTP
+        // Rate limit resend: 3x/10 menit sudah di handle throttle route, tapi jaga-jaga
+        // kalau route dipanggil tanpa throttle (belum login).
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
-        $user->otp_code = $otp;
+        $user->otp_code = Hash::make($otp);
         $user->otp_expires_at = Carbon::now()->addMinutes(5);
         $user->save();
 

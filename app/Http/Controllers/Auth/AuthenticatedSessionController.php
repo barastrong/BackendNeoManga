@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
@@ -38,12 +39,17 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
+        // Sinkronisasi user lama: verified via OTP tapi email_verified_at belum terisi
+        if ($user->email_verified && !$user->email_verified_at) {
+            $user->forceFill(['email_verified_at' => now()])->save();
+        }
+
         if (!$user->email_verified) {
             // Generate new OTP if not exists or expired
             if (!$user->otp_code || now()->isAfter($user->otp_expires_at)) {
                 $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
                 $user->update([
-                    'otp_code' => $otp,
+                    'otp_code' => Hash::make($otp),
                     'otp_expires_at' => now()->addMinutes(5)
                 ]);
                 Mail::to($user->email)->send(new OtpVerification($otp));

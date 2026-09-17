@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'role'=>'user',
-            'otp_code' => $otp,
+            'otp_code' => Hash::make($otp),
             'otp_expires_at' => now()->addMinutes(5),
             'password' => Hash::make($request->password),
         ]);

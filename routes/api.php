@@ -15,7 +15,8 @@ Route::post('/import-chapter', [ChapterImportController::class, 'store'])
      ->middleware('auth.apikey');
 Route::get('/manga/check/{slug}', [ChapterImportController::class, 'checkMangaExists'])->middleware('auth.apikey');
 Route::post('/manga/import', [ChapterImportController::class, 'importManga'])->middleware('auth.apikey');
-
+// NOTE: /check-manga-batch dihapus — method-nya tidak ada di controller (500) & tanpa auth.
+// Kalau batch check dibutuhkan lagi: implement method + wajib auth.apikey.
 Route::post('/register', [ApiAuthController::class, 'register']);
 Route::post('/login', [ApiAuthController::class, 'login'])
     ->middleware('throttle:20,1'); // API login: max 20/menit/IP

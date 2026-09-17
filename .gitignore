@@ -26,3 +26,7 @@ Thumbs.db
 .vercel
 .env*.loca
 vendor/
+
+# backup env (PERNAH BOCOR DI REPO — jangan commit lagi)
+.env*.vercel-bak
+.env.local
