@@ -53,8 +53,9 @@ class ProfileController extends Controller
             ->get();
 
         $streak = \App\Services\EngagementService::streakFor($user->id);
+        $badgeData = \App\Services\EngagementService::badges($streak['current']);
 
-        return view('profile.show', compact('user', 'recentBookmarks', 'recentHistories', 'favoriteGenres', 'recentComments', 'streak'));
+        return view('profile.show', compact('user', 'recentBookmarks', 'recentHistories', 'favoriteGenres', 'recentComments', 'streak', 'badgeData'));
     }
 
     public function edit(Request $request): View

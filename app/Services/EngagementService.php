@@ -77,4 +77,34 @@ class EngagementService
             default => null,
         };
     }
+
+    /**
+     * Daftar semua badge + status unlocked/locked + progress ke badge berikutnya.
+     * Buat tampilan grid "Badge Saya" di profil.
+     */
+    public static function badges(int $currentStreak): array
+    {
+        $defs = [
+            ['threshold' => 3,  'name' => 'Semangat', 'icon' => 'fa-solid fa-fire',   'color' => '#f97316'],
+            ['threshold' => 7,  'name' => 'Rajin',     'icon' => 'fa-solid fa-bolt',   'color' => '#eab308'],
+            ['threshold' => 14, 'name' => 'Setia',     'icon' => 'fa-solid fa-trophy', 'color' => '#3b82f6'],
+            ['threshold' => 30, 'name' => 'Legenda',   'icon' => 'fa-solid fa-crown',  'color' => '#a855f7'],
+        ];
+
+        $badges = array_map(fn ($d) => $d + ['unlocked' => $currentStreak >= $d['threshold']], $defs);
+
+        $next = null;
+        foreach ($defs as $d) {
+            if ($currentStreak < $d['threshold']) {
+                $next = $d;
+                break;
+            }
+        }
+
+        return [
+            'badges' => $badges,
+            'next' => $next,
+            'days_left' => $next ? $next['threshold'] - $currentStreak : 0,
+        ];
+    }
 }

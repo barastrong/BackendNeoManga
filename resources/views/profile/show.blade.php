@@ -68,8 +68,6 @@
                     ['label' => 'Streak Harian', 'icon' => 'fa-solid fa-fire', 'value' => $streak['current'] . ' hari'],
                     ['label' => 'Komentar', 'icon' => 'fa-regular fa-comment', 'value' => $user->comments_count],
                 ];
-
-                $badge = \App\Services\EngagementService::earnedBadge($streak['current']);
             @endphp
             @foreach($stats as $stat)
                 <div class="pf-stat">
@@ -80,15 +78,6 @@
                     </div>
                 </div>
             @endforeach
-            @if($badge)
-                <div class="pf-stat">
-                    <div class="ic"><i class="fa-solid fa-medal"></i></div>
-                    <div class="min-w-0">
-                        <p class="v" style="font-size:.95rem;white-space:nowrap">{{ $badge }}</p>
-                        <p class="l">Badge Streak</p>
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 
@@ -182,6 +171,30 @@
 
         {{-- ===== Kolom kanan (1/3) ===== --}}
         <div class="pf-col">
+
+            {{-- Badge Saya --}}
+            <section class="pf-card pad2">
+                <div class="pf-hdr">
+                    <h3><i class="fa-solid fa-medal"></i>Badge Saya</h3>
+                    @if($badgeData['next'])
+                        <span class="pf-badge-progress">{{ $badgeData['days_left'] }} hari lagi → {{ $badgeData['next']['name'] }}</span>
+                    @else
+                        <span class="pf-badge-progress done">Semua unlocked! 🎉</span>
+                    @endif
+                </div>
+                <div class="pf-badges">
+                    @foreach($badgeData['badges'] as $badge)
+                        <div class="pf-badge {{ $badge['unlocked'] ? '' : 'locked' }}" title="{{ $badge['threshold'] }} hari baca beruntun">
+                            <div class="pf-badge-ic" @if($badge['unlocked']) style="color:{{ $badge['color'] }};background:{{ $badge['color'] }}22;box-shadow:0 0 16px {{ $badge['color'] }}44" @endif>
+                                <i class="{{ $badge['icon'] }}"></i>
+                            </div>
+                            <p class="pf-badge-nm">{{ $badge['name'] }}</p>
+                            <p class="pf-badge-st">{{ $badge['unlocked'] ? 'Terbuka' : $badge['threshold'] . ' hari' }}</p>
+                        </div>
+                    @endforeach
+                </div>
+                <p class="pf-note"><i class="fa-solid fa-lightbulb"></i>Baca 1 chapter tiap hari buat jaga &amp; naikin streak-mu.</p>
+            </section>
 
             {{-- Genre favorit --}}
             <section class="pf-card pad2">
