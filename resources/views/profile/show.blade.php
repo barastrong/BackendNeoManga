@@ -65,9 +65,11 @@
                 $stats = [
                     ['label' => 'Bookmark', 'icon' => 'fa-solid fa-bookmark', 'value' => $user->bookmarks_count],
                     ['label' => 'Manga Dibaca', 'icon' => 'fa-solid fa-clock-rotate-left', 'value' => $user->histories_count],
+                    ['label' => 'Streak Harian', 'icon' => 'fa-solid fa-fire', 'value' => $streak['current'] . ' hari'],
                     ['label' => 'Komentar', 'icon' => 'fa-regular fa-comment', 'value' => $user->comments_count],
-                    ['label' => 'Member Sejak', 'icon' => 'fa-regular fa-calendar-check', 'value' => $user->created_at?->format('Y') ?? '-'],
                 ];
+
+                $badge = \App\Services\EngagementService::earnedBadge($streak['current']);
             @endphp
             @foreach($stats as $stat)
                 <div class="pf-stat">
@@ -78,6 +80,15 @@
                     </div>
                 </div>
             @endforeach
+            @if($badge)
+                <div class="pf-stat">
+                    <div class="ic"><i class="fa-solid fa-medal"></i></div>
+                    <div class="min-w-0">
+                        <p class="v" style="font-size:.95rem;white-space:nowrap">{{ $badge }}</p>
+                        <p class="l">Badge Streak</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

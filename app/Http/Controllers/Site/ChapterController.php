@@ -22,6 +22,9 @@ class ChapterController extends Controller
         \App\Services\ViewTrackingService::record($chapter->manga_id);
 
         if (Auth::check()) {
+            // Streak baca harian (1x per hari per user)
+            \App\Services\EngagementService::recordRead();
+
             History::updateOrCreate(
                 [
                     'user_id' => Auth::id(),

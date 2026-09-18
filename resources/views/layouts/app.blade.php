@@ -62,6 +62,7 @@
                         <a href="{{ route('manga.list') }}" class="nav-link {{ request()->is('manga*') || request()->is('search') ? 'nav-link-active' : '' }}">Daftar Manga</a>
                         <a href="{{ route('history.index') }}" class="nav-link {{ request()->is('history*') ? 'nav-link-active' : '' }}">Riwayat</a>
                         <a href="{{ route('bookmark.index') }}" class="nav-link {{ request()->is('bookmarks*') ? 'nav-link-active' : '' }}">Bookmark</a>
+                        <a href="{{ route('ranking') }}" class="nav-link {{ request()->is('ranking*') ? 'nav-link-active' : '' }}">Ranking</a>
                     </nav>
 
                     <!-- Aksi kanan -->
@@ -89,6 +90,18 @@
                             @if(Auth::check() && Auth::user()->isAdmin())
                                 <a href="{{ route('admin.dashboard') }}" aria-label="Panel Admin" class="btn-icon bg-[#ff2e4d]/10 text-[#ff2e4d] hover:bg-[#ff2e4d]/20">
                                     <i class="fa-solid fa-user-shield"></i>
+                                </a>
+                            @endif
+
+                            @php
+                                $navStreak = \App\Services\EngagementService::streakFor(auth()->id());
+                            @endphp
+                            @if($navStreak['current'] > 0)
+                                <a href="{{ route('user.profile') }}" class="btn-icon relative" style="color:#f97316" title="Streak baca: {{ $navStreak['current'] }} hari">
+                                    <i class="fa-solid fa-fire"></i>
+                                    @if(!$navStreak['active_today'])
+                                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-[#0b0f19]" style="background:#94a3b8"></span>
+                                    @endif
                                 </a>
                             @endif
 
@@ -193,6 +206,7 @@
                     <a href="{{ route('manga.list') }}" class="{{ $mobileLinkClasses }} {{ request()->is('manga*') || request()->is('search') ? $mobileActiveClasses : $mobileInactiveClasses }}"><i class="fa-solid fa-book w-6 mr-3 text-slate-400"></i><span>Daftar Manga</span></a>
                     <a href="{{ route('history.index') }}" class="{{ $mobileLinkClasses }} {{ request()->is('history*') ? $mobileActiveClasses : $mobileInactiveClasses }}"><i class="fa-solid fa-clock-rotate-left w-6 mr-3 text-slate-400"></i><span>Riwayat</span></a>
                     <a href="{{ route('bookmark.index') }}" class="{{ $mobileLinkClasses }} {{ request()->is('bookmarks*') ? $mobileActiveClasses : $mobileInactiveClasses }}"><i class="fa-solid fa-bookmark w-6 mr-3 text-slate-400"></i><span>Bookmark</span></a>
+                    <a href="{{ route('ranking') }}" class="{{ $mobileLinkClasses }} {{ request()->is('ranking*') ? $mobileActiveClasses : $mobileInactiveClasses }}"><i class="fa-solid fa-trophy w-6 mr-3 text-slate-400"></i><span>Ranking</span></a>
                 </nav>
                 @guest
                     <div class="p-4 border-t border-slate-200 dark:border-white/5">
@@ -225,6 +239,7 @@
                             <li><a href="{{ route('manga.list') }}" class="footer-link">Daftar Manga</a></li>
                             <li><a href="{{ route('history.index') }}" class="footer-link">Riwayat</a></li>
                             <li><a href="{{ route('bookmark.index') }}" class="footer-link">Bookmark</a></li>
+                            <li><a href="{{ route('ranking') }}" class="footer-link">Ranking</a></li>
                         </ul>
                     </div>
                     <div>
@@ -254,3 +269,4 @@
     </div>
 
 <script src="{{ asset('js/layouts/theme.js') }}"></script>
+@stack('scripts')

@@ -14,6 +14,7 @@ use App\Http\Controllers\Site\DashboardController;
 use App\Http\Controllers\Site\HistoryController;
 use App\Http\Controllers\Site\MangaController;
 use App\Http\Controllers\Site\ProfileController;
+use App\Http\Controllers\Site\RankingController;
 use App\Http\Controllers\Site\SitemapController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +57,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Users & Moderasi
     Route::get('/users', [AdminUserController::class, 'index'])->name('user.index');
+    Route::get('/users/create', [AdminUserController::class, 'create'])->name('user.create');
+    Route::post('/users', [AdminUserController::class, 'store'])->name('user.store');
+    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('user.edit');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('user.update');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('user.destroy');
+    Route::post('/users/{user}/verify', [AdminUserController::class, 'verify'])->name('user.verify');
     Route::post('/users/bulk', [AdminUserController::class, 'bulk'])->name('user.bulk');
     Route::get('/moderasi', [ModerationController::class, 'index'])->name('moderation.index');
     Route::post('/moderasi/komentar/{comment}', [ModerationController::class, 'action'])->name('moderation.action');
@@ -66,6 +73,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 // ===== Frontend publik =====
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/manga', [MangaController::class, 'mangaList'])->name('manga.list');
+Route::get('/ranking', [RankingController::class, 'index'])->name('ranking');
 Route::get('/search', [MangaController::class, 'search'])->name('manga.search');
 Route::get('/content/{slug}', [MangaController::class, 'show'])->name('manga.show');
 Route::get('/chapter/{slug}', [ChapterController::class, 'show'])->name('chapter.show');

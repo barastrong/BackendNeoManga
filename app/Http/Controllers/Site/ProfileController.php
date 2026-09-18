@@ -52,7 +52,9 @@ class ProfileController extends Controller
             ->limit(5)
             ->get();
 
-        return view('profile.show', compact('user', 'recentBookmarks', 'recentHistories', 'favoriteGenres', 'recentComments'));
+        $streak = \App\Services\EngagementService::streakFor($user->id);
+
+        return view('profile.show', compact('user', 'recentBookmarks', 'recentHistories', 'favoriteGenres', 'recentComments', 'streak'));
     }
 
     public function edit(Request $request): View
