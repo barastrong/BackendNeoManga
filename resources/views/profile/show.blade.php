@@ -35,6 +35,7 @@
             <div class="pf-id">
                 <div class="pf-name-row">
                     <h1 class="pf-name">{{ $user->name }}</h1>
+                    <span class="pf-level" style="color:{{ $level['color'] }};border-color:{{ $level['color'] }}66;background:{{ $level['color'] }}1a">{{ $level['emoji'] }} Lv {{ $level['level'] }} · {{ $level['title'] }}</span>
                     @if($user->role === 'admin')
                         <span class="pf-badge admin"><i class="fa-solid fa-user-shield"></i> Admin</span>
                     @else
@@ -78,6 +79,22 @@
                     </div>
                 </div>
             @endforeach
+        </div>
+
+        {{-- Progress level --}}
+        <div class="pf-lvprog">
+            <div class="pf-lvprog-top">
+                <span>{{ $level['emoji'] }} Level {{ $level['level'] }} — {{ $level['title'] }}</span>
+                <span class="pf-lvprog-count">{{ $level['progress'] }}/{{ $level['progress_total'] }}</span>
+            </div>
+            <div class="pf-lvprog-bar">
+                <div class="pf-lvprog-fill" style="width:{{ $level['progress_total'] ? round($level['progress'] / $level['progress_total'] * 100) : 100 }}%;background:{{ $level['color'] }}"></div>
+            </div>
+            @if($level['next'])
+                <p class="pf-lvprog-next"><b>{{ $level['next']['reads'] - $level['total_reads'] }}</b> baca lagi menuju <b>Lv {{ $level['next']['level'] }} · {{ $level['next']['title'] }}</b></p>
+            @else
+                <p class="pf-lvprog max">👑 Level maksimum tercapai!</p>
+            @endif
         </div>
     </div>
 
