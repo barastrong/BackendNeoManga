@@ -2,85 +2,116 @@
 
 @section('title', 'Ranking Manga — NeoManga')
 
-@section('meta_description', 'Ranking manga, manhwa & manhua paling populer di NeoManga minggu ini. Lihat apa yang lagi ramai dibaca!')
+@section('meta_description', 'Ranking manga, manhwa & manhua paling populer di NeoManga. Lihat manga terpopuler minggu ini: podium 3 besar + daftar lengkap.')
+
+@push('styles')
+<link rel="stylesheet" href="/css/ranking.css?v=20260918-1">
+@endpush
 
 @section('content')
-<div class="container-nm py-6 md:py-10">
+<div class="rk-wrap">
 
-    {{-- Header --}}
-    <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
-        <div>
-            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                <i class="fa-solid fa-trophy text-[#ff2e4d] mr-2"></i>Ranking Manga
-            </h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5">Manga paling ramai dibaca pembaca NeoManga.</p>
-        </div>
-        <div class="inline-flex items-center gap-1 p-1 bg-slate-100 dark:bg-white/5 rounded-xl">
-            @foreach(['today' => 'Hari Ini', 'week' => 'Minggu Ini', 'month' => 'Bulan Ini'] as $key => $label)
-                <a href="{{ request()->fullUrlWithQuery(['period' => $key]) }}"
-                   class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all
-                          {{ $period === $key ? 'bg-[#ff2e4d] text-white shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white' }}">
-                    {{ $label }}
-                </a>
-            @endforeach
+    <div class="rk-screen">
+        <div class="rk-glow a"></div>
+        <div class="rk-glow b"></div>
+        <div class="rk-in">
+
+            {{-- Header --}}
+            <div class="rk-head">
+                <div>
+                    <h1><i class="fa-solid fa-trophy"></i>Leaderboard Manga</h1>
+                    <p class="rk-sub">Paling ramai dibaca pembaca NeoManga</p>
+                </div>
+            </div>
+
+            {{-- Tabs periode --}}
+            <div class="rk-tabs" role="tablist">
+                @foreach(['today' => 'Hari Ini', 'week' => 'Minggu Ini', 'month' => 'Bulan Ini'] as $key => $label)
+                    <a href="{{ request()->fullUrlWithQuery(['period' => $key]) }}"
+                       class="rk-tab {{ $period === $key ? 'active' : '' }}"
+                       role="tab" aria-selected="{{ $period === $key ? 'true' : 'false' }}">{{ $label }}</a>
+                @endforeach
+            </div>
+
+            @if($mangas->isNotEmpty())
+                @php
+                    $top3 = $mangas->take(3);
+                    $rest = $mangas->slice(3);
+                    $maxViews = (int) $mangas->max('views_count') ?: 1;
+                    $podiumOrder = [
+                        ['rank' => 2, 'slot' => 'second', 'bar' => 'silver'],
+                        ['rank' => 1, 'slot' => 'first',  'bar' => 'gold'],
+                        ['rank' => 3, 'slot' => 'third',  'bar' => 'bronze'],
+                    ];
+                @endphp
+
+                <div class="rk-content">
+
+                    {{-- ===== Podium 3 besar ===== --}}
+                    <div class="rk-podium">
+                        @foreach($podiumOrder as $po)
+                            @php $m = $top3->get($po['rank'] - 1); @endphp
+                            @if($m)
+                                <a href="{{ route('manga.show', $m->slug) }}" class="rk-slot {{ $po['slot'] }}" title="{{ $m->title }}">
+                                    <div class="rk-cover-wrap">
+                                        @if($po['rank'] === 1)<span class="rk-crown">👑</span>@endif
+                                        @if($m->cover_image)
+                                            <img class="rk-cover" src="{{ $m->cover_url }}" alt="{{ $m->title }}" loading="lazy">
+                                        @else
+                                            <div class="rk-cover" style="display:flex;align-items:center;justify-content:center;color:#5f6a80"><i class="fa-solid fa-book"></i></div>
+                                        @endif
+                                        <span class="rk-rankchip">{{ $po['rank'] }}</span>
+                                    </div>
+                                    <div class="rk-sname">{{ $m->title }}</div>
+                                    <div class="rk-bar {{ $po['bar'] }}">
+                                        <span><span class="rk-bnum">{{ $po['rank'] }}</span></span>
+                                        <span class="rk-bpts">{{ number_format($m->views_count) }} dibaca</span>
+                                    </div>
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
+
+                    {{-- ===== List peringkat 4-10 ===== --}}
+                    <div class="rk-list">
+                        @foreach($rest as $i => $m)
+                            @php $rank = $i + 4; @endphp
+                            <a href="{{ route('manga.show', $m->slug) }}" class="rk-item" title="{{ $m->title }}">
+                                <div class="rk-av-wrap">
+                                    @if($m->cover_image)
+                                        <img class="rk-av" src="{{ $m->cover_url }}" alt="{{ $m->title }}" loading="lazy">
+                                    @else
+                                        <div class="rk-av" style="display:flex;align-items:center;justify-content:center;color:#5f6a80"><i class="fa-solid fa-book"></i></div>
+                                    @endif
+                                    <span class="rk-rank">{{ $rank }}</span>
+                                </div>
+                                <div class="rk-info">
+                                    <div class="rk-name">{{ $m->title }}</div>
+                                    <div class="rk-pts"><b>{{ number_format($m->views_count) }}</b> dibaca</div>
+                                    <div class="rk-track">
+                                        <div class="rk-fill" style="width:{{ round($m->views_count / $maxViews * 100) }}%"></div>
+                                    </div>
+                                </div>
+                                <div class="rk-right">
+                                    @if($m->latestPublishedChapter)
+                                        <span class="rk-ch">Ch. {{ $m->latestPublishedChapter->number }}</span>
+                                        <div class="rk-when">{{ $m->latestPublishedChapter->created_at?->diffForHumans(['short' => true, 'parts' => 1]) }}</div>
+                                    @endif
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+
+                </div>
+            @else
+                <div class="rk-empty">
+                    <div class="ic"><i class="fa-solid fa-trophy"></i></div>
+                    <p class="lead">Belum ada data periode ini</p>
+                    <p class="sub">Buka halaman manga atau baca chapter — nanti masuk leaderboard.</p>
+                </div>
+            @endif
+
         </div>
     </div>
-
-    @if($mangas->isNotEmpty())
-        <div class="space-y-3">
-            @foreach($mangas as $i => $manga)
-                <a href="{{ route('manga.show', $manga->slug) }}"
-                   class="flex items-center gap-4 p-3 sm:p-4 rounded-2xl bg-white dark:bg-[#0d1220] border border-slate-200/70 dark:border-white/5 hover:border-[#ff2e4d]/50 hover:shadow-lg transition-all group">
-                    {{-- Nomor ranking --}}
-                    <div class="w-10 sm:w-12 flex-shrink-0 text-center">
-                        <span class="font-display text-2xl sm:text-3xl font-extrabold {{ $i < 3 ? 'text-[#ff2e4d]' : 'text-slate-300 dark:text-slate-600' }}">
-                            {{ $i + 1 }}
-                        </span>
-                    </div>
-
-                    {{-- Cover --}}
-                    <div class="w-12 h-16 sm:w-14 sm:h-20 flex-shrink-0 rounded-lg overflow-hidden bg-slate-100 dark:bg-white/5 ring-1 ring-slate-200 dark:ring-white/10">
-                        @if($manga->cover_image)
-                            <img src="{{ $manga->cover_url }}" alt="{{ $manga->title }}" loading="lazy" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-slate-300 dark:text-slate-600">
-                                <i class="fa-solid fa-book"></i>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- Info --}}
-                    <div class="min-w-0 flex-1">
-                        <p class="font-display font-semibold text-sm sm:text-base text-slate-900 dark:text-white truncate group-hover:text-[#ff2e4d] transition-colors">
-                            {{ $manga->title }}
-                        </p>
-                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            @if(isset($manga->genres) && $manga->genres->isNotEmpty())
-                                <span>
-                                    @foreach($manga->genres->take(3) as $genre)
-                                        {{ $genre->name }}@if(!$loop->last), @endif
-                                    @endforeach
-                                </span>
-                            @endif
-                            <span class="inline-flex items-center gap-1 text-[#ff2e4d] font-semibold">
-                                <i class="fa-solid fa-eye"></i>{{ number_format($manga->views_count) }} dibaca
-                            </span>
-                        </div>
-                    </div>
-
-                    <i class="fa-solid fa-chevron-right text-slate-300 dark:text-slate-600 group-hover:text-[#ff2e4d] group-hover:translate-x-0.5 transition-all flex-shrink-0"></i>
-                </a>
-            @endforeach
-        </div>
-    @else
-        <div class="text-center py-16 rounded-2xl bg-white dark:bg-[#0d1220] border border-dashed border-slate-300 dark:border-white/10">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-400 mb-4">
-                <i class="fa-solid fa-trophy text-xl"></i>
-            </div>
-            <p class="font-display font-semibold text-slate-700 dark:text-slate-200">Belum ada data view periode ini</p>
-            <p class="text-sm text-slate-400 mt-1">Buka halaman manga atau baca chapter — nanti masuk ranking.</p>
-        </div>
-    @endif
-
 </div>
 @endsection

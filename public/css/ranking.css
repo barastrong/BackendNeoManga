@@ -1,0 +1,85 @@
+/* ===== Ranking page (rk-) — native CSS, anti-purge ===== */
+/* Layout terinspirasi leaderboard game: podium 3 besar + list panel.
+   Warna menyesuaikan brand NeoManga (merah #ff2e4d + dark theme). */
+
+.rk-wrap{max-width:80rem;margin:0 auto;padding:1rem 1rem 3rem}
+@media(min-width:640px){.rk-wrap{padding-left:1.5rem;padding-right:1.5rem}}
+@media(min-width:1024px){.rk-wrap{padding-left:2rem;padding-right:2rem}}
+
+/* ===== Screen card ===== */
+.rk-screen{position:relative;overflow:hidden;border-radius:1.5rem;border:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,#151c31 0%,#0d1220 55%,#160d1d 100%);box-shadow:0 25px 60px -22px rgba(0,0,0,.65)}
+.rk-screen::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:22px 22px;-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.5),transparent 80%);mask-image:linear-gradient(180deg,rgba(0,0,0,.5),transparent 80%)}
+.rk-glow{position:absolute;border-radius:9999px;filter:blur(60px);pointer-events:none}
+.rk-glow.a{top:-5rem;right:-4rem;width:16rem;height:16rem;background:rgba(255,46,77,.20)}
+.rk-glow.b{bottom:-5rem;left:-4rem;width:15rem;height:15rem;background:rgba(99,102,241,.12)}
+.rk-in{position:relative}
+
+/* ===== Header ===== */
+.rk-head{display:flex;align-items:center;gap:1rem;padding:1.75rem 1.5rem .5rem}
+.rk-head h1{font-family:'Lexend',ui-sans-serif,system-ui,sans-serif;font-size:1.35rem;font-weight:800;color:#fff;letter-spacing:-.02em;display:flex;align-items:center;gap:.6rem;margin:0}
+.rk-head h1 i{color:#ff2e4d;font-size:1.15rem}
+.rk-head .rk-sub{font-size:.75rem;color:#8b93a7;margin-top:.2rem}
+@media(min-width:640px){.rk-head{padding:2.25rem 2.5rem .75rem}.rk-head h1{font-size:1.6rem}}
+
+/* ===== Tabs ===== */
+.rk-tabs{display:inline-flex;margin:1rem 1.5rem 1.75rem;background:rgba(255,255,255,.08);border-radius:999px;padding:4px;gap:2px}
+@media(min-width:640px){.rk-tabs{margin:1.1rem 2.5rem 2rem}}
+.rk-tab{border:none;background:transparent;color:rgba(255,255,255,.7);font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:999px;cursor:pointer;transition:all .2s;font-family:inherit}
+.rk-tab:hover{color:#fff}
+.rk-tab.active{background:#fff;color:#ff2e4d;box-shadow:0 4px 14px -4px rgba(255,46,77,.5)}
+@media(min-width:640px){.rk-tab{padding:.55rem 1.4rem;font-size:.85rem}}
+
+/* ===== Content grid ===== */
+.rk-content{display:flex;flex-direction:column;gap:0}
+@media(min-width:900px){.rk-content{flex-direction:row;align-items:stretch}}
+
+/* ===== Podium ===== */
+.rk-podium{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:1rem;padding:1.25rem 1rem 1.75rem;flex-shrink:0}
+@media(min-width:900px){.rk-podium{width:400px;padding:1.75rem 2rem 2.5rem;gap:1.25rem}}
+.rk-slot{display:flex;flex-direction:column;align-items:center;width:calc((100% - 2rem)/3);max-width:108px}
+.rk-cover-wrap{position:relative;margin-bottom:.6rem}
+.rk-cover{width:52px;height:70px;border-radius:.55rem;object-fit:cover;display:block;border:2px solid rgba(255,255,255,.85);background:#1a2035;box-shadow:0 10px 20px -8px rgba(0,0,0,.6)}
+.rk-slot.first .rk-cover{width:62px;height:83px;border-color:#ffcb3d;box-shadow:0 0 0 3px rgba(255,203,61,.25),0 12px 26px -8px rgba(255,203,61,.35)}
+.rk-crown{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:20px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.rk-rankchip{position:absolute;bottom:-6px;right:-6px;background:#ff2e4d;color:#fff;font-size:.62rem;font-weight:800;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:2px solid #0d1220;padding:0 3px}
+.rk-slot.first .rk-rankchip{background:#ffcb3d;color:#2b1a10}
+.rk-slot.second .rk-rankchip{background:#c7ccd6;color:#1e2433}
+.rk-slot.third .rk-rankchip{background:#e0995e;color:#2b1a10}
+.rk-sname{color:#fff;font-size:.72rem;font-weight:700;margin-bottom:.55rem;text-align:center;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 .2rem}
+@media(min-width:640px){.rk-sname{font-size:.8rem}}
+.rk-bar{width:100%;border-radius:.6rem .6rem 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:.5rem;color:#241a10;font-weight:800;position:relative;box-shadow:inset 0 3px 6px rgba(255,255,255,.35);min-height:0}
+.rk-bar .rk-bnum{font-size:1rem;line-height:1;font-weight:800}
+.rk-bar .rk-bpts{font-size:.55rem;font-weight:700;margin-top:.15rem;opacity:.8;max-width:100%;padding:0 .3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(min-width:420px){.rk-bar .rk-bnum{font-size:1.25rem}.rk-bar .rk-bpts{font-size:.62rem}}
+.rk-bar.gold{height:110px;background:linear-gradient(180deg,#ffcb3d 0%,#f0a500 100%)}
+.rk-bar.silver{height:84px;background:linear-gradient(180deg,#c7ccd6 0%,#9aa1ad 100%)}
+.rk-bar.bronze{height:70px;background:linear-gradient(180deg,#e0995e 0%,#c97a3d 100%)}
+@media(min-width:640px){.rk-bar.gold{height:140px}.rk-bar.silver{height:106px}.rk-bar.bronze{height:88px}}
+
+/* ===== List panel ===== */
+.rk-list{background:rgba(255,255,255,.04);backdrop-filter:blur(4px);border-top:1px solid rgba(255,255,255,.06);flex:1;padding:1.25rem 1rem 1.5rem;display:flex;flex-direction:column;gap:.9rem;max-height:none;min-width:0}
+@media(min-width:900px){.rk-list{border-radius:1.5rem 0 0 0;border-top:none;border-left:1px solid rgba(255,255,255,.06);padding:1.5rem 1.5rem 2rem;max-height:560px;overflow-y:auto}}
+.rk-item{display:flex;align-items:center;gap:.75rem;text-decoration:none;padding:.6rem;border-radius:.85rem;transition:all .15s;min-width:0}
+.rk-item:hover{background:rgba(255,46,77,.08)}
+.rk-item:hover .rk-name{color:#ff2e4d}
+.rk-av-wrap{position:relative;flex-shrink:0}
+.rk-av{width:40px;height:56px;border-radius:.45rem;object-fit:cover;background:#1a2035;border:1px solid rgba(255,255,255,.08);display:block}
+.rk-rank{position:absolute;bottom:-4px;right:-4px;background:rgba(255,46,77,.9);color:#fff;font-size:.58rem;font-weight:800;width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:2px solid #0d1220}
+.rk-info{flex:1;min-width:0}
+.rk-name{font-size:.85rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s}
+.rk-pts{font-size:.7rem;color:#8b93a7;margin-top:.15rem;font-weight:600}
+.rk-pts b{color:#ff2e4d;font-weight:800}
+.rk-track{height:4px;background:rgba(255,255,255,.08);border-radius:999px;margin-top:.45rem;overflow:hidden}
+.rk-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#ff2e4d,#ff7a8c)}
+.rk-right{text-align:right;flex-shrink:0;min-width:0}
+.rk-ch{font-size:.68rem;font-weight:700;color:#c3cad9;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:.4rem;padding:.18rem .5rem;white-space:nowrap}
+.rk-when{font-size:.6rem;color:#5f6a80;margin-top:.3rem;white-space:nowrap}
+.rk-list::-webkit-scrollbar{width:4px}
+.rk-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:999px}
+
+/* ===== Empty state ===== */
+.rk-empty{padding:3rem 1.5rem;text-align:center;color:#8b93a7}
+.rk-empty .ic{width:3.6rem;height:3.6rem;border-radius:1rem;background:rgba(255,46,77,.1);color:#ff5c72;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto .9rem}
+.rk-empty p{margin:0;font-size:.85rem}
+.rk-empty .lead{font-family:'Lexend',ui-sans-serif,sans-serif;font-weight:600;color:#e2e8f0;font-size:.95rem}
+.rk-empty .sub{margin-top:.3rem}

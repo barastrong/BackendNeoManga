@@ -44,29 +44,30 @@ class ViewTrackingService
             default  => now()->subDays(30), // all ≈ 30 hari terakhir
         };
 
-        $ids = MangaView::where('view_date', '>=', $since->toDateString())
+        $counts = MangaView::where('view_date', '>=', $since->toDateString())
             ->select('manga_id')
             ->selectRaw('COUNT(*) as views_count')
             ->groupBy('manga_id')
-            ->orderByDesc('views_count')
-            ->limit($limit)
-            ->pluck('manga_id');
+            ->pluck('views_count', 'manga_id');
 
-        if ($ids->isEmpty()) {
+        if ($counts->isEmpty()) {
             return collect();
         }
+
+        // Urut DESC by views, ambil top N — pluck gak jamin urutan, sort manual
+        $counts = $counts->sortDesc()->take($limit);
+        $ids = $counts->keys();
 
         return Manga::with(['latestPublishedChapter', 'genres'])
             ->withAvg('ratings', 'rating')
             ->whereIn('id', $ids)
             ->get()
-            ->map(function (Manga $m) use ($ids) {
-                // count dari pluck asli (query terpisah biar tetap urut)
-                $m->views_count = MangaView::where('manga_id', $m->id)
-                    ->where('view_date', '>=', now()->subDays(30)->toDateString())
-                    ->count();
+            ->map(function (Manga $m) use ($counts) {
+                $m->views_count = (int) ($counts[$m->id] ?? 0);
                 return $m;
-            });
+            })
+            ->sortByDesc('views_count')   // sort DESC biar urut konsisten
+            ->values();
     }
 
     /** Total view (semua periode) — buat stat card admin. */
