@@ -177,23 +177,23 @@
                 <div class="pf-hdr">
                     <h3><i class="fa-solid fa-medal"></i>Badge Saya</h3>
                     @if($badgeData['next'])
-                        <span class="pf-badge-progress">{{ $badgeData['days_left'] }} hari lagi → {{ $badgeData['next']['name'] }}</span>
+                        <span class="pf-badge-progress">{{ $badgeData['left'] }} baca lagi → {{ $badgeData['next']['name'] }}</span>
                     @else
                         <span class="pf-badge-progress done">Semua unlocked! 🎉</span>
                     @endif
                 </div>
                 <div class="pf-badges">
                     @foreach($badgeData['badges'] as $badge)
-                        <div class="pf-badge {{ $badge['unlocked'] ? '' : 'locked' }}" title="{{ $badge['threshold'] }} hari baca beruntun">
+                        <div class="pf-badge {{ $badge['unlocked'] ? '' : 'locked' }}" title="{{ $badge['threshold'] }} chapter dibaca">
                             <div class="pf-badge-ic" @if($badge['unlocked']) style="color:{{ $badge['color'] }};background:{{ $badge['color'] }}22;box-shadow:0 0 16px {{ $badge['color'] }}44" @endif>
                                 <i class="{{ $badge['icon'] }}"></i>
                             </div>
                             <p class="pf-badge-nm">{{ $badge['name'] }}</p>
-                            <p class="pf-badge-st">{{ $badge['unlocked'] ? 'Terbuka' : $badge['threshold'] . ' hari' }}</p>
+                            <p class="pf-badge-st">{{ $badge['unlocked'] ? 'Terbuka' : $badge['threshold'] . ' baca' }}</p>
                         </div>
                     @endforeach
                 </div>
-                <p class="pf-note"><i class="fa-solid fa-lightbulb"></i>Baca 1 chapter tiap hari buat jaga &amp; naikin streak-mu.</p>
+                <p class="pf-note"><i class="fa-solid fa-lightbulb"></i>Baca lebih banyak chapter buat buka badge selanjutnya.</p>
             </section>
 
             {{-- Genre favorit --}}
