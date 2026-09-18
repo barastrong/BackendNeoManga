@@ -18,7 +18,7 @@
 .pf-hero-in{position:relative;display:flex;flex-direction:column;gap:1.25rem;padding:1.75rem 1.25rem}
 @media(min-width:640px){.pf-hero-in{flex-direction:row;align-items:center;gap:1.75rem;padding:2.5rem 2rem}}
 
-.pf-avatar-ring{flex-shrink:0;width:max-content;background:conic-gradient(from 210deg,#ff2e4d,#ff8a5c,#ff2e4d);padding:3px;border-radius:1.15rem}
+/* .pf-avatar-ring{flex-shrink:0;width:max-content;background:conic-gradient(from 210deg,#ff2e4d,#ff8a5c,#ff2e4d);padding:3px;border-radius:1.15rem} */
 .pf-avatar{width:5.5rem;height:5.5rem;border-radius:1.05rem;object-fit:cover;display:block}
 @media(min-width:640px){.pf-avatar{width:7rem;height:7rem;border-radius:1.15rem}}
 

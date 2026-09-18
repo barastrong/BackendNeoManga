@@ -33,6 +33,7 @@ class User extends Authenticatable
         'banned_at',
         'email_verified',
         'email_verified_at',
+        'xp',
     ];
 
     /**

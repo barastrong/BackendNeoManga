@@ -64,6 +64,12 @@
 .rk-item:hover .rk-name{color:#ff2e4d}
 .rk-av-wrap{position:relative;flex-shrink:0}
 .rk-av{width:40px;height:56px;border-radius:.45rem;object-fit:cover;background:#1a2035;border:1px solid rgba(255,255,255,.08);display:block}
+.rk-avasq{width:44px;height:44px;border-radius:.9rem}
+.rk-ava{border-radius:1rem;width:60px;height:60px}
+.rk-slot.first .rk-ava{width:74px;height:74px}
+.rk-lvl{display:inline-flex;align-items:center;gap:.3rem;font-size:.6rem;font-weight:800;letter-spacing:.02em;border-radius:999px;padding:.2rem .55rem;border:1px solid;white-space:nowrap;margin-bottom:.5rem}
+.rk-sname{margin-bottom:.4rem}
+.rk-right .rk-lvl{font-size:.58rem;padding:.18rem .45rem;max-width:200px;overflow:hidden;text-overflow:ellipsis}
 .rk-rank{position:absolute;bottom:-4px;right:-4px;background:rgba(255,46,77,.9);color:#fff;font-size:.58rem;font-weight:800;width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:2px solid #0d1220}
 .rk-info{flex:1;min-width:0}
 .rk-name{font-size:.85rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s}

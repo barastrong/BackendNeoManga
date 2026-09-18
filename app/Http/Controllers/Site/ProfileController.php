@@ -24,6 +24,25 @@ class ProfileController extends Controller
             'comments',
         ]);
 
+        return $this->renderProfile($user);
+    }
+
+    /** Profil publik user lain (dari leaderboard, dll). */
+    public function showPublic(int $id): View
+    {
+        $user = \App\Models\User::withCount([
+            'bookmarks',
+            'histories',
+            'comments',
+        ])->findOrFail($id);
+
+        abort_if($user->isBanned(), 404);
+
+        return $this->renderProfile($user);
+    }
+
+    private function renderProfile($user): View
+    {
         $recentBookmarks = $user->bookmarks()
             ->with(['manga.latestPublishedChapter'])
             ->latest()
@@ -54,7 +73,7 @@ class ProfileController extends Controller
 
         $streak = \App\Services\EngagementService::streakFor($user->id);
         $badgeData = \App\Services\EngagementService::badges($streak['current']);
-        $level = \App\Services\EngagementService::levelFor($user->histories_count);
+        $level = \App\Services\EngagementService::levelFor((int) $user->xp);
 
         return view('profile.show', compact('user', 'recentBookmarks', 'recentHistories', 'favoriteGenres', 'recentComments', 'streak', 'badgeData', 'level'));
     }

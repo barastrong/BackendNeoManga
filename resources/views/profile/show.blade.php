@@ -91,7 +91,7 @@
                 <div class="pf-lvprog-fill" style="width:{{ $level['progress_total'] ? round($level['progress'] / $level['progress_total'] * 100) : 100 }}%;background:{{ $level['color'] }}"></div>
             </div>
             @if($level['next'])
-                <p class="pf-lvprog-next"><b>{{ $level['next']['reads'] - $level['total_reads'] }}</b> baca lagi menuju <b>Lv {{ $level['next']['level'] }} · {{ $level['next']['title'] }}</b></p>
+                <p class="pf-lvprog-next"><b>{{ $level['next']['xp'] - $level['xp'] }}</b> XP lagi menuju <b>Lv {{ $level['next']['level'] }} · {{ $level['next']['title'] }}</b></p>
             @else
                 <p class="pf-lvprog max">👑 Level maksimum tercapai!</p>
             @endif

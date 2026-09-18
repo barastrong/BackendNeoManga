@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\MangaView;
 use App\Models\ReadingStreak;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -109,7 +110,16 @@ class EngagementService
         ];
     }
 
-    /* ================= LEVEL SYSTEM (berbasis total chapter dibaca) ================= */
+    /* ================= LEVEL SYSTEM (berbasis XP) ================= */
+
+    /** XP yang didapat per chapter baru dibaca. */
+    public const XP_PER_READ = 10;
+
+    /** Tambah XP user (dipanggil saat chapter pertama kali dibaca). */
+    public static function addXp(int $userId, int $amount = self::XP_PER_READ): void
+    {
+        User::whereKey($userId)->increment('xp', $amount);
+    }
 
     /** Title per level 1-100. */
     protected const LEVEL_TITLES = [
@@ -144,25 +154,25 @@ class EngagementService
         ['max' => 100, 'color' => '#ff2e4d', 'emoji' => '👑'],
     ];
 
-    /** Total baca (chapter) minimal untuk capai level tertentu: 1-10 +1, 11-25 +2, 26-50 +5, 51-100 +10. */
+    /** Total XP minimal untuk capai level tertentu: 1-10 +10, 11-25 +20, 26-50 +50, 51-100 +100. */
     protected static function levelThreshold(int $level): int
     {
         if ($level <= 1) return 0;
-        if ($level <= 10) return $level - 1;
-        if ($level <= 25) return 10 + ($level - 11) * 2;
-        if ($level <= 50) return 40 + ($level - 26) * 5;
-        return 170 + ($level - 51) * 10;
+        if ($level <= 10) return ($level - 1) * 10;
+        if ($level <= 25) return 100 + ($level - 11) * 20;
+        if ($level <= 50) return 400 + ($level - 26) * 50;
+        return 1700 + ($level - 51) * 100;
     }
 
     /**
-     * Level + title user berbasis total chapter dibaca.
-     * @return array{level:int,title:string,emoji:string,color:string,next:?array,progress:int,progress_total:int}
+     * Level + title user berbasis XP.
+     * @return array{level:int,title:string,emoji:string,color:string,next:?array,xp:int,progress:int,progress_total:int}
      */
-    public static function levelFor(int $totalReads): array
+    public static function levelFor(int $xp): array
     {
         $level = 1;
         for ($l = 2; $l <= 100; $l++) {
-            if ($totalReads < self::levelThreshold($l)) break;
+            if ($xp < self::levelThreshold($l)) break;
             $level = $l;
         }
 
@@ -173,12 +183,12 @@ class EngagementService
             $next = [
                 'level' => $level + 1,
                 'title' => self::LEVEL_TITLES[$level + 1],
-                'reads' => self::levelThreshold($level + 1),
+                'xp' => self::levelThreshold($level + 1),
             ];
         }
 
         $currentThreshold = self::levelThreshold($level);
-        $progressTotal = $next ? $next['reads'] - $currentThreshold : $currentThreshold;
+        $progressTotal = $next ? $next['xp'] - $currentThreshold : $currentThreshold;
 
         return [
             'level' => $level,
@@ -186,9 +196,9 @@ class EngagementService
             'emoji' => $tier['emoji'],
             'color' => $tier['color'],
             'next' => $next,
-            'total_reads' => $totalReads,
+            'xp' => $xp,
             'current_threshold' => $currentThreshold,
-            'progress' => $totalReads - $currentThreshold,
+            'progress' => $xp - $currentThreshold,
             'progress_total' => $progressTotal,
         ];
     }

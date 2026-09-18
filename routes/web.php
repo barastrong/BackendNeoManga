@@ -91,6 +91,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::post('/bookmark/toggle/{manga}', [BookmarkController::class, 'toggle'])->name('bookmark.toggle');
     Route::delete('/bookmark/{bookmark}', [BookmarkController::class, 'destroy'])->name('bookmark.destroy');
     Route::get('profile/show', [ProfileController::class, 'show'])->name('user.profile');
+    Route::get('/user/{id}', [ProfileController::class, 'showPublic'])->name('user.public');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

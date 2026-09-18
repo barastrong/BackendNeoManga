@@ -25,7 +25,7 @@ class ChapterController extends Controller
             // Streak baca harian (1x per hari per user)
             \App\Services\EngagementService::recordRead();
 
-            History::updateOrCreate(
+            $history = History::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
                     'manga_id' => $chapter->manga_id,
@@ -35,6 +35,11 @@ class ChapterController extends Controller
                     'updated_at' => now()
                 ]
             );
+
+            // XP cuma buat chapter yang BARU pertama kali dibaca (anti-farm baca ulang)
+            if ($history->wasRecentlyCreated) {
+                \App\Services\EngagementService::addXp(Auth::id());
+            }
         }
 
         $comments = Comment::with(['user', 'replies.user', 'replies.parent'])
