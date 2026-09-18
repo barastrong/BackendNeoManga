@@ -80,10 +80,10 @@ class EngagementService
 
     /**
      * Daftar semua badge + status unlocked/locked + progress ke badge berikutnya.
-     * Basis: JUMLAH chapter yang pernah dibaca user (bukan hari beruntun).
+     * Basis: JUMLAH STREAK (current_streak) — makin tinggi streak, makin banyak badge nyala.
      * Buat tampilan grid "Badge Saya" di profil.
      */
-    public static function badges(int $totalReads): array
+    public static function badges(int $currentStreak): array
     {
         $defs = [
             ['threshold' => 3,  'name' => 'Semangat', 'icon' => 'fa-solid fa-fire',   'color' => '#f97316'],
@@ -92,11 +92,11 @@ class EngagementService
             ['threshold' => 30, 'name' => 'Legenda',   'icon' => 'fa-solid fa-crown',  'color' => '#a855f7'],
         ];
 
-        $badges = array_map(fn ($d) => $d + ['unlocked' => $totalReads >= $d['threshold']], $defs);
+        $badges = array_map(fn ($d) => $d + ['unlocked' => $currentStreak >= $d['threshold']], $defs);
 
         $next = null;
         foreach ($defs as $d) {
-            if ($totalReads < $d['threshold']) {
+            if ($currentStreak < $d['threshold']) {
                 $next = $d;
                 break;
             }
@@ -105,7 +105,7 @@ class EngagementService
         return [
             'badges' => $badges,
             'next' => $next,
-            'left' => $next ? $next['threshold'] - $totalReads : 0,
+            'days_left' => $next ? $next['threshold'] - $currentStreak : 0,
         ];
     }
 }

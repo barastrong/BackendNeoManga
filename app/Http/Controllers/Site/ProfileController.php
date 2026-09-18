@@ -53,8 +53,7 @@ class ProfileController extends Controller
             ->get();
 
         $streak = \App\Services\EngagementService::streakFor($user->id);
-        $totalReads = History::where('user_id', $user->id)->count();
-        $badgeData = \App\Services\EngagementService::badges($totalReads);
+        $badgeData = \App\Services\EngagementService::badges($streak['current']);
 
         return view('profile.show', compact('user', 'recentBookmarks', 'recentHistories', 'favoriteGenres', 'recentComments', 'streak', 'badgeData'));
     }
