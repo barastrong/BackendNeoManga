@@ -23,10 +23,20 @@ class CloudinaryStorageService
     {
         $img = imagecreatefromstring($binaryContent);
         if (!$img) throw new \Exception('Gagal membaca gambar');
+
+        // GD webp encoder TIDAK bisa encode gambar palette (PNG indexed / GIF) -> konversi ke truecolor dulu
+        if (!imageistruecolor($img)) {
+            imagepalettetotruecolor($img);
+        }
+
         ob_start();
-        imagewebp($img, null, 85);
+        $ok = imagewebp($img, null, 85);
         $webp = ob_get_clean();
         imagedestroy($img);
+
+        if (!$ok || !$webp) {
+            throw new \Exception('Konversi webp gagal (gambar terlalu besar / rusak / format aneh)');
+        }
         return $webp;
     }
 

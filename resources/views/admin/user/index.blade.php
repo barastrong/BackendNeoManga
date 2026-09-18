@@ -17,6 +17,9 @@
             <h1 class="font-display text-[26px] lg:text-3xl font-bold text-white tracking-tight mt-1.5">Daftar Pengguna</h1>
             <p class="text-sm text-slate-400 mt-1">Kelola semua akun yang terdaftar di NeoManga.</p>
         </div>
+        <a href="{{ route('admin.user.create') }}" class="inline-flex items-center gap-2 rounded-xl bg-[#ff2e4d] hover:bg-[#e62242] text-white text-sm font-bold px-4 py-2.5 transition shadow-lg shadow-[#ff2e4d]/25">
+            <i class="fa-solid fa-plus"></i>Tambah User
+        </a>
     </div>
 
     {{-- STATS --}}
@@ -90,19 +93,33 @@
                                 </span>
                             </td>
                             <td class="us-td">
-                                @if($user->isBanned())
-                                    <span class="us-pill" style="background:rgba(244,63,94,.12);color:#fb7185"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Banned</span>
-                                @elseif($user->email_verified_at)
-                                    <span class="us-pill" style="background:rgba(52,211,153,.12);color:#34d399"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Verified</span>
-                                @else
-                                    <span class="us-pill" style="background:rgba(251,191,36,.12);color:#fbbf24"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Unverified</span>
-                                @endif
-                            </td>
+                                                            @if($user->isBanned())
+                                                                <span class="us-pill" style="background:rgba(244,63,94,.12);color:#fb7185"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Banned</span>
+                                                            @elseif($user->email_verified || $user->email_verified_at)
+                                                                <span class="us-pill" style="background:rgba(52,211,153,.12);color:#34d399"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Verified</span>
+                                                            @else
+                                                                <span class="us-pill" style="background:rgba(251,191,36,.12);color:#fbbf24"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Unverified</span>
+                                                            @endif
+                                                        </td>
                             <td class="us-td text-slate-500 text-xs whitespace-nowrap">{{ $user->created_at->format('d M Y') }}</td>
                             <td class="us-td text-right whitespace-nowrap">
                                 <div class="inline-flex items-center gap-2">
-                                    <a href="#" class="us-ico-btn edit" title="Edit"><i class="fa-solid fa-pen"></i>Edit</a>
-                                    <a href="#" class="us-ico-btn danger" title="Hapus"><i class="fa-solid fa-trash-can"></i>Hapus</a>
+                                    @if(!$user->email_verified && !$user->email_verified_at)
+                                        <form method="POST" action="{{ route('admin.user.verify', $user) }}" class="inline">
+                                            @csrf
+                                            <button type="submit" class="us-ico-btn" style="color:#34d399" title="Verifikasi email" onclick="return confirm('Verifikasi email user ini?')"><i class="fa-solid fa-check"></i>Verify</button>
+                                        </form>
+                                    @endif
+                                    @if($user->role !== 'admin')
+                                        <a href="{{ route('admin.user.edit', $user) }}" class="us-ico-btn edit" title="Edit"><i class="fa-solid fa-pen"></i>Edit</a>
+                                        <form method="POST" action="{{ route('admin.user.destroy', $user) }}" class="inline" onsubmit="return confirm('Hapus user ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="us-ico-btn danger" title="Hapus"><i class="fa-solid fa-trash-can"></i>Hapus</button>
+                                        </form>
+                                    @else
+                                        <span class="us-pill" style="background:rgba(255,255,255,.05);color:#64748b">Admin</span>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

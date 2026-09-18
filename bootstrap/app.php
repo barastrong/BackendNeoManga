@@ -28,11 +28,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Detail error (stack trace, isi env) HANYA untuk akses lokal (localhost/127.0.0.1).
-        // Publik (ngrok) dapat halaman error polos — cegah bocor kredensial via stack trace.
-        $exceptions->shouldDisplayExceptions(fn (\Illuminate\Http\Request $request) => in_array(
-            $request->ip(), ['127.0.0.1', '::1', 'localhost', '192.168.56.1'], true
-        ));
+        // Detail error (stack trace) dikontrol lewat APP_DEBUG di .env.
+        // Set APP_DEBUG=false di produksi untuk menyembunyikan error detail.
     })->create();
 
 return $app;

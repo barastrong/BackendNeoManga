@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/manga/show.css') }}?v=20260911">
+@endpush
+
 @section('title', $manga->title)
 @section('meta_description', Str::limit(strip_tags($manga->description ?? ''), 155))
-
-<link rel="stylesheet" href="{{ asset('css/manga/show.css') }}">
 
 @section('content')
 <div class="min-h-screen">
@@ -388,4 +390,6 @@
 @include('partials.report-modal')
 @endsection
 
-<script src="{{ asset('js/manga/show.js') }}"></script>
+@push('scripts')
+<script src="{{ asset('js/manga/show.js') }}?v=20260911"></script>
+@endpush
