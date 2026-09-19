@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\MangaView;
 use App\Models\ReadingStreak;
 use App\Models\User;
+use App\Models\LevelTitle;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -112,30 +114,39 @@ class EngagementService
 
     /* ================= LEVEL SYSTEM (berbasis XP) ================= */
 
-    /** XP per chapter baru dibaca. */
-    public const XP_PER_READ = 5;
+    /** XP per chapter baru dibaca — bisa diubah admin via CMS (default 5). */
+    public static function xpPerRead(): int
+    {
+        return (int) (Setting::where('key', 'xp_per_read')->value('value') ?: 5);
+    }
 
-    /** Batas XP harian per user (anti-farm). */
-    public const DAILY_XP_CAP = 100;
+    /** Batas XP harian per user — bisa diubah admin via CMS (default 100). */
+    public static function dailyXpCap(): int
+    {
+        return (int) (Setting::where('key', 'daily_xp_cap')->value('value') ?: 100);
+    }
 
     /** Tambah XP user (dipanggil saat chapter pertama kali dibaca). Ada cap harian. */
-    public static function addXp(int $userId, int $amount = self::XP_PER_READ): void
+    public static function addXp(int $userId, ?int $amount = null): void
     {
         $user = User::find($userId);
         if (!$user) {
             return;
         }
 
+        $amount ??= self::xpPerRead();
+        $cap = self::dailyXpCap();
+
         $today = now()->toDateString();
         $user->daily_xp = $user->daily_xp_date === $today ? $user->daily_xp : 0;
         $user->daily_xp_date = $today;
 
-        if ($user->daily_xp >= self::DAILY_XP_CAP) {
+        if ($user->daily_xp >= $cap) {
             $user->save();
             return;
         }
 
-        $gained = min($amount, self::DAILY_XP_CAP - $user->daily_xp);
+        $gained = min($amount, $cap - $user->daily_xp);
         $user->xp += $gained;
         $user->daily_xp += $gained;
         $user->save();
@@ -174,6 +185,14 @@ class EngagementService
         ['max' => 100, 'color' => '#ff2e4d', 'emoji' => '👑'],
     ];
 
+    /**
+     * Title per level — dari DB (level_titles), fallback ke konstanta bawaan.
+     */
+    public static function titleFor(int $level): string
+    {
+        return LevelTitle::where('level', $level)->value('title') ?: (self::LEVEL_TITLES[$level] ?? "Lv $level");
+    }
+
     /** Total XP kumulatif untuk capai level L. Naik ke L butuh 2L+46 XP (start 50, +2/level). */
     protected static function levelThreshold(int $level): int
     {
@@ -200,7 +219,7 @@ class EngagementService
         if ($level < 100) {
             $next = [
                 'level' => $level + 1,
-                'title' => self::LEVEL_TITLES[$level + 1],
+                'title' => self::titleFor($level + 1),
                 'xp' => self::levelThreshold($level + 1),
             ];
         }
@@ -210,7 +229,7 @@ class EngagementService
 
         return [
             'level' => $level,
-            'title' => self::LEVEL_TITLES[$level],
+            'title' => self::titleFor($level),
             'emoji' => $tier['emoji'],
             'color' => $tier['color'],
             'next' => $next,

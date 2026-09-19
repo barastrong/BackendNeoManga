@@ -70,8 +70,11 @@
                 <i class="fa-solid fa-tags"></i>Kategori
             </a>
             <a href="{{ route('admin.moderation.index') }}" class="adm-sb-item {{ request()->routeIs('admin.moderation.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-flag"></i>Moderasi
-            </a>
+                            <i class="fa-solid fa-flag"></i>Moderasi
+                        </a>
+                        <a href="{{ route('admin.gamification.index') }}" class="adm-sb-item {{ request()->routeIs('admin.gamification.*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-gamepad"></i>Gamifikasi
+                        </a>
         </nav>
 
         <div class="adm-sb-label">Lainnya</div>

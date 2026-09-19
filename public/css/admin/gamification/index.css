@@ -1,0 +1,73 @@
+/* ===== Admin Gamifikasi (asar auto-generate dari pola, class custom biar aman purge) ===== */
+.gam-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: #ff2e4d; background: rgba(255, 46, 77, .09);
+    padding: 4px 10px; border-radius: 999px;
+}
+
+.gam-stat {
+    display: flex; align-items: center; gap: 14px;
+    background: #161a23; border: 1px solid #232936; border-radius: 16px;
+    padding: 16px 18px;
+}
+.gam-stat .ic {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+}
+.gam-stat .lbl { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
+.gam-stat .val { font-size: 20px; font-weight: 800; color: #fff; margin-top: 2px; }
+
+.gam-card {
+    background: #161a23; border: 1px solid #232936; border-radius: 20px; padding: 22px;
+}
+.gam-card-head { display: flex; align-items: center; gap: 14px; }
+.gam-card-head > i {
+    width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255, 46, 77, .12); color: #ff2e4d; font-size: 17px;
+}
+.gam-card-head h2 { font-size: 17px; font-weight: 800; color: #fff; margin: 0; }
+.gam-card-head p { font-size: 12px; color: #64748b; margin: 3px 0 0; line-height: 1.45; }
+
+.gam-label { display: block; font-size: 12px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; }
+.gam-input, .gam-lvl-input {
+    width: 100%; background: #10141c; border: 1px solid #232936; border-radius: 10px;
+    color: #e2e8f0; font-size: 14px; padding: 10px 13px; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+.gam-input:focus, .gam-lvl-input:focus {
+    border-color: #ff2e4d; box-shadow: 0 0 0 3px rgba(255, 46, 77, .15);
+}
+.gam-hint { font-size: 11px; color: #64748b; margin-top: 5px; line-height: 1.5; }
+
+.gam-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 13px; font-weight: 700; padding: 11px 18px; border-radius: 12px;
+    border: none; cursor: pointer; transition: opacity .15s, transform .1s;
+}
+.gam-btn:active { transform: scale(.98); }
+.gam-btn-primary {
+    background: linear-gradient(135deg, #ff2e4d, #ff5c6c); color: #fff;
+    box-shadow: 0 6px 20px rgba(255, 46, 77, .28);
+}
+.gam-btn-primary:hover { opacity: .9; }
+.gam-btn-ghost {
+    background: transparent; color: #94a3b8; border: 1px solid #232936;
+}
+.gam-btn-ghost:hover { color: #f87171; border-color: rgba(248, 113, 113, .4); }
+
+.gam-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 10px; max-height: 520px; overflow-y: auto; padding-right: 6px;
+}
+.gam-grid::-webkit-scrollbar { width: 6px; }
+.gam-grid::-webkit-scrollbar-thumb { background: #232936; border-radius: 999px; }
+
+.gam-lvl { display: flex; align-items: center; gap: 8px; }
+.gam-lvl-n {
+    flex-shrink: 0; min-width: 44px; text-align: right;
+    font-size: 11px; font-weight: 800; color: #475569;
+    font-variant-numeric: tabular-nums;
+}
+.gam-lvl-input { padding: 8px 11px; font-size: 13px; }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ChapterController as AdminChapterController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\GamificationController;
 use App\Http\Controllers\Admin\MangaController as AdminMangaController;
 use App\Http\Controllers\Admin\ModerationController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -68,6 +69,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/moderasi/komentar/{comment}', [ModerationController::class, 'action'])->name('moderation.action');
     Route::post('/moderasi/user/{user}', [ModerationController::class, 'userAction'])->name('moderation.user');
     Route::post('/moderasi/bulk', [ModerationController::class, 'bulk'])->name('moderation.bulk');
+
+    // Gamifikasi (CMS tingkat: XP/chapter, cap harian, title level)
+    Route::get('/gamifikasi', [GamificationController::class, 'index'])->name('gamification.index');
+    Route::put('/gamifikasi/settings', [GamificationController::class, 'updateSettings'])->name('gamification.settings');
+    Route::put('/gamifikasi/titles', [GamificationController::class, 'updateTitles'])->name('gamification.titles');
+    Route::post('/gamifikasi/titles/reset', [GamificationController::class, 'resetTitles'])->name('gamification.titles.reset');
 });
 
 // ===== Frontend publik =====
