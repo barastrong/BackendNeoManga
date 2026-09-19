@@ -112,13 +112,33 @@ class EngagementService
 
     /* ================= LEVEL SYSTEM (berbasis XP) ================= */
 
-    /** XP yang didapat per chapter baru dibaca. */
-    public const XP_PER_READ = 10;
+    /** XP per chapter baru dibaca. */
+    public const XP_PER_READ = 5;
 
-    /** Tambah XP user (dipanggil saat chapter pertama kali dibaca). */
+    /** Batas XP harian per user (anti-farm). */
+    public const DAILY_XP_CAP = 100;
+
+    /** Tambah XP user (dipanggil saat chapter pertama kali dibaca). Ada cap harian. */
     public static function addXp(int $userId, int $amount = self::XP_PER_READ): void
     {
-        User::whereKey($userId)->increment('xp', $amount);
+        $user = User::find($userId);
+        if (!$user) {
+            return;
+        }
+
+        $today = now()->toDateString();
+        $user->daily_xp = $user->daily_xp_date === $today ? $user->daily_xp : 0;
+        $user->daily_xp_date = $today;
+
+        if ($user->daily_xp >= self::DAILY_XP_CAP) {
+            $user->save();
+            return;
+        }
+
+        $gained = min($amount, self::DAILY_XP_CAP - $user->daily_xp);
+        $user->xp += $gained;
+        $user->daily_xp += $gained;
+        $user->save();
     }
 
     /** Title per level 1-100. */
@@ -154,14 +174,12 @@ class EngagementService
         ['max' => 100, 'color' => '#ff2e4d', 'emoji' => '👑'],
     ];
 
-    /** Total XP minimal untuk capai level tertentu: 1-10 +10, 11-25 +20, 26-50 +50, 51-100 +100. */
+    /** Total XP kumulatif untuk capai level L. Naik ke L butuh 2L+46 XP (start 50, +2/level). */
     protected static function levelThreshold(int $level): int
     {
         if ($level <= 1) return 0;
-        if ($level <= 10) return ($level - 1) * 10;
-        if ($level <= 25) return 100 + ($level - 11) * 20;
-        if ($level <= 50) return 400 + ($level - 26) * 50;
-        return 1700 + ($level - 51) * 100;
+        // Σ(2k+46) untuk k=2..L → L² + 47L − 48
+        return $level * $level + 47 * $level - 48;
     }
 
     /**
