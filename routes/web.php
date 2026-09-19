@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\GamificationController;
 use App\Http\Controllers\Admin\MangaController as AdminMangaController;
 use App\Http\Controllers\Admin\ModerationController;
+use App\Http\Controllers\Admin\UserTagController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Site\BookmarkController;
 use App\Http\Controllers\Site\ChapterController;
@@ -75,6 +76,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::put('/gamifikasi/settings', [GamificationController::class, 'updateSettings'])->name('gamification.settings');
     Route::put('/gamifikasi/titles', [GamificationController::class, 'updateTitles'])->name('gamification.titles');
     Route::post('/gamifikasi/titles/reset', [GamificationController::class, 'resetTitles'])->name('gamification.titles.reset');
+
+    // Gelar User (tags achievement)
+    Route::get('/gelar-user', [UserTagController::class, 'index'])->name('usertag.index');
+    Route::post('/gelar-user', [UserTagController::class, 'store'])->name('usertag.store');
+    Route::put('/gelar-user/{tag}', [UserTagController::class, 'update'])->name('usertag.update');
+    Route::delete('/gelar-user/{tag}', [UserTagController::class, 'destroy'])->name('usertag.destroy');
+    Route::post('/gelar-user/{tag}/toggle', [UserTagController::class, 'toggle'])->name('usertag.toggle');
 });
 
 // ===== Frontend publik =====

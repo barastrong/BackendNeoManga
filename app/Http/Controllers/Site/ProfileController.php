@@ -74,8 +74,9 @@ class ProfileController extends Controller
         $streak = \App\Services\EngagementService::streakFor($user->id);
         $badgeData = \App\Services\EngagementService::badges($streak['current']);
         $level = \App\Services\EngagementService::levelFor((int) $user->xp);
+        $userTags = \App\Services\TagService::unlockedFor($user);
 
-        return view('profile.show', compact('user', 'recentBookmarks', 'recentHistories', 'favoriteGenres', 'recentComments', 'streak', 'badgeData', 'level'));
+        return view('profile.show', compact('user', 'recentBookmarks', 'recentHistories', 'favoriteGenres', 'recentComments', 'streak', 'badgeData', 'level', 'userTags'));
     }
 
     public function edit(Request $request): View

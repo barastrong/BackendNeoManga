@@ -73,8 +73,11 @@
                             <i class="fa-solid fa-flag"></i>Moderasi
                         </a>
                         <a href="{{ route('admin.gamification.index') }}" class="adm-sb-item {{ request()->routeIs('admin.gamification.*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-gamepad"></i>Gamifikasi
-                        </a>
+                                        <i class="fa-solid fa-gamepad"></i>Gamifikasi
+                                    </a>
+                                    <a href="{{ route('admin.usertag.index') }}" class="adm-sb-item {{ request()->routeIs('admin.usertag.*') ? 'active' : '' }}">
+                                        <i class="fa-solid fa-id-badge"></i>Gelar User
+                                    </a>
         </nav>
 
         <div class="adm-sb-label">Lainnya</div>

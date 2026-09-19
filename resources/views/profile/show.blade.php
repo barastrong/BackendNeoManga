@@ -189,6 +189,28 @@
         {{-- ===== Kolom kanan (1/3) ===== --}}
         <div class="pf-col">
 
+            {{-- Gelar User --}}
+            <section class="pf-card pad2">
+                <div class="pf-hdr">
+                    <h3><i class="fa-solid fa-id-badge"></i>Gelar Saya</h3>
+                    @if($userTags->isNotEmpty())
+                        <span class="pf-badge-progress done">{{ $userTags->count() }} gelar terbuka 🎉</span>
+                    @endif
+                </div>
+                @if($userTags->isNotEmpty())
+                    <div class="pf-tags">
+                        @foreach($userTags as $tag)
+                            <span class="pf-tag" style="color:{{ $tag->color }};border-color:{{ $tag->color }}55;background:{{ $tag->color }}1a" title="{{ $tag->description }}">
+                                <i class="fa-solid {{ $tag->icon }}"></i>{{ $tag->name }}
+                            </span>
+                        @endforeach
+                    </div>
+                    <p class="pf-note"><i class="fa-solid fa-lightbulb"></i>Gelar terbuka otomatis dari aktivitasmu: baca, komentar, bookmark, streak, level &amp; XP.</p>
+                @else
+                    <p class="pf-sub" style="margin:0">Belum ada gelar. Baca chapter, komentar, dan bookmark manga buat buka gelar!</p>
+                @endif
+            </section>
+
             {{-- Badge Saya --}}
             <section class="pf-card pad2">
                 <div class="pf-hdr">

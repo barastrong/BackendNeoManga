@@ -1,0 +1,105 @@
+/* ===== Admin Gelar User (achievement tags CMS) — class custom anti-purge ===== */
+.ut-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: #ff2e4d; background: rgba(255, 46, 77, .09);
+    padding: 4px 10px; border-radius: 999px;
+}
+
+.ut-stat {
+    display: flex; align-items: center; gap: 14px;
+    background: #161a23; border: 1px solid #232936; border-radius: 16px; padding: 16px 18px;
+}
+.ut-stat .ic {
+    width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.ut-stat .lbl { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
+.ut-stat .val { font-size: 20px; font-weight: 800; color: #fff; margin-top: 2px; }
+
+.ut-card { background: #161a23; border: 1px solid #232936; border-radius: 20px; padding: 10px 16px; }
+.ut-table { width: 100%; border-collapse: collapse; }
+.ut-table th {
+    text-align: left; font-size: 11px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: .05em; padding: 12px 10px; border-bottom: 1px solid #232936;
+}
+.ut-table td { padding: 12px 10px; border-bottom: 1px solid rgba(35, 41, 54, .5); vertical-align: middle; }
+.ut-table tr:last-child td { border-bottom: none; }
+.ut-row-off td { opacity: .5; }
+
+.ut-tag { display: flex; align-items: center; gap: 12px; }
+.ut-tag-ic {
+    width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.ut-tag b { font-size: 14px; color: #fff; display: block; }
+.ut-tag p { font-size: 11.5px; color: #64748b; margin: 2px 0 0; }
+
+.ut-req {
+    display: inline-block; font-size: 11px; font-weight: 700; color: #94a3b8;
+    background: #10141c; border: 1px solid #232936; border-radius: 999px; padding: 3px 10px;
+}
+.ut-val {
+    display: inline-block; font-size: 11px; font-weight: 800; color: #ff2e4d;
+    background: rgba(255, 46, 77, .1); border-radius: 999px; padding: 3px 9px; margin-left: 5px;
+}
+
+.ut-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+.ut-badge i { font-size: 6px; }
+.ut-badge-on { color: #34d399; background: rgba(52, 211, 153, .1); }
+.ut-badge-off { color: #94a3b8; background: rgba(100, 116, 139, .12); }
+
+.ut-actions { display: inline-flex; gap: 6px; }
+.ut-act {
+    width: 32px; height: 32px; border-radius: 9px; border: 1px solid #232936;
+    background: #10141c; color: #94a3b8; cursor: pointer; font-size: 12px;
+    display: inline-flex; align-items: center; justify-content: center; transition: all .15s;
+}
+.ut-act:hover { color: #fff; border-color: #ff2e4d; }
+.ut-act-del:hover { color: #f87171; border-color: rgba(248, 113, 113, .5); }
+.ut-act-on:hover { color: #34d399; border-color: rgba(52, 211, 153, .5); }
+.ut-act-off:hover { color: #fbbf24; }
+
+.ut-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 13px; font-weight: 700; padding: 11px 18px; border-radius: 12px;
+    border: none; cursor: pointer; transition: opacity .15s, transform .1s;
+}
+.ut-btn:active { transform: scale(.98); }
+.ut-btn-primary { background: linear-gradient(135deg, #ff2e4d, #ff5c6c); color: #fff; box-shadow: 0 6px 20px rgba(255, 46, 77, .28); }
+.ut-btn-primary:hover { opacity: .9; }
+.ut-btn-ghost { background: transparent; color: #94a3b8; border: 1px solid #232936; }
+.ut-btn-ghost:hover { color: #fff; border-color: #334155; }
+
+.ut-label { display: block; font-size: 12px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; }
+.ut-input {
+    width: 100%; background: #10141c; border: 1px solid #232936; border-radius: 10px;
+    color: #e2e8f0; font-size: 14px; padding: 10px 13px; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+.ut-input:focus { border-color: #ff2e4d; box-shadow: 0 0 0 3px rgba(255, 46, 77, .15); }
+.ut-hint { font-size: 11px; color: #64748b; margin-top: 5px; }
+
+.ut-color-row { display: flex; gap: 8px; align-items: center; }
+.ut-color {
+    width: 52px; height: 42px; border-radius: 10px; border: 1px solid #232936;
+    background: #10141c; padding: 4px; cursor: pointer; flex-shrink: 0;
+}
+
+.ut-modal {
+    position: fixed; inset: 0; z-index: 100; display: flex;
+    align-items: center; justify-content: center; padding: 20px;
+    background: rgba(10, 12, 18, .78); backdrop-filter: blur(4px);
+}
+.ut-modal-box {
+    width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto;
+    background: #161a23; border: 1px solid #232936; border-radius: 20px; padding: 24px;
+}
+.ut-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.ut-modal-head h3 { font-size: 18px; font-weight: 800; color: #fff; margin: 0; }
+.ut-modal-x {
+    width: 34px; height: 34px; border-radius: 10px; border: none; background: #10141c;
+    color: #94a3b8; font-size: 20px; cursor: pointer; line-height: 1;
+}
+.ut-modal-x:hover { color: #fff; background: #1c2230; }
+.ut-modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
